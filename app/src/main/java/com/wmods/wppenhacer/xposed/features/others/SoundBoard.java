@@ -52,6 +52,7 @@ import android.os.Looper;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 
 /**
  * Soundboard Feature
@@ -92,24 +93,58 @@ public class SoundBoard extends Feature {
             log("Could not find conversation menu method");
             return;
         }
+        log("Hooking menu method: " + onCreateMenuConversationMethod.getName());
 
         XposedBridge.hookMethod(onCreateMenuConversationMethod, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                var menu = (Menu) param.args[0];
-                var activity = WppCore.getCurrentConversation();
-                if (activity == null)
-                    return;
-                addSoundBoardMenuItem(menu, activity);
+                addSoundBoardToParam(param);
             }
         });
+
+        try {
+            var onPrepareMethod = XposedHelpers.findMethodExact(onCreateMenuConversationMethod.getDeclaringClass(), "onPrepareOptionsMenu", Menu.class);
+            XposedBridge.hookMethod(onPrepareMethod, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    addSoundBoardToParam(param);
+                }
+            });
+        } catch (Throwable ignored) {}
+    }
+
+    private void addSoundBoardToParam(XC_MethodHook.MethodHookParam param) {
+        var menu = (Menu) param.args[0];
+        var activity = (Activity) param.thisObject;
+        
+        if (activity == null) {
+            activity = WppCore.getCurrentConversation();
+        }
+
+        if (activity == null) {
+            log("Menu hook triggered but activity is null");
+            return;
+        }
+        addSoundBoardMenuItem(menu, activity);
     }
 
     private void addSoundBoardMenuItem(Menu menu, Activity activity) {
         if (menu.findItem(MENU_ITEM_ID) != null)
             return;
 
-        MenuItem item = menu.add(0, MENU_ITEM_ID, 0, activity.getString(ResId.string.soundboard_title));
+        String title = null;
+        try {
+            title = activity.getString(ResId.string.soundboard_title);
+        } catch (Throwable e) {
+            log("Failed to get title from ResId: " + e.getMessage());
+        }
+        
+        if (title == null || title.isEmpty() || title.equals("0") || title.contains("ResId")) {
+            title = "Soundboard";
+        }
+
+        log("Adding SoundBoard menu item to " + activity.getClass().getName() + " with title: " + title);
+        MenuItem item = menu.add(0, MENU_ITEM_ID, 999, title);
 
         try {
             android.graphics.drawable.Drawable iconDraw = null;

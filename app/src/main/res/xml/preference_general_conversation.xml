@@ -124,6 +124,12 @@
             app:summary="@string/jump_first_message_sum"
             app:title="@string/jump_first_message" />
 
+        <rikka.material.preference.MaterialSwitchPreference
+            app:defaultValue="true"
+            app:key="soundboard_enabled"
+            app:summary="@string/soundboard_summary"
+            app:title="@string/soundboard_title" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -1161,12 +1161,29 @@ public class Unobfuscator {
     public synchronized static Method loadBlueOnReplayCreateMenuConversationMethod(ClassLoader loader)
             throws Exception {
         return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
-            var conversationClass = XposedHelpers.findClass("com.whatsapp.Conversation", loader);
-            if (conversationClass == null)
-                throw new RuntimeException("BlueOnReplayCreateMenuConversation class not found");
+            var conversationClass = findFirstClassUsingName(loader, StringMatchType.EndsWith, "Conversation");
+            if (conversationClass == null) {
+                try {
+                    conversationClass = XposedHelpers.findClass("com.whatsapp.Conversation", loader);
+                } catch (Exception e) {
+                    throw new RuntimeException("BlueOnReplayCreateMenuConversation class not found");
+                }
+            }
+            
             var method = Arrays.stream(conversationClass.getDeclaredMethods())
-                    .filter(m -> m.getParameterCount() == 1 && m.getParameterTypes()[0].equals(Menu.class)).findFirst()
+                    .filter(m -> m.getName().equals("onCreateOptionsMenu")
+                            && m.getParameterCount() == 1
+                            && m.getParameterTypes()[0].equals(Menu.class))
+                    .findFirst()
                     .orElse(null);
+                    
+            if (method == null) {
+                method = Arrays.stream(conversationClass.getDeclaredMethods())
+                        .filter(m -> m.getParameterCount() == 1 && m.getParameterTypes()[0].equals(Menu.class))
+                        .findFirst()
+                        .orElse(null);
+            }
+            
             if (method == null)
                 throw new RuntimeException("BlueOnReplayCreateMenuConversation method not found");
             return method;

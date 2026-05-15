@@ -296,7 +296,7 @@ object ResId {
     fun initLocal(context: Context) {
         if (string.app_name != 0) return // Already initialized
         try {
-            val packageName = context.packageName
+            val packageName = "com.wmods.wppenhacer"
             val rString = Class.forName("$packageName.R\$string")
             for (field in string::class.java.fields) {
                 try {

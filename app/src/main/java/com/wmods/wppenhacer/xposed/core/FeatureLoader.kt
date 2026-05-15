@@ -37,6 +37,7 @@ import com.wmods.wppenhacer.xposed.features.customization.HideTabs
 import com.wmods.wppenhacer.xposed.features.customization.IGStatus
 import com.wmods.wppenhacer.xposed.features.customization.SeparateGroup
 import com.wmods.wppenhacer.xposed.features.customization.ShowOnline
+import com.wmods.wppenhacer.xposed.utils.ResId
 import com.wmods.wppenhacer.xposed.features.general.AntiRevoke
 import com.wmods.wppenhacer.xposed.features.general.CallType
 import com.wmods.wppenhacer.xposed.features.general.ChatLimit
@@ -157,6 +158,7 @@ class FeatureLoader {
                         try {
                             val timeMillis = System.currentTimeMillis()
                             UnobfuscatorCache.init(application)
+                            ResId.initLocal(application)
                             SharedPreferencesWrapper.hookInit(application.classLoader)
                             ReflectionUtils.initCache(application)
 

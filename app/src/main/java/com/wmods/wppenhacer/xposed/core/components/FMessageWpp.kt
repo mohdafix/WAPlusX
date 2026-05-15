@@ -408,7 +408,7 @@ class FMessageWpp(fMessage: Any?) {
                 f.type == Boolean::class.javaPrimitiveType || f.type == Boolean::class.java
             }
             this.isFromMe = fromMeField?.get(key) as? Boolean ?: false
-            XposedBridge.log("[FMessageWpp.Key] Extracted ID: $messageID, JID: ${remoteJid.phoneRawString}, RowId: ${fMessage?.rowId ?: "N/A"}")
+            // XposedBridge.log("[FMessageWpp.Key] Extracted ID: $messageID, JID: ${remoteJid.phoneRawString}, RowId: ${fMessage?.rowId ?: "N/A"}")
             
             val fmessageObj = WppCore.getFMessageFromKey(key)
             if (fmessageObj != null) {
@@ -444,7 +444,7 @@ class FMessageWpp(fMessage: Any?) {
                 f.type == Boolean::class.javaPrimitiveType || f.type == Boolean::class.java
             }
             this.isFromMe = fromMeField?.get(key) as? Boolean ?: false
-            XposedBridge.log("[FMessageWpp.Key] Extracted ID: $messageID, JID: ${remoteJid.phoneRawString}, RowId: ${fMessage?.rowId ?: "N/A"}")
+            // XposedBridge.log("[FMessageWpp.Key] Extracted ID: $messageID, JID: ${remoteJid.phoneRawString}, RowId: ${fMessage?.rowId ?: "N/A"}")
         }
 
         constructor(messageID: String, remoteJid: UserJid, isFromMe: Boolean) {
