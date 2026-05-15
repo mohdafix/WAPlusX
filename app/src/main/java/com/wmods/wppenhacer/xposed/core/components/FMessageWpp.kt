@@ -1,5 +1,6 @@
 package com.wmods.wppenhacer.xposed.core.components
 
+import android.util.LruCache
 import com.wmods.wppenhacer.xposed.core.WppCore
 import com.wmods.wppenhacer.xposed.core.db.MessageStore
 import com.wmods.wppenhacer.xposed.core.devkit.Unobfuscator
@@ -10,6 +11,7 @@ import org.luckypray.dexkit.query.enums.StringMatchType
 import java.io.File
 import java.lang.reflect.Field
 import java.lang.reflect.Method
+import java.lang.reflect.Modifier
 import java.util.Date
 import java.util.Objects
 
@@ -36,10 +38,24 @@ class FMessageWpp(fMessage: Any?) {
             "s.whatsapp.net", "newsletter", "lid", "g.us", "broadcast", "status"
         )
 
+        private val SUPPORTED_TYPES = mutableListOf<Class<*>>()
+        private val baseMessageFieldCache = LruCache<Class<*>, Field>(100)
+
         @JvmStatic
         fun initialize(classLoader: ClassLoader) {
             try {
                 TYPE = Unobfuscator.loadFMessageClass(classLoader)
+                SUPPORTED_TYPES.clear()
+                SUPPORTED_TYPES.add(TYPE)
+                
+                // Add known alternatives if they exist
+                try {
+                    val altType = XposedHelpers.findClassIfExists("X.8kV", classLoader)
+                    if (altType != null && altType != TYPE) {
+                        SUPPORTED_TYPES.add(altType)
+                    }
+                } catch (e: Exception) {}
+
                 UserJid.initialize(classLoader)
                 userJidMethod =
                     ReflectionUtils.findMethodUsingFilter(TYPE) { method -> method.parameterCount == 0 && method.returnType == UserJid.TYPE_USERJID }
@@ -66,26 +82,78 @@ class FMessageWpp(fMessage: Any?) {
         }
 
         @JvmStatic
+        fun findBaseMessage(rawMsg: Any?): Any? {
+            if (rawMsg == null) return null
+            if (isFMessage(rawMsg)) return rawMsg
+            
+            val cls = rawMsg.javaClass
+            val cachedField = baseMessageFieldCache.get(cls)
+            if (cachedField != null) {
+                try {
+                    return cachedField.get(rawMsg)
+                } catch (e: Exception) {}
+            }
+            
+            return findFMessageRecursive(rawMsg, 0)
+        }
+
+        @JvmStatic
+        fun findFMessageRecursive(obj: Any?, depth: Int): Any? {
+            if (obj == null || depth > 3) return null
+            if (isFMessage(obj)) return obj
+            
+            val cls = obj.javaClass
+            val className = cls.name
+            if (className.startsWith("android.") || className.startsWith("java.") || className.startsWith("kotlin.")) return null
+
+            try {
+                for (field in cls.declaredFields) {
+                    if (Modifier.isStatic(field.modifiers)) continue
+                    if (!field.type.isPrimitive && field.type != String::class.java) {
+                        field.isAccessible = true
+                        val value = field.get(obj) ?: continue
+                        if (isFMessage(value)) {
+                            if (depth == 0) baseMessageFieldCache.put(cls, field)
+                            return value
+                        }
+                        // Recurse for obfuscated types
+                        if (className.length < 10 || className.contains(".playback.")) {
+                            val found = findFMessageRecursive(value, depth + 1)
+                            if (found != null) return found
+                        }
+                    }
+                }
+            } catch (e: Exception) {}
+            return null
+        }
+
+        @JvmStatic
+        fun isFMessage(obj: Any?): Boolean {
+            if (obj == null) return false
+            return SUPPORTED_TYPES.any { it.isInstance(obj) }
+        }
+
+        @JvmStatic
+        fun isFMessageClass(clazz: Class<*>): Boolean {
+            return SUPPORTED_TYPES.any { it.isAssignableFrom(clazz) }
+        }
+
+        @JvmStatic
         @Throws(Exception::class)
         fun checkUnsafeIsFMessage(classLoader: ClassLoader, clazz: Class<*>): Boolean {
-            val fmessageClass = Unobfuscator.loadFMessageClass(classLoader)
-            if (fmessageClass.isAssignableFrom(clazz)) return true
-            val interfaces = fmessageClass.interfaces
-            for (anInterface in interfaces) {
-                if (anInterface == clazz) return true
-            }
-            return false
+            return isFMessageClass(clazz)
         }
     }
 
     private val fmessage: Any
 
     init {
-        if (fMessage == null) throw RuntimeException("Object fMessage is null")
-        if (!TYPE.isInstance(fMessage))
-            throw RuntimeException("Object fMessage is not a FMessage Instance")
-        this.fmessage = fMessage
+        val unwrapped = Companion.findBaseMessage(fMessage) ?: throw RuntimeException("Object fMessage is null or not a FMessage container")
+        this.fmessage = unwrapped
     }
+
+    val isValid: Boolean
+        get() = Companion.isFMessage(fmessage)
 
     val userJid: UserJid
         get() {
@@ -140,6 +208,37 @@ class FMessageWpp(fMessage: Any?) {
         return fmessage
     }
 
+    val revocationTargetId: String?
+        get() {
+            try {
+                val ok = originalKey
+                if (ok != null && ok.messageID.isNotEmpty()) {
+                    XposedBridge.log("AntiRevoke: Found target via originalKey: ${ok.messageID}")
+                    return ok.messageID
+                }
+            } catch (e: Exception) {
+                XposedBridge.log("AntiRevoke: originalKey access failed: $e")
+            }
+            try {
+                val cls = fmessage.javaClass
+                XposedBridge.log("AntiRevoke: Searching targetID via reflection in ${cls.name}...")
+                for (field in cls.declaredFields) {
+                    if (field.type == String::class.java && !Modifier.isStatic(field.modifiers)) {
+                        field.isAccessible = true
+                        val value = field.get(fmessage) as? String
+                        if (value != null && value.length >= 12 && value != key.messageID) {
+                            XposedBridge.log("AntiRevoke: Found potential targetID in field ${field.name}: $value")
+                            return value
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                XposedBridge.log("AntiRevoke: reflection search failed: $e")
+            }
+            XposedBridge.log("AntiRevoke: No targetID found for revocation message")
+            return null
+        }
+
     val messageStr: String?
         get() {
             return try {
@@ -166,10 +265,11 @@ class FMessageWpp(fMessage: Any?) {
         get() {
             return try {
                 val timestamp = timestampField?.getLong(fmessage)
-                if (timestamp != null) {
+                if (timestamp != null && timestamp > 0) {
                     Date(timestamp)
+                } else {
+                    null
                 }
-                null
             } catch (e: Exception) {
                 XposedBridge.log(e)
                 null
@@ -283,9 +383,33 @@ class FMessageWpp(fMessage: Any?) {
          */
         constructor(key: Any?) {
             this.thisObject = key
-            this.messageID = XposedHelpers.getObjectField(key, "A01") as String
-            this.isFromMe = XposedHelpers.getBooleanField(key, "A02")
-            this.remoteJid = UserJid(XposedHelpers.getObjectField(key, "A00"))
+            if (key == null) {
+                this.messageID = ""
+                this.remoteJid = UserJid()
+                return
+            }
+            val keyClass = key.javaClass
+            val jidClass = Unobfuscator.findFirstClassUsingName(keyClass.classLoader, StringMatchType.EndsWith, "jid.Jid")
+            
+            // JIDs
+            val jidField = ReflectionUtils.findFieldUsingFilterIfExists(keyClass) { f -> 
+                jidClass.isAssignableFrom(f.type) 
+            }
+            this.remoteJid = UserJid(jidField?.get(key))
+            
+            // Message ID (String)
+            val idField = ReflectionUtils.findFieldUsingFilterIfExists(keyClass) { f -> 
+                f.type == String::class.java && !f.name.contains("v") // Exclude some common obfuscated strings if possible, but usually id is the first string
+            }
+            this.messageID = idField?.get(key) as? String ?: ""
+            
+            // isFromMe (Boolean)
+            val fromMeField = ReflectionUtils.findFieldUsingFilterIfExists(keyClass) { f -> 
+                f.type == Boolean::class.javaPrimitiveType || f.type == Boolean::class.java
+            }
+            this.isFromMe = fromMeField?.get(key) as? Boolean ?: false
+            XposedBridge.log("[FMessageWpp.Key] Extracted ID: $messageID, JID: ${remoteJid.phoneRawString}, RowId: ${fMessage?.rowId ?: "N/A"}")
+            
             val fmessageObj = WppCore.getFMessageFromKey(key)
             if (fmessageObj != null) {
                 this.fMessage = FMessageWpp(fmessageObj)
@@ -294,10 +418,33 @@ class FMessageWpp(fMessage: Any?) {
 
         constructor(key: Any?, fmessage: FMessageWpp) {
             this.thisObject = key
-            this.messageID = XposedHelpers.getObjectField(key, "A01") as String
-            this.isFromMe = XposedHelpers.getBooleanField(key, "A02")
-            this.remoteJid = UserJid(XposedHelpers.getObjectField(key, "A00"))
             this.fMessage = fmessage
+            if (key == null) {
+                this.messageID = ""
+                this.remoteJid = UserJid()
+                return
+            }
+            val keyClass = key.javaClass
+            val jidClass = Unobfuscator.findFirstClassUsingName(keyClass.classLoader, StringMatchType.EndsWith, "jid.Jid")
+            
+            // JIDs
+            val jidField = ReflectionUtils.findFieldUsingFilterIfExists(keyClass) { f -> 
+                jidClass.isAssignableFrom(f.type) 
+            }
+            this.remoteJid = UserJid(jidField?.get(key))
+            
+            // Message ID (String)
+            val idField = ReflectionUtils.findFieldUsingFilterIfExists(keyClass) { f -> 
+                f.type == String::class.java
+            }
+            this.messageID = idField?.get(key) as? String ?: ""
+            
+            // isFromMe (Boolean)
+            val fromMeField = ReflectionUtils.findFieldUsingFilterIfExists(keyClass) { f -> 
+                f.type == Boolean::class.javaPrimitiveType || f.type == Boolean::class.java
+            }
+            this.isFromMe = fromMeField?.get(key) as? Boolean ?: false
+            XposedBridge.log("[FMessageWpp.Key] Extracted ID: $messageID, JID: ${remoteJid.phoneRawString}, RowId: ${fMessage?.rowId ?: "N/A"}")
         }
 
         constructor(messageID: String, remoteJid: UserJid, isFromMe: Boolean) {
@@ -442,10 +589,12 @@ class FMessageWpp(fMessage: Any?) {
         }
 
         val userRawString: String? by lazy {
-            if (this.phoneJid == null) return@lazy null
-            val raw =
+            if (this.userJid == null) return@lazy null
+            val raw = try {
                 XposedHelpers.callMethod(this.userJid, "getRawString") as? String
-                    ?: return@lazy null
+            } catch (e: Exception) {
+                null
+            } ?: return@lazy null
             raw.replaceFirst("\\.[\\d:]+@".toRegex(), "@")
         }
 

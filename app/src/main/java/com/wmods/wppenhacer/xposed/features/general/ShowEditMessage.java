@@ -68,22 +68,29 @@ public class ShowEditMessage extends Feature {
                 long id = fMessage.getRowId();
                 var origMessage = MessageStore.getInstance().getCurrentMessageByID(id);
                 String newMessage = fMessage.getMessageStr();
+                
+                XposedBridge.log("[ShowEditMessage] Edit detected: ID=" + id + ", orig=\"" + origMessage + "\", new=\"" + newMessage + "\"");
+
                 if (newMessage == null) {
                     var methods = ReflectionUtils.findAllMethodsUsingFilter(param.args[0].getClass(), method -> method.getReturnType() == String.class && ReflectionUtils.isOverridden(method));
                     for (var method : methods) {
                         newMessage = (String) method.invoke(param.args[0]);
                         if (newMessage != null) break;
                     }
-                    if (newMessage == null) return;
+                    if (newMessage == null) {
+                         XposedBridge.log("[ShowEditMessage] Could not extract new message text");
+                         return;
+                    }
                 }
                 try {
                     var message = MessageHistoryStore.getInstance().getMessages(id);
                     if (message == null) {
+                        XposedBridge.log("[ShowEditMessage] Inserting initial history entry for ID=" + id);
                         MessageHistoryStore.getInstance().insertMessage(id, origMessage, 0);
                     }
                     MessageHistoryStore.getInstance().insertMessage(id, newMessage, timestamp);
                 } catch (Exception e) {
-                    logDebug(e);
+                    XposedBridge.log(e);
                 }
             }
         });
@@ -103,6 +110,7 @@ public class ShowEditMessage extends Feature {
                                 try {
                                     long id = fMessage.getRowId();
                                     var messages = MessageHistoryStore.getInstance().getMessages(id);
+                                    XposedBridge.log("[ShowEditMessage] History label clicked for ID=" + id + ", found " + (messages != null ? messages.size() : 0) + " entries");
                                     if (messages == null) {
                                         messages = new ArrayList<>();
                                     }

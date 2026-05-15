@@ -265,7 +265,7 @@ class FeatureLoader {
             WaContactWpp.initialize(loader)
             WppCore.Initialize(loader, pref)
             DesignUtils.setPrefs(pref)
-            Utils.init(loader)
+            Utils.init(loader, pref)
 
             WppCore.addListenerActivity(object : WppCore.ActivityChangeState {
                 override fun onChange(

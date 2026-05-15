@@ -94,11 +94,18 @@ class ProtocolTreeNodeWpp(val mInstance: Any) {
         }
     }
 
-    val tag: String?
+    var tag: String?
         get() = try {
             fieldTag.get(mInstance) as? String
         } catch (_: Exception) {
             null
+        }
+        set(value) {
+            try {
+                fieldTag.set(mInstance, value)
+            } catch (e: Exception) {
+                XposedBridge.log("ProtocolTreeNodeWpp: Failed to set tag: ${e.message}")
+            }
         }
 
     val data: ByteArray?
@@ -127,6 +134,18 @@ class ProtocolTreeNodeWpp(val mInstance: Any) {
             } ?: return emptyList()
             return arr.filterNotNull().map { KeyValueWpp(it) }
         }
+
+    fun getAttributesMap(): Map<String, String> {
+        val map = mutableMapOf<String, String>()
+        for (attr in attributes) {
+            val k = attr.key
+            val v = attr.value
+            if (k != null && v != null) {
+                map[k] = v
+            }
+        }
+        return map
+    }
 
     // ==========================================
     // Operações de Modificação de KeyValue

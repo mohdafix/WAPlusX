@@ -332,7 +332,7 @@ class SeenTick(
                     DebugUtils.debugObject(fMessage)
                     sendBlueTickStatus(listOf(fMessage))
                     Utils.showToast(
-                        Utils.getString(R.string.sending_read_blue_tick),
+                        Utils.getApplication().getString(R.string.sending_read_blue_tick),
                         Toast.LENGTH_SHORT
                     )
                 }
@@ -353,7 +353,7 @@ class SeenTick(
                     val currentUserJid = WppCore.getCurrentUserJid()
                     currentUserJid?.let { jid -> sendBlueTick(jid) }
                     Utils.showToast(
-                        Utils.getString(R.string.sending_read_blue_tick),
+                        Utils.getApplication().getString(R.string.sending_read_blue_tick),
                         Toast.LENGTH_SHORT
                     )
                     true
@@ -392,7 +392,7 @@ class SeenTick(
                 }
                 sendBlueTickStatus(MenuStatusListener.currentStatusList)
                 Utils.showToast(
-                    Utils.getString(R.string.sending_read_blue_tick),
+                    Utils.getApplication().getString(R.string.sending_read_blue_tick),
                     Toast.LENGTH_SHORT
                 )
             }
@@ -436,7 +436,7 @@ class SeenTick(
                     )
                     sendBlueTickMedia(fMessage)
                     Utils.showToast(
-                        Utils.getString(R.string.sending_read_blue_tick),
+                        Utils.getApplication().getString(R.string.sending_read_blue_tick),
                         Toast.LENGTH_SHORT
                     )
                     true
@@ -480,7 +480,7 @@ class SeenTick(
                             )
                             sendBlueTickMedia(fMessage)
                             Utils.showToast(
-                                Utils.getString(R.string.sending_read_blue_tick),
+                                Utils.getApplication().getString(R.string.sending_read_blue_tick),
                                 Toast.LENGTH_SHORT
                             )
                         }
@@ -674,8 +674,9 @@ class SeenTick(
                 val rowsId = arrayOf(fMessage.rowId)
                 val messageId = fMessage.key.messageID
 
+                val participantJid = userJid.userJid ?: return@launch
                 val participantInfo = pInfoConstructor.newInstance(
-                    userJid.userJid,
+                    participantJid,
                     participant,
                     rowsId,
                     arrayOf(messageId)

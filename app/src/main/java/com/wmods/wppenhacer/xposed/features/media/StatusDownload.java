@@ -94,7 +94,7 @@ public class StatusDownload extends Feature {
             }
             var file = fMessageWpp.getMediaFile();
             if (file == null) {
-                Utils.showToast(Utils.getString(R.string.download_not_available), Toast.LENGTH_SHORT);
+                Utils.showToast(Utils.getApplication().getString(R.string.download_not_available), Toast.LENGTH_SHORT);
                 return;
             }
             Intent intent = new Intent();
@@ -113,7 +113,7 @@ public class StatusDownload extends Feature {
         try {
             var file = fMessage.getMediaFile();
             if (file == null) {
-                Utils.showToast(Utils.getString(R.string.download_not_available), Toast.LENGTH_LONG);
+                Utils.showToast(Utils.getApplication().getString(R.string.download_not_available), Toast.LENGTH_LONG);
                 return;
             }
             var userJid = fMessage.getUserJid();
@@ -122,10 +122,10 @@ public class StatusDownload extends Feature {
             var name = Utils.generateName(userJid, fileType);
             var error = Utils.copyFile(file, destination, name);
             if (TextUtils.isEmpty(error)) {
-                Utils.showToast(Utils.getString(R.string.saved_to) + destination, Toast.LENGTH_SHORT);
+                Utils.showToast(Utils.getApplication().getString(R.string.saved_to) + destination, Toast.LENGTH_SHORT);
             } else {
 
-                Utils.showToast(Utils.getString(R.string.error_when_saving_try_again) + ": " + error, Toast.LENGTH_SHORT);
+                Utils.showToast(Utils.getApplication().getString(R.string.error_when_saving_try_again) + ": " + error, Toast.LENGTH_SHORT);
             }
         } catch (Throwable e) {
             Utils.showToast(e.getMessage(), Toast.LENGTH_SHORT);

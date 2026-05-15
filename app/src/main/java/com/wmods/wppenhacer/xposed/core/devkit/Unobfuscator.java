@@ -903,13 +903,16 @@ public class Unobfuscator {
     }
 
 
-    public synchronized static Method loadAntiRevokeMessageMethod(ClassLoader loader) throws Exception {
-        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+    public synchronized static Method[] loadAntiRevokeMessageMethod(ClassLoader loader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethods(loader, () -> {
+            ArrayList<Method> allMethods = new ArrayList<>();
             for (var s : List.of("msgstore/edit/revoke", "msgstore/revoking/")) {
-                Method method = findFirstMethodUsingStrings(loader, StringMatchType.Contains, s);
-                if (method != null) return method;
+                Method[] methods = findAllMethodUsingStrings(loader, StringMatchType.Contains, s);
+                if (methods != null) {
+                    allMethods.addAll(Arrays.asList(methods));
+                }
             }
-            return null;
+            return allMethods.toArray(new Method[0]);
         });
     }
 

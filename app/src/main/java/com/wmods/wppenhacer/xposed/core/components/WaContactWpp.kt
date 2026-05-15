@@ -43,9 +43,15 @@ class WaContactWpp(mInstance: Any?) {
     val displayName: String?
         get() {
             return try {
-                fieldGetDisplayName?.get(fieldContactData?.get(instance)) as? String
+                val data = fieldContactData?.get(instance) ?: instance
+                var name = fieldGetDisplayName?.get(data) as? String
+                if (name == null) {
+                    name = fieldGetWaName?.get(data) as? String
+                    XposedBridge.log("[WaContactWpp] displayName is null, using waName: $name for instance type: ${instance.javaClass.name}")
+                }
+                name
             } catch (e: Exception) {
-                XposedBridge.log(e)
+                XposedBridge.log("WaContactWpp.displayName error: $e")
                 null
             }
         }
@@ -53,16 +59,10 @@ class WaContactWpp(mInstance: Any?) {
     val waName: String?
         get() {
             return try {
-                val contactData = fieldContactData
-                val getWaNameField = fieldGetWaName
-                if (contactData != null && getWaNameField != null) {
-                    if (contactData.type.isAssignableFrom(getWaNameField.declaringClass)) {
-                        return getWaNameField.get(contactData.get(mInstanceGetWaContact)) as? String
-                    }
-                }
-                getWaNameField?.get(instance) as? String
+                val data = fieldContactData?.get(instance) ?: instance
+                fieldGetWaName?.get(data) as? String
             } catch (e: Exception) {
-                XposedBridge.log(e)
+                XposedBridge.log("WaContactWpp.waName error: $e")
                 null
             }
         }
@@ -152,6 +152,8 @@ class WaContactWpp(mInstance: Any?) {
                             }
                         })
                 }
+
+                XposedBridge.log("[WaContactWpp] Initialized: TYPE=$TYPE, fieldContactData=$fieldContactData, fieldUserJid=$fieldUserJid, fieldGetDisplayName=$fieldGetDisplayName, fieldGetWaName=$fieldGetWaName")
 
             } catch (e: Exception) {
                 XposedBridge.log(e)

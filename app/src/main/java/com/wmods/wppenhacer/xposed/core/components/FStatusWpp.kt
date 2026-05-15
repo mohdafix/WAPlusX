@@ -139,10 +139,21 @@ class FStatusWpp(fstatus: Any?) {
 
         constructor(key: Any?) {
             this.thisObject = key
-            this.senderJid = FMessageWpp.UserJid(XposedHelpers.getObjectField(key, "A01"))
-            this.messageID = XposedHelpers.getObjectField(key, "A02") as String
-            this.isFromMe = XposedHelpers.getBooleanField(key, "A03")
-            this.remoteJid = FMessageWpp.UserJid(XposedHelpers.getObjectField(key, "A00"))
+            val jidClass = Unobfuscator.findFirstClassUsingName(TYPE.classLoader, org.luckypray.dexkit.query.enums.StringMatchType.EndsWith, "jid.Jid")
+            
+            // JIDs
+            val jidFields = ReflectionUtils.getFieldsByType(TYPE, jidClass)
+            this.remoteJid = FMessageWpp.UserJid(jidFields.getOrNull(0)?.get(key))
+            this.senderJid = FMessageWpp.UserJid(jidFields.getOrNull(1)?.get(key))
+            
+            // Message ID (String)
+            val stringFields = ReflectionUtils.getFieldsByType(TYPE, String::class.java)
+            this.messageID = stringFields.getOrNull(0)?.get(key) as? String ?: ""
+            
+            // isFromMe (Boolean)
+            val booleanFields = ReflectionUtils.getFieldsByType(TYPE, Boolean::class.javaPrimitiveType ?: Boolean::class.java)
+            this.isFromMe = booleanFields.getOrNull(0)?.get(key) as? Boolean ?: false
+            
             this.fStatus = getFStatusFromFKeyStatus(this)
         }
 

@@ -246,7 +246,7 @@ object WppCore {
     }
 
     @JvmStatic
-    fun sendMessage(number: String, message: String) {
+    fun sendMessage(number: String, message: String): Boolean {
         try {
             val senderMethod = ReflectionUtils.findMethodUsingFilterIfExists(actionUser) { method ->
                 List::class.java.isAssignableFrom(method.returnType) &&
@@ -259,7 +259,7 @@ object WppCore {
                 val userJid = createUserJid("$number@s.whatsapp.net")
                 if (userJid == null) {
                     Utils.showToast("UserJID not found", Toast.LENGTH_SHORT)
-                    return
+                    return false
                 }
                 val newObject = arrayOfNulls<Any>(senderMethod.parameterCount)
                 for (i in newObject.indices) {
@@ -274,11 +274,13 @@ object WppCore {
                 newObject[index2] = Collections.singletonList(userJid)
                 senderMethod.invoke(getActionUser(), *newObject)
                 Utils.showToast("Message sent to $number", Toast.LENGTH_SHORT)
+                return true
             }
         } catch (e: Exception) {
             Utils.showToast("Error in sending message:${e.message}", Toast.LENGTH_SHORT)
             XposedBridge.log(e)
         }
+        return false
     }
 
     @JvmStatic

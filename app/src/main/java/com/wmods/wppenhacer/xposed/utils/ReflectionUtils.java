@@ -138,11 +138,33 @@ public class ReflectionUtils {
 
 
     public static List<Field> getFieldsByExtendType(Class<?> cls, Class<?> type) {
-        return Arrays.stream(cls.getFields()).filter(f -> type.isAssignableFrom(f.getType())).collect(Collectors.toList());
+        List<Field> fields = new ArrayList<>();
+        Class<?> current = cls;
+        while (current != null && current != Object.class) {
+            for (Field f : current.getDeclaredFields()) {
+                if (type.isAssignableFrom(f.getType())) {
+                    f.setAccessible(true);
+                    fields.add(f);
+                }
+            }
+            current = current.getSuperclass();
+        }
+        return fields;
     }
 
     public static List<Field> getFieldsByType(Class<?> cls, Class<?> type) {
-        return Arrays.stream(cls.getFields()).filter(f -> type == f.getType()).collect(Collectors.toList());
+        List<Field> fields = new ArrayList<>();
+        Class<?> current = cls;
+        while (current != null && current != Object.class) {
+            for (Field f : current.getDeclaredFields()) {
+                if (type == f.getType()) {
+                    f.setAccessible(true);
+                    fields.add(f);
+                }
+            }
+            current = current.getSuperclass();
+        }
+        return fields;
     }
 
     public static Field getFieldByExtendType(Class<?> cls, String className) {
@@ -152,8 +174,19 @@ public class ReflectionUtils {
     }
 
     public static Field getFieldByExtendType(Class<?> cls, Class<?> type) {
+        if (cls == null || type == null) return null;
         if (cachePrefs == null) {
-            return Arrays.stream(cls.getFields()).filter(f -> type.isAssignableFrom(f.getType())).findFirst().orElse(null);
+            Class<?> current = cls;
+            while (current != null && current != Object.class) {
+                for (Field f : current.getDeclaredFields()) {
+                    if (type.isAssignableFrom(f.getType())) {
+                        f.setAccessible(true);
+                        return f;
+                    }
+                }
+                current = current.getSuperclass();
+            }
+            return null;
         }
 
         String cacheKey = "field_cache_" + cls.getName() + "_" + type.getName();
@@ -161,18 +194,30 @@ public class ReflectionUtils {
         String cachedFieldName = cachePrefs.getString(cacheKey, null);
         if (cachedFieldName != null) {
             try {
-                return cls.getField(cachedFieldName);
+                Field f = cls.getDeclaredField(cachedFieldName);
+                f.setAccessible(true);
+                return f;
             } catch (NoSuchFieldException e) {
                 cachePrefs.edit().remove(cacheKey).commit();
             }
         }
 
-        Field field = Arrays.stream(cls.getFields()).filter(f -> type.isAssignableFrom(f.getType())).findFirst().orElse(null);
+        Field field = null;
+        Class<?> current = cls;
+        while (current != null && current != Object.class) {
+            for (Field f : current.getDeclaredFields()) {
+                if (type.isAssignableFrom(f.getType())) {
+                    f.setAccessible(true);
+                    field = f;
+                    break;
+                }
+            }
+            if (field != null) break;
+            current = current.getSuperclass();
+        }
 
         if (field != null) {
-            if (field.getDeclaringClass() == cls) {
-                cachePrefs.edit().putString(cacheKey, field.getName()).commit();
-            }
+            cachePrefs.edit().putString(cacheKey, field.getName()).commit();
         }
 
         return field;
@@ -186,8 +231,19 @@ public class ReflectionUtils {
 
 
     public static Field getFieldByType(Class<?> cls, Class<?> type) {
+        if (cls == null || type == null) return null;
         if (cachePrefs == null) {
-            return Arrays.stream(cls.getFields()).filter(f -> type == f.getType()).findFirst().orElse(null);
+            Class<?> current = cls;
+            while (current != null && current != Object.class) {
+                for (Field f : current.getDeclaredFields()) {
+                    if (type == f.getType()) {
+                        f.setAccessible(true);
+                        return f;
+                    }
+                }
+                current = current.getSuperclass();
+            }
+            return null;
         }
 
         String cacheKey = "field_cache_direct_" + cls.getName() + "_" + type.getName();
@@ -195,18 +251,30 @@ public class ReflectionUtils {
         String cachedFieldName = cachePrefs.getString(cacheKey, null);
         if (cachedFieldName != null) {
             try {
-                return cls.getField(cachedFieldName);
+                Field f = cls.getDeclaredField(cachedFieldName);
+                f.setAccessible(true);
+                return f;
             } catch (NoSuchFieldException e) {
                 cachePrefs.edit().remove(cacheKey).apply();
             }
         }
 
-        Field field = Arrays.stream(cls.getFields()).filter(f -> type == f.getType()).findFirst().orElse(null);
+        Field field = null;
+        Class<?> current = cls;
+        while (current != null && current != Object.class) {
+            for (Field f : current.getDeclaredFields()) {
+                if (type == f.getType()) {
+                    f.setAccessible(true);
+                    field = f;
+                    break;
+                }
+            }
+            if (field != null) break;
+            current = current.getSuperclass();
+        }
 
         if (field != null) {
-            if (field.getDeclaringClass() == cls) {
-                cachePrefs.edit().putString(cacheKey, field.getName()).apply();
-            }
+            cachePrefs.edit().putString(cacheKey, field.getName()).apply();
         }
 
         return field;

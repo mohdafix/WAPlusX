@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Locale
 import java.util.Properties
+import java.nio.charset.StandardCharsets
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -27,7 +28,7 @@ val gitHash: String = getGitHashCommit().uppercase(Locale.getDefault())
 android {
     namespace = "com.wmods.wppenhacer"
     compileSdk = 36
-    ndkVersion = "27.0.11902837 rc2"
+    ndkVersion = "28.2.13676358"
 
     flavorDimensions += "version"
 
@@ -155,6 +156,49 @@ android {
         generatePalette = true
     }
 
+}
+
+// Task that patches generated AIDL .java files (escapes backslashes in header comment lines).
+val fixAidlGeneratedJava = tasks.register("fixAidlGeneratedJava") {
+    group = "build"
+    description = "Patch AIDL-generated .java files on Windows to escape backslashes in header comments."
+
+    doLast {
+        val genDir = layout.buildDirectory.dir("generated/aidl_source_output_dir").get().asFile
+        if (!genDir.exists()) {
+            println("fixAidlGeneratedJava: no generated AIDL dir at ${genDir.absolutePath}")
+            return@doLast
+        }
+
+        var patchedCount = 0
+        genDir.walkTopDown().filter { it.isFile && it.extension == "java" }.forEach { f ->
+            val text = f.readText(StandardCharsets.UTF_8)
+            var newText = text
+
+            // Escape backslashes on all comment lines
+            newText = newText.replace(Regex("(?m)^(\\s*\\*.*)$")) { m ->
+                m.value.replace("\\", "\\\\")
+            }
+
+            if (newText != text) {
+                f.writeText(newText, StandardCharsets.UTF_8)
+                println("fixAidlGeneratedJava: patched ${f.absolutePath}")
+                patchedCount++
+            }
+        }
+        println("fixAidlGeneratedJava: patched $patchedCount file(s).")
+    }
+}
+
+// Ensure fix runs after AIDL generation and before Java compilation:
+tasks.withType(JavaCompile::class.java).configureEach {
+    dependsOn(fixAidlGeneratedJava)
+}
+fixAidlGeneratedJava.configure {
+    dependsOn(
+        "compileBusinessReleaseAidl", "compileWhatsappReleaseAidl",
+        "compileBusinessDebugAidl", "compileWhatsappDebugAidl"
+    )
 }
 
 kotlin {
