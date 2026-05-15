@@ -463,7 +463,8 @@ class FeatureLoader {
                 CallRecording::class.java,
                 BackupRestore::class.java,
                 RecoverDeleteForMe::class.java,
-                JumpFirstMessage::class.java
+                JumpFirstMessage::class.java,
+                com.wmods.wppenhacer.xposed.features.others.SoundBoard::class.java
             )
 
             XposedBridge.log("Loading Plugins")
