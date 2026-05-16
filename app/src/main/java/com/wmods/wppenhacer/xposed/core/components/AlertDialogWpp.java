@@ -162,6 +162,15 @@ public class AlertDialogWpp {
         return this;
     }
 
+    public AlertDialogWpp setCancelable(boolean cancelable) {
+        if (isSystemDialog()) {
+            mAlertDialog.setCancelable(cancelable);
+            return this;
+        }
+        XposedHelpers.callMethod(mAlertDialogWpp, "setCancelable", cancelable);
+        return this;
+    }
+
 
     public Dialog create() {
         if (mCreate != null) return mCreate;
