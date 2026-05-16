@@ -38,5 +38,16 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/advanced">
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="prop_overrides"
+            app:summary="@string/prop_overrides_sum"
+            app:title="@string/prop_overrides" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

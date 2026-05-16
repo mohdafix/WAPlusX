@@ -52,6 +52,19 @@ public class GeneralFragment extends BaseFragment {
             super.onResume();
             setDisplayHomeAsUpEnabled(false);
         }
+
+        @Override
+        public boolean onPreferenceTreeClick(@NonNull androidx.preference.Preference preference) {
+            if ("prop_overrides".equals(preference.getKey())) {
+                getParentFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(R.id.frag_container, new PropsFragment())
+                        .addToBackStack(null)
+                        .commit();
+                return true;
+            }
+            return super.onPreferenceTreeClick(preference);
+        }
     }
 
     public static class HomeGeneralPreference extends BasePreferenceFragment {
