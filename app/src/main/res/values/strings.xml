@@ -486,4 +486,27 @@
     <string name="soundboard_dialog_title">MyInstants Soundboard</string>
     <string name="soundboard_sent">Sound sent!</string>
     <string name="soundboard_play_error">Error playing sound</string>
+
+    <string name="advanced">Advanced</string>
+
+    <string name="unlock_premium">Unlock Premium</string>
+    <string name="unlock_premium_sum">Unlocks hidden beta features within the WhatsApp APK.</string>
+
+    <string name="native_igstatus">Native IGStatus</string>
+    <string name="native_igstatus_sum">Enable WhatsApp native Instagram-style status bar (ID 25327)</string>
+
+    <!-- Prop Overrides (Abprop) -->
+    <string name="prop_overrides">Prop Overrides</string>
+    <string name="prop_overrides_sum">Manually override WhatsApp AB Properties (Experimental flags)</string>
+    <string name="prop_id">Property ID</string>
+    <string name="prop_description">Description (Optional)</string>
+    <string name="prop_value">Value</string>
+    <string name="prop_add">Add Override</string>
+    <string name="prop_edit">Edit Override</string>
+    <string name="prop_delete">Delete Override</string>
+    <string name="prop_export">Export Overrides</string>
+    <string name="prop_import">Import Overrides</string>
+    <string name="prop_type_boolean">Boolean</string>
+    <string name="prop_type_integer">Integer</string>
+
 </resources>

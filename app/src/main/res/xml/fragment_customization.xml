@@ -219,6 +219,11 @@
             app:title="@string/old_statuses" />
 
         <rikka.material.preference.MaterialSwitchPreference
+            app:key="native_igstatus"
+            app:summary="@string/native_igstatus_sum"
+            app:title="@string/native_igstatus" />
+
+        <rikka.material.preference.MaterialSwitchPreference
             app:key="statuscomposer"
             app:summary="@string/custom_colors_for_text_status_sum"
             app:title="@string/custom_colors_for_text_status" />

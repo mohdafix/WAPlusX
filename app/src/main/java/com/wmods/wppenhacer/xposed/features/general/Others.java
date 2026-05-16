@@ -89,7 +89,10 @@ public class Others extends Feature {
 
         propsBoolean.put(4497, menuWIcons);
         propsBoolean.put(4023, false);
+        propsBoolean.put(4921, newSettings);
         propsBoolean.put(14862, newSettings);
+        propsBoolean.put(23289, newSettings);
+        propsBoolean.put(18726, newSettings);
         propsInteger.put(18564, newSettings ? 1 : 0);
 
         propsBoolean.put(2889, floatingMenu);
@@ -131,9 +134,15 @@ public class Others extends Feature {
         propsBoolean.put(12495, animationEmojis);
         propsBoolean.put(11066, animationEmojis);
 
+        var nativeIgStatus = prefs.getBoolean("native_igstatus", false);
+
         propsBoolean.put(7589, true);  // Media select quality
         propsBoolean.put(6972, false); // Media select quality
         propsBoolean.put(5625, true);  // Enable option to autodelete channels media
+
+        if (nativeIgStatus) {
+            propsBoolean.put(25327, true);
+        }
 
         propsBoolean.put(8643, true);  // Enable TextStatusComposerActivityV2
 //        propsBoolean.put(3403, true);  // Enable Sticker Suggestion
