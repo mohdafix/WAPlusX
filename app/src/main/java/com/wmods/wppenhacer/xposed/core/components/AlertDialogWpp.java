@@ -52,7 +52,6 @@ public class AlertDialogWpp {
 
     public AlertDialogWpp(Context context) {
         mContext = context;
-        XposedBridge.log("[AlertDialogWpp] Constructor called with context: " + (context != null ? context.getClass().getName() : "null"));
         if (!isSystemDialog()) {
             try {
                 mAlertDialogWpp = getAlertDialog.invoke(null, context);
@@ -60,10 +59,10 @@ public class AlertDialogWpp {
                 setMessage(null);
                 return;
             } catch (Exception e) {
+                // Keep failure log for debugging
                 XposedBridge.log("[AlertDialogWpp] Failed to create MaterialAlertDialog: " + e.getMessage());
             }
         }
-        XposedBridge.log("[AlertDialogWpp] Falling back to System AlertDialog.Builder");
         mAlertDialog = new AlertDialog.Builder(context);
         mAlertDialogWpp = null;
     }
@@ -214,14 +213,11 @@ public class AlertDialogWpp {
             activity.runOnUiThread(() -> {
                 try {
                     if (activity.isFinishing() || activity.isDestroyed()) {
-                        XposedBridge.log("[AlertDialogWpp] Activity is finishing/destroyed, cannot show dialog");
                         return;
                     }
                     if (mAlertDialogWpp == null) {
-                        XposedBridge.log("[AlertDialogWpp] Showing System Dialog");
                         mAlertDialog.show();
                     } else {
-                        XposedBridge.log("[AlertDialogWpp] Showing Material Dialog");
                         create().show();
                     }
                 } catch (Exception e) {
@@ -230,8 +226,6 @@ public class AlertDialogWpp {
                     Toast.makeText(mContext, "Dialog Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
-        } else {
-            XposedBridge.log("[AlertDialogWpp] Non-activity context, cannot show dialog safely");
         }
     }
 

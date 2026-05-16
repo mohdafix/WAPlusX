@@ -77,6 +77,21 @@ public class TagMessage extends Feature {
         }
     }
 
+    private boolean shouldShowDialog(Intent intent) {
+        Bundle messageKeys = intent.getBundleExtra("message_keys");
+        if (messageKeys != null) {
+            boolean[] fromMeArray = messageKeys.getBooleanArray("fMessageKeyFromMeArray");
+            if (fromMeArray != null) {
+                for (boolean fromMe : fromMeArray) {
+                    if (!fromMe) return true; // Found a message from someone else
+                }
+                logDebug("All messages are from me, skipping dialog");
+                return false; // All messages are from me
+            }
+        }
+        return true; // Fallback to showing dialog if we can't determine
+    }
+
     private void handleForwardDialog(XC_MethodHook.MethodHookParam param) {
         Intent intent = (Intent) param.args[0];
         if (intent == null) return;
@@ -84,6 +99,11 @@ public class TagMessage extends Feature {
         Bundle extras = intent.getExtras();
         if (extras == null || extras.getBoolean("bypass_forward", false)
                 || !extras.getBoolean("forward", false)) return;
+
+        if (!shouldShowDialog(intent)) {
+            // Proceed without dialog
+            return;
+        }
 
         param.setResult(null);
         Activity activity = (Activity) param.thisObject;
