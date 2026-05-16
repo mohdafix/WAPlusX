@@ -541,4 +541,17 @@
 
     <string name="hide_forward_ask">Hide the forwarding label?</string>
     <string name="msg_hide_the_forwarding_label">Hide the forwarding label?</string>
+    <string name="groups">Groups</string>
+    <string name="favorites">Favorites</string>
+    <string name="separate_group">Separate Groups</string>
+    <string name="separate_favorites">Separate Favorites</string>
+    <string name="separate_favorites_sum">Show a dedicated tab for favorite chats in the bottom navigation</string>
+    <string name="bottom_navigation_settings">Bottom Navigation Settings</string>
+    <string name="bottom_navigation_settings_sum">Customize bottom navigation tabs and order</string>
+    <string name="bottom_bar_mode">Bottom bar label mode</string>
+    <string name="bottom_navigation_drag_hint">Drag to reorder tabs</string>
+    <string name="bottom_navigation_restart_hint">Changes require a restart to apply correctly</string>
+    <string name="bottom_navigation_tab_visibility">Toggle tab visibility</string>
+    <string name="bottom_navigation_tab_chats_locked">Main chats tab cannot be hidden</string>
+    <string name="bottom_navigation_tab_updates_locked">Updates tab is locked in this configuration</string>
 </resources>

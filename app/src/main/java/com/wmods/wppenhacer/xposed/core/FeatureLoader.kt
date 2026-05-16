@@ -25,6 +25,7 @@ import com.wmods.wppenhacer.xposed.core.components.SharedPreferencesWrapper
 import com.wmods.wppenhacer.xposed.core.components.WaContactWpp
 import com.wmods.wppenhacer.xposed.core.devkit.Unobfuscator
 import com.wmods.wppenhacer.xposed.core.devkit.UnobfuscatorCache
+import com.wmods.wppenhacer.xposed.core.db.DatabaseObserver
 import com.wmods.wppenhacer.xposed.features.customization.BubbleColors
 import com.wmods.wppenhacer.xposed.features.customization.ContactBlockedVerify
 import com.wmods.wppenhacer.xposed.features.customization.CustomThemeV2
@@ -33,7 +34,6 @@ import com.wmods.wppenhacer.xposed.features.customization.CustomToolbar
 import com.wmods.wppenhacer.xposed.features.customization.CustomView
 import com.wmods.wppenhacer.xposed.features.customization.FilterGroups
 import com.wmods.wppenhacer.xposed.features.customization.HideSeenView
-import com.wmods.wppenhacer.xposed.features.customization.HideTabs
 import com.wmods.wppenhacer.xposed.features.customization.IGStatus
 import com.wmods.wppenhacer.xposed.features.customization.SeparateGroup
 import com.wmods.wppenhacer.xposed.features.customization.ShowOnline
@@ -271,6 +271,7 @@ class FeatureLoader {
             WppCore.Initialize(loader, pref)
             DesignUtils.setPrefs(pref)
             Utils.init(loader, pref)
+            DatabaseObserver.init(loader)
 
             WppCore.addListenerActivity(object : WppCore.ActivityChangeState {
                 override fun onChange(
@@ -433,7 +434,6 @@ class FeatureLoader {
                 HideSeen::class.java,
                 HideSeenView::class.java,
                 TagMessage::class.java,
-                HideTabs::class.java,
                 IGStatus::class.java,
                 LiteMode::class.java,
                 MediaQuality::class.java,

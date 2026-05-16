@@ -80,12 +80,10 @@
             app:showSeekBarValue="true"
             app:title="@string/navigation_transparency" />
 
-        <MultiSelectListPreference
-            app:entries="@array/tabshide_contents"
-            app:entryValues="@array/tabshide_values"
-            app:key="hidetabs"
-            app:summary="@string/hide_tabs_on_home_sum"
-            app:title="@string/hide_tabs_on_home" />
+        <Preference
+            app:key="bottom_navigation_settings"
+            app:summary="@string/bottom_navigation_settings_sum"
+            app:title="@string/bottom_navigation_settings" />
 
         <rikka.material.preference.MaterialSwitchPreference
             android:defaultValue="true"

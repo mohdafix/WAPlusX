@@ -111,6 +111,11 @@
             android:parentActivityName=".activities.DeletedMessagesActivity" />
 
         <activity
+            android:name=".activities.BottomNavigationSettingsActivity"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".activities.MainActivity" />
+
+        <activity
             android:name=".activities.ForceStartActivity"
             android:excludeFromRecents="true"
             android:exported="true"

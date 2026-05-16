@@ -412,6 +412,17 @@ public class Unobfuscator {
         });
     }
 
+    public synchronized static Method loadJidGetRawStringMethod(ClassLoader loader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+            var jidClass = findFirstClassUsingName(loader, StringMatchType.EndsWith, "jid.Jid");
+            var method = ReflectionUtils.findMethodUsingFilter(jidClass, m ->
+                    m.getParameterCount() == 0 && m.getReturnType() == String.class &&
+                            !m.getName().equals("toString") && !m.getName().equals("hashCode"));
+            if (method == null) return jidClass.getMethod("getRawString");
+            return method;
+        });
+    }
+
     // TODO: Classes and Methods for XChatFilter
 
     public static Method loadTabListMethod(ClassLoader classLoader) throws Exception {

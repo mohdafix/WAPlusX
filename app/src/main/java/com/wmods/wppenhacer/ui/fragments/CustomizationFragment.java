@@ -16,6 +16,16 @@ public class CustomizationFragment extends BasePreferenceFragment {
     }
 
     @Override
+    public boolean onPreferenceTreeClick(@NonNull androidx.preference.Preference preference) {
+        if ("bottom_navigation_settings".equals(preference.getKey())) {
+            android.content.Intent intent = new android.content.Intent(getActivity(), com.wmods.wppenhacer.activities.BottomNavigationSettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onPreferenceTreeClick(preference);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         setDisplayHomeAsUpEnabled(false);

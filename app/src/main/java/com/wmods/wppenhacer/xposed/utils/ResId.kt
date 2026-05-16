@@ -798,6 +798,8 @@ object ResId {
         @JvmField var invalid_folder: Int = 0
         @JvmField var uri_permission: Int = 0
         @JvmField var ghost_mode: Int = 0
+        @JvmField var groups: Int = 0
+        @JvmField var favorites: Int = 0
         @JvmField var ghost_mode_message: Int = 0
         @JvmField var disable: Int = 0
         @JvmField var enable: Int = 0

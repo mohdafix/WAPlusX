@@ -13,30 +13,242 @@ import java.util.stream.Collectors
 class MessageStore private constructor() {
 
     private var sqLiteDatabase: SQLiteDatabase? = null
+    
+    @Volatile
+    private var favoriteJidsCache: MutableSet<String>? = null
+    private var lastFavoriteRefresh: Long = 0
 
     init {
-        val dbFile = File(Utils.getApplication().filesDir.parentFile, "/databases/msgstore.db")
-        if (dbFile.exists()) {
-            sqLiteDatabase = SQLiteDatabase.openDatabase(
-                dbFile.absolutePath,
-                null,
-                SQLiteDatabase.OPEN_READWRITE
-            )
+        initializeDatabase()
+    }
+
+    private fun initializeDatabase() {
+        Utils.getExecutor().execute {
+            synchronized(this) {
+                if (sqLiteDatabase?.isOpen == true) return@execute
+                
+                try {
+                    val dataDir = Utils.getApplication().filesDir.parentFile
+                    val dbFile = File(dataDir, "/databases/msgstore.db")
+                    
+                    if (dbFile.exists()) {
+                        sqLiteDatabase = SQLiteDatabase.openDatabase(
+                            dbFile.absolutePath, 
+                            null, 
+                            SQLiteDatabase.OPEN_READWRITE or SQLiteDatabase.NO_LOCALIZED_COLLATORS
+                        )
+                        
+                        try {
+                            sqLiteDatabase?.rawQuery("PRAGMA busy_timeout = 5000", null)?.close()
+                            sqLiteDatabase?.rawQuery("PRAGMA journal_mode = WAL", null)?.close()
+                        } catch (ignored: Throwable) {}
+
+                        // Trigger initial cache load
+                        getFavoriteJidsSync()
+                    }
+                } catch (e: Exception) {
+                    XposedBridge.log("MessageStore: Error initializing database: ${e.message}")
+                }
+            }
         }
     }
 
     companion object {
+        private const val FAVORITE_CACHE_TIMEOUT = 30000L // 30 seconds
+        
         @Volatile
         private var mInstance: MessageStore? = null
 
         @JvmStatic
         fun getInstance(): MessageStore {
-            return mInstance?.takeIf { it.sqLiteDatabase?.isOpen == true }
-                ?: synchronized(this) {
-                    mInstance?.takeIf { it.sqLiteDatabase?.isOpen == true }
-                        ?: MessageStore().also { mInstance = it }
-                }
+            return mInstance ?: synchronized(this) {
+                mInstance ?: MessageStore().also { mInstance = it }
+            }
         }
+    }
+
+    fun getFavoriteJids(): Set<String> {
+        val cache = favoriteJidsCache
+        val now = System.currentTimeMillis()
+        if (cache != null && (now - lastFavoriteRefresh < FAVORITE_CACHE_TIMEOUT)) {
+            return HashSet(cache)
+        }
+        
+        if (cache == null) {
+            val persistent = loadFavoritesFromPrefs()
+            if (persistent.isNotEmpty()) {
+                favoriteJidsCache = HashSet(persistent)
+                lastFavoriteRefresh = now
+                return HashSet(persistent)
+            }
+        }
+        
+        Utils.getExecutor().execute { getFavoriteJidsSync() }
+        return cache?.let { HashSet(it) } ?: HashSet()
+    }
+
+    @Synchronized
+    fun getFavoriteJidsSync(): Set<String> {
+        val now = System.currentTimeMillis()
+        val cache = favoriteJidsCache
+        if (cache != null && (now - lastFavoriteRefresh < FAVORITE_CACHE_TIMEOUT)) {
+            return HashSet(cache)
+        }
+
+        val result = HashSet<String>()
+        val db = sqLiteDatabase ?: return cache?.let { HashSet(it) } ?: result
+        if (!db.isOpen) return cache?.let { HashSet(it) } ?: result
+
+        try {
+            // Standard WhatsApp favorite table
+            db.rawQuery("SELECT jid.raw_string AS raw_jid FROM favorite INNER JOIN jid ON jid._id = favorite.jid_row_id", null).use { cursor ->
+                while (cursor.moveToNext()) {
+                    normalizeJid(cursor.getString(0))?.let { result.add(it) }
+                }
+            }
+        } catch (ignored: Exception) {}
+
+        expandWithLids(result)
+
+        if (result.isEmpty()) {
+            val commonTableNames = arrayOf("favorite", "favourite", "starred_jids", "favorite_contacts", "favourite_contacts")
+            for (tName in commonTableNames) {
+                if (tableExists(tName)) {
+                    collectFavoriteJidsFromJoin(result, tName)
+                    collectFavoriteJidsFromSimpleTable(result, tName)
+                }
+            }
+        }
+
+        if (result.isNotEmpty()) {
+            favoriteJidsCache = HashSet(result)
+            lastFavoriteRefresh = System.currentTimeMillis()
+            saveFavoritesToPrefs(result)
+        }
+        return result
+    }
+
+    private fun normalizeJid(jid: String?): String? {
+        if (jid == null) return null
+        val normalized = jid.trim().lowercase(java.util.Locale.US)
+        if (normalized.isEmpty()) return null
+        return normalized.replaceFirst("\\.[\\d:]+@".toRegex(), "@")
+    }
+
+    private fun tableExists(tableName: String): Boolean {
+        val db = sqLiteDatabase ?: return false
+        return try {
+            db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND lower(name)=lower(?) LIMIT 1", arrayOf(tableName)).use { cursor ->
+                cursor.moveToFirst()
+            }
+        } catch (e: Exception) { false }
+    }
+
+    private fun collectFavoriteJidsFromJoin(output: MutableSet<String>, favoriteTableName: String) {
+        val db = sqLiteDatabase ?: return
+        val cols = getTableColumns(favoriteTableName)
+        val joinCol = when {
+            cols.contains("jid_row_id") -> "jid_row_id"
+            cols.contains("jid_id") -> "jid_id"
+            cols.contains("jid") -> "jid"
+            else -> null
+        }
+
+        if (joinCol != null) {
+            try {
+                db.rawQuery("SELECT jid.raw_string, jid.user, jid.server FROM $favoriteTableName f JOIN jid ON f.$joinCol = jid._id", null).use { cursor ->
+                    collectFavoriteJidsFromCursor(cursor, output)
+                }
+            } catch (ignored: Exception) {}
+        }
+    }
+
+    private fun collectFavoriteJidsFromSimpleTable(output: MutableSet<String>, tableName: String) {
+        val db = sqLiteDatabase ?: return
+        val cols = getTableColumns(tableName)
+        val jidCol = when {
+            cols.contains("jid") -> "jid"
+            cols.contains("raw_string") -> "raw_string"
+            cols.contains("user_jid") -> "user_jid"
+            cols.contains("address") -> "address"
+            else -> null
+        } ?: return
+
+        try {
+            db.rawQuery("SELECT $jidCol FROM $tableName", null).use { cursor ->
+                while (cursor.moveToNext()) {
+                    normalizeJid(cursor.getString(0))?.let { output.add(it) }
+                }
+            }
+        } catch (ignored: Exception) {}
+    }
+
+    private fun collectFavoriteJidsFromCursor(cursor: Cursor?, output: MutableSet<String>) {
+        if (cursor == null) return
+        val rawIndex = cursor.getColumnIndex("raw_string")
+        val userIndex = cursor.getColumnIndex("user")
+        val serverIndex = cursor.getColumnIndex("server")
+        while (cursor.moveToNext()) {
+            var jid = if (rawIndex >= 0) cursor.getString(rawIndex) else null
+            if (jid.isNullOrEmpty() && userIndex >= 0 && serverIndex >= 0) {
+                val user = cursor.getString(userIndex)
+                val server = cursor.getString(serverIndex)
+                if (!user.isNullOrEmpty() && !server.isNullOrEmpty()) jid = "$user@$server"
+            }
+            normalizeJid(jid)?.let { output.add(it) }
+        }
+    }
+
+    private fun getTableColumns(tableName: String): Set<String> {
+        val columns = HashSet<String>()
+        val db = sqLiteDatabase ?: return columns
+        try {
+            db.rawQuery("PRAGMA table_info($tableName)", null).use { cursor ->
+                val nameIndex = cursor.getColumnIndex("name")
+                while (cursor.moveToNext()) {
+                    if (nameIndex >= 0) cursor.getString(nameIndex)?.let { columns.add(it.lowercase(java.util.Locale.US)) }
+                }
+            }
+        } catch (ignored: Exception) {}
+        return columns
+    }
+
+    private fun expandWithLids(jids: MutableSet<String>) {
+        if (jids.isEmpty()) return
+        try {
+            val repo = com.wmods.wppenhacer.xposed.core.WppCore.getWaJidMapRepository()
+            val conv = com.wmods.wppenhacer.xposed.core.WppCore.getConvertJidToLidMethod() ?: return
+            
+            val lids = HashSet<String>()
+            for (jid in jids) {
+                if (jid.endsWith("@s.whatsapp.net")) {
+                    try {
+                        val userJid = com.wmods.wppenhacer.xposed.core.WppCore.createUserJid(jid)
+                        val lidJid = conv.invoke(repo, userJid)
+                        if (lidJid != null) {
+                            val lidRaw = lidJid.toString()
+                            lids.add(lidRaw)
+                            if (lidRaw.contains("@")) lids.add(lidRaw.split("@")[0])
+                        }
+                    } catch (ignored: Throwable) {}
+                }
+            }
+            if (lids.isNotEmpty()) jids.addAll(lids)
+        } catch (ignored: Throwable) {}
+    }
+
+    private fun saveFavoritesToPrefs(jids: Set<String>) {
+        try {
+            Utils.getApplication().getSharedPreferences("wae_favorites_cache", android.content.Context.MODE_PRIVATE)
+                .edit().putStringSet("jids", jids).apply()
+        } catch (ignored: Throwable) {}
+    }
+
+    private fun loadFavoritesFromPrefs(): Set<String> {
+        return try {
+            Utils.getApplication().getSharedPreferences("wae_favorites_cache", android.content.Context.MODE_PRIVATE)
+                .getStringSet("jids", HashSet()) ?: HashSet()
+        } catch (ignored: Throwable) { HashSet() }
     }
 
     fun getMessageById(id: Long): String {

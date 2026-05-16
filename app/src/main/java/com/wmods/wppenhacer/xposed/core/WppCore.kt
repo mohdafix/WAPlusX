@@ -759,6 +759,12 @@ object WppCore {
     }
 
 
+    @JvmStatic
+    fun getWaJidMapRepository(): Any? = mWaJidMapRepository
+
+    @JvmStatic
+    fun getConvertJidToLidMethod(): Method? = convertJidToLid
+
     interface ActivityChangeState {
         fun onChange(activity: Activity, type: ChangeType)
 
