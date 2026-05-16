@@ -52,6 +52,7 @@ public class AlertDialogWpp {
 
     public AlertDialogWpp(Context context) {
         mContext = context;
+        XposedBridge.log("[AlertDialogWpp] Constructor called with context: " + (context != null ? context.getClass().getName() : "null"));
         if (!isSystemDialog()) {
             try {
                 mAlertDialogWpp = getAlertDialog.invoke(null, context);
@@ -85,11 +86,16 @@ public class AlertDialogWpp {
     }
 
     public AlertDialogWpp setTitle(int title) {
+        if (title == 0) return this;
         if (mAlertDialogWpp == null) {
             mAlertDialog.setTitle(title);
             return this;
         }
-        XposedHelpers.callMethod(mAlertDialogWpp, "setTitle", getContext().getString(title));
+        try {
+            XposedHelpers.callMethod(mAlertDialogWpp, "setTitle", getContext().getString(title));
+        } catch (Exception e) {
+            XposedBridge.log("[AlertDialogWpp] Failed to set title: " + e.getMessage());
+        }
         return this;
     }
 
@@ -131,6 +137,11 @@ public class AlertDialogWpp {
         return this;
     }
 
+    public AlertDialogWpp setNegativeButton(int text, DialogInterface.OnClickListener listener) {
+        if (text == 0) return this;
+        return setNegativeButton(getContext().getString(text), listener);
+    }
+
     public AlertDialogWpp setNegativeButton(CharSequence text, DialogInterface.OnClickListener listener) {
         if (mAlertDialogWpp == null) {
             mAlertDialog.setNegativeButton(text, listener);
@@ -141,6 +152,11 @@ public class AlertDialogWpp {
         } catch (Exception ignored) {
         }
         return this;
+    }
+
+    public AlertDialogWpp setPositiveButton(int text, DialogInterface.OnClickListener listener) {
+        if (text == 0) return this;
+        return setPositiveButton(getContext().getString(text), listener);
     }
 
     public AlertDialogWpp setPositiveButton(CharSequence text, DialogInterface.OnClickListener listener) {
@@ -164,15 +180,15 @@ public class AlertDialogWpp {
         return this;
     }
 
+    private boolean mCancelable = true;
+
     public AlertDialogWpp setCancelable(boolean cancelable) {
+        this.mCancelable = cancelable;
         if (mAlertDialogWpp == null) {
             mAlertDialog.setCancelable(cancelable);
-            return this;
         }
-        XposedHelpers.callMethod(mAlertDialogWpp, "setCancelable", cancelable);
         return this;
     }
-
 
     public Dialog create() {
         if (mCreate != null) return mCreate;
@@ -180,6 +196,9 @@ public class AlertDialogWpp {
             mCreate = mAlertDialog.create();
         } else {
             mCreate = (Dialog) XposedHelpers.callMethod(mAlertDialogWpp, "create");
+        }
+        if (!mCancelable) {
+            mCreate.setCancelable(false);
         }
         return mCreate;
     }
@@ -192,15 +211,28 @@ public class AlertDialogWpp {
     public void show() {
         if (mContext instanceof Activity) {
             Activity activity = (Activity) mContext;
-            if (activity.isFinishing() || activity.isDestroyed()) {
-                return;
-            }
+            activity.runOnUiThread(() -> {
+                try {
+                    if (activity.isFinishing() || activity.isDestroyed()) {
+                        XposedBridge.log("[AlertDialogWpp] Activity is finishing/destroyed, cannot show dialog");
+                        return;
+                    }
+                    if (mAlertDialogWpp == null) {
+                        XposedBridge.log("[AlertDialogWpp] Showing System Dialog");
+                        mAlertDialog.show();
+                    } else {
+                        XposedBridge.log("[AlertDialogWpp] Showing Material Dialog");
+                        create().show();
+                    }
+                } catch (Exception e) {
+                    XposedBridge.log("[AlertDialogWpp] Error showing dialog: " + e.getMessage());
+                    // Final fallback to Toast if dialog fails
+                    Toast.makeText(mContext, "Dialog Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            XposedBridge.log("[AlertDialogWpp] Non-activity context, cannot show dialog safely");
         }
-        if (mAlertDialogWpp == null) {
-            mAlertDialog.show();
-            return;
-        }
-        create().show();
     }
 
 }

@@ -30,82 +30,10 @@ import com.wmods.wppenhacer.xposed.core.components.AlertDialogWpp;
 import com.wmods.wppenhacer.xposed.utils.ResId;
 
 public class TagMessage extends Feature {
+    private static final java.util.concurrent.atomic.AtomicBoolean pendingForwardHide = new java.util.concurrent.atomic.AtomicBoolean(false);
+
     public TagMessage(ClassLoader loader, XSharedPreferences preferences) {
         super(loader, preferences);
-    }
-
-    @Override
-    public void doHook() throws Exception {
-
-        Method method = Unobfuscator.loadForwardTagMethod(classLoader);
-        logDebug(Unobfuscator.getMethodDescriptor(method));
-        Class<?> forwardClass = Unobfuscator.loadForwardClassMethod(classLoader);
-        logDebug("ForwardClass: " + forwardClass.getName());
-
-        XposedBridge.hookMethod(method, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                String mode = getHideTagMode();
-                if (mode.equals("disabled")) return;
-
-                if (mode.equals("all") || (mode.equals("dialog") && WppCore.getPrivBoolean("forward", false))) {
-                    var arg = (long) param.args[0];
-                    if (arg == 1) {
-                        if (ReflectionUtils.isCalledFromClass(forwardClass)) {
-                            logDebug("Hiding forward tag (mode: " + mode + ")");
-                            param.args[0] = 0L;
-                        }
-                    }
-                }
-            }
-        });
-
-        XposedHelpers.findAndHookMethod(Activity.class, "startActivityForResult", Intent.class, int.class, Bundle.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                String mode = getHideTagMode();
-                if (!mode.equals("dialog")) return;
-
-                var intent = (Intent) param.args[0];
-                if (intent == null) return;
-                var activity = (Activity) param.thisObject;
-                var requestCode = (int) param.args[1];
-                var options = (Bundle) param.args[2];
-
-                if (intent.getComponent() != null) {
-                    String className = intent.getComponent().getClassName();
-                    if (className.contains("ContactPicker") && !intent.getBooleanExtra("bypass_forward", false)) {
-                        logDebug("Intercepting forwarding to: " + className);
-                        param.setResult(null);
-
-                        var dialog = new AlertDialogWpp(activity);
-                        dialog.setTitle(activity.getString(ResId.string.hide_forward_ask));
-                        dialog.setMessage(activity.getString(ResId.string.msg_hide_the_forwarding_label));
-
-                        dialog.setPositiveButton(activity.getString(ResId.string.yes), (d, w) -> {
-                            logDebug("User chose YES");
-                            intent.putExtra("bypass_forward", true);
-                            WppCore.setPrivBoolean("forward", true);
-                            activity.startActivityForResult(intent, requestCode, options);
-                        });
-
-                        dialog.setNegativeButton(activity.getString(ResId.string.no), (d, w) -> {
-                            logDebug("User chose NO");
-                            intent.putExtra("bypass_forward", true);
-                            WppCore.removePrivKey("forward");
-                            activity.startActivityForResult(intent, requestCode, options);
-                        });
-
-                        dialog.setCancelable(true);
-                        dialog.show();
-                    }
-                }
-            }
-        });
-
-        if (prefs.getBoolean("broadcast_tag", false)) {
-            hookBroadcastView();
-        }
     }
 
     private String getHideTagMode() {
@@ -116,6 +44,85 @@ public class TagMessage extends Feature {
             return "all";
         }
         return "disabled";
+    }
+
+    @Override
+    public void doHook() throws Exception {
+        String mode = getHideTagMode();
+
+        if ("dialog".equals(mode)) {
+            hookStartActivityForResult();
+        }
+
+        Method loadForwardTagMethod = Unobfuscator.loadForwardTagMethod(this.classLoader);
+        final Class<?> loadForwardClassMethod = Unobfuscator.loadForwardClassMethod(this.classLoader);
+
+        XposedBridge.hookMethod(loadForwardTagMethod, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                if (((Long) param.args[0]).longValue() == 1
+                        && ReflectionUtils.isCalledFromClass(loadForwardClassMethod)) {
+                    String mode = getHideTagMode();
+                    if ("all".equals(mode)) {
+                        param.args[0] = 0L;
+                    } else if ("dialog".equals(mode) && pendingForwardHide.get()) {
+                        param.args[0] = 0L;
+                    }
+                }
+            }
+        });
+
+        if (this.prefs.getBoolean("broadcast_tag", false)) {
+            hookBroadcastView();
+        }
+    }
+
+    private void handleForwardDialog(XC_MethodHook.MethodHookParam param) {
+        Intent intent = (Intent) param.args[0];
+        if (intent == null) return;
+
+        Bundle extras = intent.getExtras();
+        if (extras == null || extras.getBoolean("bypass_forward", false)
+                || !extras.getBoolean("forward", false)) return;
+
+        param.setResult(null);
+        Activity activity = (Activity) param.thisObject;
+        int requestCode = (int) param.args[1];
+        Bundle options = param.args.length > 2 ? (Bundle) param.args[2] : null;
+
+        pendingForwardHide.set(false);
+
+        AlertDialogWpp dialog = new AlertDialogWpp(activity);
+        if (ResId.string.msg_hide_the_forwarding_label != 0) {
+            dialog.setMessage(activity.getString(ResId.string.msg_hide_the_forwarding_label));
+        } else {
+            dialog.setMessage("Do you want to hide the forwarding label?");
+        }
+
+        dialog.setPositiveButton(ResId.string.yes != 0 ? ResId.string.yes : android.R.string.yes, (d, w) -> {
+            intent.putExtra("bypass_forward", true);
+            pendingForwardHide.set(true);
+            activity.startActivityForResult(intent, requestCode, options);
+        });
+
+        dialog.setNegativeButton(ResId.string.no != 0 ? ResId.string.no : android.R.string.no, (d, w) -> {
+            intent.putExtra("bypass_forward", true);
+            pendingForwardHide.set(false);
+            activity.startActivityForResult(intent, requestCode, options);
+        });
+
+        dialog.show();
+    }
+
+    private void hookStartActivityForResult() {
+        XC_MethodHook hook = new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) {
+                handleForwardDialog(param);
+            }
+        };
+        XposedHelpers.findAndHookMethod(Activity.class, "startActivityForResult", Intent.class, int.class, hook);
+        XposedHelpers.findAndHookMethod(Activity.class, "startActivityForResult", Intent.class, int.class, Bundle.class, hook);
     }
 
     private void hookBroadcastView() throws Exception {
