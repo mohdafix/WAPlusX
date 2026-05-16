@@ -51,12 +51,14 @@ import com.wmods.wppenhacer.xposed.features.general.SeenTick
 import com.wmods.wppenhacer.xposed.features.general.ShareLimit
 import com.wmods.wppenhacer.xposed.features.general.ShowEditMessage
 import com.wmods.wppenhacer.xposed.features.general.Tasker
+import com.wmods.wppenhacer.xposed.features.general.UnlockPremium
 import com.wmods.wppenhacer.xposed.features.listeners.ContactItemListener
 import com.wmods.wppenhacer.xposed.features.listeners.ConversationItemListener
 import com.wmods.wppenhacer.xposed.features.listeners.MenuStatusListener
 import com.wmods.wppenhacer.xposed.features.media.CallRecording
 import com.wmods.wppenhacer.xposed.features.media.DownloadProfile
 import com.wmods.wppenhacer.xposed.features.media.DownloadViewOnce
+import com.wmods.wppenhacer.xposed.features.others.PropDebugger
 import com.wmods.wppenhacer.xposed.features.media.MediaPreview
 import com.wmods.wppenhacer.xposed.features.media.MediaQuality
 import com.wmods.wppenhacer.xposed.features.media.StatusDownload
@@ -466,7 +468,9 @@ class FeatureLoader {
                 BackupRestore::class.java,
                 RecoverDeleteForMe::class.java,
                 JumpFirstMessage::class.java,
-                com.wmods.wppenhacer.xposed.features.others.SoundBoard::class.java
+                com.wmods.wppenhacer.xposed.features.others.SoundBoard::class.java,
+                UnlockPremium::class.java,
+                PropDebugger::class.java
             )
 
             XposedBridge.log("Loading Plugins")

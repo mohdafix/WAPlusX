@@ -855,6 +855,15 @@ public class Unobfuscator {
         });
     }
 
+    public synchronized static Method loadPropsStringMethod(ClassLoader loader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+            var method = findFirstMethodUsingStrings(loader, StringMatchType.Contains, "Unknown StringField");
+            if (method == null)
+                throw new Exception("Props string method not found");
+            return method;
+        });
+    }
+
     private static ClassData loadAntiRevokeImplClass() throws Exception {
         var classes = dexkit
                 .findClass(new FindClass().matcher(new ClassMatcher().addUsingString("smb_eu_tos_update_url")));
