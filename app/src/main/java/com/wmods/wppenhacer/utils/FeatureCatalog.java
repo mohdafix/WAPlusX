@@ -500,6 +500,22 @@ public class FeatureCatalog {
                 "conversation",
                 Arrays.asList("soundboard", "sounds", "myinstants", "voice")));
 
+        catalog.add(new SearchableFeature("voice_changer_enabled",
+                context.getString(R.string.voice_changer_enabled),
+                context.getString(R.string.voice_changer_enabled_sum),
+                SearchableFeature.Category.GENERAL_CONVERSATION,
+                SearchableFeature.FragmentType.GENERAL,
+                "conversation",
+                Arrays.asList("voice", "changer", "effects", "audio")));
+
+        catalog.add(new SearchableFeature("voice_changer_effect",
+                context.getString(R.string.voice_changer_effect),
+                context.getString(R.string.voice_changer_effect_sum),
+                SearchableFeature.Category.GENERAL_CONVERSATION,
+                SearchableFeature.FragmentType.GENERAL,
+                "conversation",
+                Arrays.asList("voice", "effect", "select", "change")));
+
         catalog.add(new SearchableFeature("unlock_premium",
                 context.getString(R.string.unlock_premium),
                 context.getString(R.string.unlock_premium_sum),

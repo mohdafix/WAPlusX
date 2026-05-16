@@ -82,6 +82,12 @@ android {
             abiFilters.add("x86")
         }
 
+        externalNativeBuild {
+            cmake {
+                cppFlags += "-std=c++17"
+                arguments += "-DANDROID_STL=c++_shared"
+            }
+        }
     }
 
     packaging {
@@ -156,6 +162,12 @@ android {
         generatePalette = true
     }
 
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
 }
 
 // Task that patches generated AIDL .java files (escapes backslashes in header comment lines).

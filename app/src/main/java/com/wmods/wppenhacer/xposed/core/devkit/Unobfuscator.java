@@ -3047,4 +3047,34 @@ public class Unobfuscator {
             return results.get(0).getMethodInstance(loader);
         });
     }
+
+    public synchronized static Class<?> loadOpusRecorderClass(ClassLoader loader) throws Exception {
+        return UnobfuscatorCache.getInstance().getClass(loader, () -> {
+            var classList = dexkit.findClass(FindClass.create()
+                    .matcher(ClassMatcher.create()
+                            .addUsingString("OpusRecorder not closed before finalize")));
+
+            if (!classList.isEmpty()) {
+                return classList.get(0).getInstance(loader);
+            }
+
+            classList = dexkit.findClass(FindClass.create()
+                    .matcher(ClassMatcher.create()
+                            .className("com.whatsapp.infra.media.util.OpusRecorder", StringMatchType.Equals)));
+
+            if (!classList.isEmpty()) {
+                return classList.get(0).getInstance(loader);
+            }
+
+            var methodList = dexkit.findMethod(FindMethod.create()
+                    .matcher(MethodMatcher.create()
+                            .name("allocateNative")
+                            .paramTypes(String.class, null, null)));
+
+            if (!methodList.isEmpty()) {
+                return methodList.get(0).getMethodInstance(loader).getDeclaringClass();
+            }
+            return null;
+        });
+    }
 }

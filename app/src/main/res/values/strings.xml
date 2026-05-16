@@ -512,5 +512,31 @@
     <string name="swipe_conversation_action">Swipe Conversation Action</string>
     <string name="swipe_conversation_action_sum">Choose action for swiping left on a message bubble</string>
     <string name="swipe_conversation_message_not_editable">Message not editable</string>
+    <string name="voice_changer_enabled">Voice Changer</string>
+    <string name="voice_changer_enabled_sum">Apply voice effects to voice notes before sending</string>
+    <string name="voice_changer_effect">Voice Effect</string>
+    <string name="voice_changer_effect_sum">Select the voice effect to apply</string>
+    <string name="voice_changer_title">Voice Changer</string>
+    <string name="voice_changer_select_effect">Select Voice Effect</string>
+    <string name="voice_changer_effect_changed">Voice effect: %s</string>
+    <string name="voice_changer">Voice Changer</string>
+    <string name="voice_effect_disabled">Disabled</string>
+    <string name="voice_effect_baby">Baby</string>
+    <string name="voice_effect_teenager">Teenager</string>
+    <string name="voice_effect_deep">Deep</string>
+    <string name="voice_effect_robot">Robot</string>
+    <string name="voice_effect_drunk">Drunk</string>
+    <string name="voice_effect_fast">Fast</string>
+    <string name="voice_effect_slow_motion">Slow Motion</string>
+    <string name="voice_effect_underwater">Underwater</string>
+    <string name="voice_effect_fun">Fun</string>
+    <string name="voice_effect_optimus">Optimus</string>
+    <string name="voice_effect_minion">Minion</string>
+    <string name="voice_effect_bane">Bane</string>
+    <string name="voice_effect_female">Female</string>
+    <string name="voice_effect_male">Male</string>
+    <string name="voice_effect_s">Voice effect: %s</string>
+    <string name="voice_note_effect_s">Voice Note: %s effect</string>
+    <string name="voice_prefix">Voice: %s</string>
 
 </resources>

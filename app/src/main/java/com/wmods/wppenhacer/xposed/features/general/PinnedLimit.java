@@ -25,7 +25,6 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import lombok.Setter;
 
 public class PinnedLimit extends Feature {
 
@@ -135,8 +134,8 @@ public class PinnedLimit extends Feature {
     }
 
 
-    @Setter
     private static class PinnedLinkedHashMap<T> extends LinkedHashMap<T, T> {
+        public void setLimit(int limit) { this.limit = limit; }
 
         @Override
         public int size() {

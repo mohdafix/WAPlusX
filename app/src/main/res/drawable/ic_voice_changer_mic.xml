@@ -1,0 +1,57 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="58"
+    android:viewportHeight="58"
+    android:tint="#FFFFFF">
+
+    <!-- Microphone body -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M 22 12 C 22 8.7 24.7 6 28 6 L 28 6 C 31.3 6 34 8.7 34 12 L 34 30 C 34 33.3 31.3 36 28 36 L 28 36 C 24.7 36 22 33.3 22 30 Z" />
+
+    <!-- Microphone arc (holder) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M 16 28 C 16 34.6 21.4 40 28 40 C 34.6 40 40 34.6 40 28" />
+
+    <!-- Microphone stand -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:pathData="M 28 40 L 28 48" />
+
+    <!-- Microphone base -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:pathData="M 20 48 L 36 48" />
+
+    <!-- Large sparkle (top-right) - 4-pointed star -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 49 6 L 51 12 L 57 14 L 51 16 L 49 22 L 47 16 L 41 14 L 47 12 Z" />
+
+    <!-- Small sparkle (middle-right) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 55 26 L 56 29 L 59 30 L 56 31 L 55 34 L 54 31 L 51 30 L 54 29 Z" />
+
+    <!-- Tiny sparkle (top-middle) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 40 2 L 40.8 4.4 L 43 5 L 40.8 5.6 L 40 8 L 39.2 5.6 L 37 5 L 39.2 4.4 Z" />
+
+</vector>

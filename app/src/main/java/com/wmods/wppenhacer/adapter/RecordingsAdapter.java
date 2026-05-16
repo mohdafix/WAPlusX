@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import lombok.Setter;
 
 public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.ViewHolder> {
 
@@ -32,8 +31,11 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Vi
     private final OnRecordingActionListener listener;
     private boolean isSelectionMode = false;
     private final Set<Integer> selectedPositions = new HashSet<>();
-    @Setter
     private OnSelectionChangeListener selectionChangeListener;
+
+    public void setSelectionChangeListener(OnSelectionChangeListener selectionChangeListener) {
+        this.selectionChangeListener = selectionChangeListener;
+    }
 
     public interface OnRecordingActionListener {
         void onPlay(Recording recording);

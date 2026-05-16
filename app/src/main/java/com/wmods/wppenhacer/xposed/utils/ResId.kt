@@ -1,7 +1,5 @@
 package com.wmods.wppenhacer.xposed.utils
 
-import android.content.Context
-import android.util.Log
 import kotlin.jvm.JvmField
 
 object ResId {
@@ -28,9 +26,7 @@ object ResId {
         @JvmField var ic_check_circle: Int = 0
         @JvmField var ic_audio_speed: Int = 0
         @JvmField var ic_translator: Int = 0
-        @JvmField var ic_group_call: Int = 0
-        
-        // Ticks
+            // Tick Styles
         @JvmField var alien_message_got_read_receipt_from_target: Int = 0
         @JvmField var alien_message_got_read_receipt_from_target_onmedia: Int = 0
         @JvmField var alien_message_got_receipt_from_server: Int = 0
@@ -39,9 +35,712 @@ object ResId {
         @JvmField var alien_message_got_receipt_from_target_onmedia: Int = 0
         @JvmField var alien_message_unsent: Int = 0
         @JvmField var alien_message_unsent_onmedia: Int = 0
-        // ... (I'll truncate the ticks for now and add them later if needed, but I should probably include the common ones)
+        @JvmField var aran_message_got_read_receipt_from_target: Int = 0
+        @JvmField var aran_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var aran_message_got_receipt_from_server: Int = 0
+        @JvmField var aran_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var aran_message_got_receipt_from_target: Int = 0
+        @JvmField var aran_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var aran_message_unsent: Int = 0
+        @JvmField var aran_message_unsent_onmedia: Int = 0
+        @JvmField var allo_message_got_read_receipt_from_target: Int = 0
+        @JvmField var allo_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var allo_message_got_receipt_from_server: Int = 0
+        @JvmField var allo_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var allo_message_got_receipt_from_target: Int = 0
+        @JvmField var allo_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var allo_message_unsent: Int = 0
+        @JvmField var allo_message_unsent_onmedia: Int = 0
+        @JvmField var bbm_message_got_read_receipt_from_target: Int = 0
+        @JvmField var bbm_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var bbm_message_got_receipt_from_server: Int = 0
+        @JvmField var bbm_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var bbm_message_got_receipt_from_target: Int = 0
+        @JvmField var bbm_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var bbm_message_unsent: Int = 0
+        @JvmField var bbm_message_unsent_onmedia: Int = 0
+        @JvmField var google_message_got_read_receipt_from_target: Int = 0
+        @JvmField var google_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var google_message_got_receipt_from_server: Int = 0
+        @JvmField var google_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var google_message_got_receipt_from_target: Int = 0
+        @JvmField var google_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var google_message_unsent: Int = 0
+        @JvmField var google_message_unsent_onmedia: Int = 0
+        @JvmField var ios_message_got_read_receipt_from_target: Int = 0
+        @JvmField var ios_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var ios_message_got_receipt_from_server: Int = 0
+        @JvmField var ios_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var ios_message_got_receipt_from_target: Int = 0
+        @JvmField var ios_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var ios_message_unsent: Int = 0
+        @JvmField var ios_message_unsent_onmedia: Int = 0
+        @JvmField var joker_message_got_read_receipt_from_target: Int = 0
+        @JvmField var joker_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var joker_message_got_receipt_from_server: Int = 0
+        @JvmField var joker_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var joker_message_got_receipt_from_target: Int = 0
+        @JvmField var joker_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var joker_message_unsent: Int = 0
+        @JvmField var joker_message_unsent_onmedia: Int = 0
+        @JvmField var messenger_message_got_read_receipt_from_target: Int = 0
+        @JvmField var messenger_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var messenger_message_got_receipt_from_server: Int = 0
+        @JvmField var messenger_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var messenger_message_got_receipt_from_target: Int = 0
+        @JvmField var messenger_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var messenger_message_unsent: Int = 0
+        @JvmField var messenger_message_unsent_onmedia: Int = 0
+        @JvmField var minions_message_got_read_receipt_from_target: Int = 0
+        @JvmField var minions_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var minions_message_got_receipt_from_server: Int = 0
+        @JvmField var minions_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var minions_message_got_receipt_from_target: Int = 0
+        @JvmField var minions_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var minions_message_unsent: Int = 0
+        @JvmField var minions_message_unsent_onmedia: Int = 0
+        @JvmField var pacman_message_got_read_receipt_from_target: Int = 0
+        @JvmField var pacman_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var pacman_message_got_receipt_from_server: Int = 0
+        @JvmField var pacman_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var pacman_message_got_receipt_from_target: Int = 0
+        @JvmField var pacman_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var pacman_message_unsent: Int = 0
+        @JvmField var pacman_message_unsent_onmedia: Int = 0
+        @JvmField var twitter_message_got_read_receipt_from_target: Int = 0
+        @JvmField var twitter_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var twitter_message_got_receipt_from_server: Int = 0
+        @JvmField var twitter_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var twitter_message_got_receipt_from_target: Int = 0
+        @JvmField var twitter_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var twitter_message_unsent: Int = 0
+        @JvmField var twitter_message_unsent_onmedia: Int = 0
+        @JvmField var ab_message_got_read_receipt_from_target: Int = 0
+        @JvmField var ab_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var ab_message_got_receipt_from_server: Int = 0
+        @JvmField var ab_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var ab_message_got_receipt_from_target: Int = 0
+        @JvmField var ab_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var ab_message_unsent: Int = 0
+        @JvmField var ab_message_unsent_onmedia: Int = 0
+        @JvmField var bbm2_message_got_read_receipt_from_target: Int = 0
+        @JvmField var bbm2_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var bbm2_message_got_receipt_from_server: Int = 0
+        @JvmField var bbm2_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var bbm2_message_got_receipt_from_target: Int = 0
+        @JvmField var bbm2_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var bbm2_message_unsent: Int = 0
+        @JvmField var bbm2_message_unsent_onmedia: Int = 0
+        @JvmField var bpg_message_got_read_receipt_from_target: Int = 0
+        @JvmField var bpg_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var bpg_message_got_receipt_from_server: Int = 0
+        @JvmField var bpg_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var bpg_message_got_receipt_from_target: Int = 0
+        @JvmField var bpg_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var bpg_message_unsent: Int = 0
+        @JvmField var bpg_message_unsent_onmedia: Int = 0
+        @JvmField var circheck_message_got_read_receipt_from_target: Int = 0
+        @JvmField var circheck_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var circheck_message_got_receipt_from_server: Int = 0
+        @JvmField var circheck_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var circheck_message_got_receipt_from_target: Int = 0
+        @JvmField var circheck_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var circheck_message_unsent: Int = 0
+        @JvmField var circheck_message_unsent_onmedia: Int = 0
+        @JvmField var feet_message_got_read_receipt_from_target: Int = 0
+        @JvmField var feet_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var feet_message_got_receipt_from_server: Int = 0
+        @JvmField var feet_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var feet_message_got_receipt_from_target: Int = 0
+        @JvmField var feet_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var feet_message_unsent: Int = 0
+        @JvmField var feet_message_unsent_onmedia: Int = 0
+        @JvmField var gabface_message_got_read_receipt_from_target: Int = 0
+        @JvmField var gabface_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var gabface_message_got_receipt_from_server: Int = 0
+        @JvmField var gabface_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var gabface_message_got_receipt_from_target: Int = 0
+        @JvmField var gabface_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var gabface_message_unsent: Int = 0
+        @JvmField var gabface_message_unsent_onmedia: Int = 0
+        @JvmField var gabiflo_message_got_read_receipt_from_target: Int = 0
+        @JvmField var gabiflo_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var gabiflo_message_got_receipt_from_server: Int = 0
+        @JvmField var gabiflo_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var gabiflo_message_got_receipt_from_target: Int = 0
+        @JvmField var gabiflo_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var gabiflo_message_unsent: Int = 0
+        @JvmField var gabiflo_message_unsent_onmedia: Int = 0
+        @JvmField var gifcon_message_got_read_receipt_from_target: Int = 0
+        @JvmField var gifcon_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var gifcon_message_got_receipt_from_server: Int = 0
+        @JvmField var gifcon_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var gifcon_message_got_receipt_from_target: Int = 0
+        @JvmField var gifcon_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var gifcon_message_unsent: Int = 0
+        @JvmField var gifcon_message_unsent_onmedia: Int = 0
+        @JvmField var hd_message_got_read_receipt_from_target: Int = 0
+        @JvmField var hd_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var hd_message_got_receipt_from_server: Int = 0
+        @JvmField var hd_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var hd_message_got_receipt_from_target: Int = 0
+        @JvmField var hd_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var hd_message_unsent: Int = 0
+        @JvmField var hd_message_unsent_onmedia: Int = 0
+        @JvmField var heart_message_got_read_receipt_from_target: Int = 0
+        @JvmField var heart_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var heart_message_got_receipt_from_server: Int = 0
+        @JvmField var heart_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var heart_message_got_receipt_from_target: Int = 0
+        @JvmField var heart_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var heart_message_unsent: Int = 0
+        @JvmField var heart_message_unsent_onmedia: Int = 0
+        @JvmField var altcrayon_message_got_read_receipt_from_target: Int = 0
+        @JvmField var altcrayon_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var altcrayon_message_got_receipt_from_server: Int = 0
+        @JvmField var altcrayon_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var altcrayon_message_got_receipt_from_target: Int = 0
+        @JvmField var altcrayon_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var altcrayon_message_unsent: Int = 0
+        @JvmField var altcrayon_message_unsent_onmedia: Int = 0
+        @JvmField var altcrayonv2_message_got_read_receipt_from_target: Int = 0
+        @JvmField var altcrayonv2_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var altcrayonv2_message_got_receipt_from_server: Int = 0
+        @JvmField var altcrayonv2_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var altcrayonv2_message_got_receipt_from_target: Int = 0
+        @JvmField var altcrayonv2_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var altcrayonv2_message_unsent: Int = 0
+        @JvmField var altcrayonv2_message_unsent_onmedia: Int = 0
+        @JvmField var bar_message_got_read_receipt_from_target: Int = 0
+        @JvmField var bar_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var bar_message_got_receipt_from_server: Int = 0
+        @JvmField var bar_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var bar_message_got_receipt_from_target: Int = 0
+        @JvmField var bar_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var bar_message_unsent: Int = 0
+        @JvmField var bar_message_unsent_onmedia: Int = 0
+        @JvmField var bat_message_got_read_receipt_from_target: Int = 0
+        @JvmField var bat_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var bat_message_got_receipt_from_server: Int = 0
+        @JvmField var bat_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var bat_message_got_receipt_from_target: Int = 0
+        @JvmField var bat_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var bat_message_unsent: Int = 0
+        @JvmField var bat_message_unsent_onmedia: Int = 0
+        @JvmField var blend_message_got_read_receipt_from_target: Int = 0
+        @JvmField var blend_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var blend_message_got_receipt_from_server: Int = 0
+        @JvmField var blend_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var blend_message_got_receipt_from_target: Int = 0
+        @JvmField var blend_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var blend_message_unsent: Int = 0
+        @JvmField var blend_message_unsent_onmedia: Int = 0
+        @JvmField var bot_message_got_read_receipt_from_target: Int = 0
+        @JvmField var bot_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var bot_message_got_receipt_from_server: Int = 0
+        @JvmField var bot_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var bot_message_got_receipt_from_target: Int = 0
+        @JvmField var bot_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var bot_message_unsent: Int = 0
+        @JvmField var bot_message_unsent_onmedia: Int = 0
+        @JvmField var bwticks_message_got_read_receipt_from_target: Int = 0
+        @JvmField var bwticks_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var bwticks_message_got_receipt_from_server: Int = 0
+        @JvmField var bwticks_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var bwticks_message_got_receipt_from_target: Int = 0
+        @JvmField var bwticks_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var bwticks_message_unsent: Int = 0
+        @JvmField var bwticks_message_unsent_onmedia: Int = 0
+        @JvmField var circle_message_got_read_receipt_from_target: Int = 0
+        @JvmField var circle_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var circle_message_got_receipt_from_server: Int = 0
+        @JvmField var circle_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var circle_message_got_receipt_from_target: Int = 0
+        @JvmField var circle_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var circle_message_unsent: Int = 0
+        @JvmField var circle_message_unsent_onmedia: Int = 0
+        @JvmField var circle2_message_got_read_receipt_from_target: Int = 0
+        @JvmField var circle2_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var circle2_message_got_receipt_from_server: Int = 0
+        @JvmField var circle2_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var circle2_message_got_receipt_from_target: Int = 0
+        @JvmField var circle2_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var circle2_message_unsent: Int = 0
+        @JvmField var circle2_message_unsent_onmedia: Int = 0
+        @JvmField var circleprint_message_got_read_receipt_from_target: Int = 0
+        @JvmField var circleprint_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var circleprint_message_got_receipt_from_server: Int = 0
+        @JvmField var circleprint_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var circleprint_message_got_receipt_from_target: Int = 0
+        @JvmField var circleprint_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var circleprint_message_unsent: Int = 0
+        @JvmField var circleprint_message_unsent_onmedia: Int = 0
+        @JvmField var circles_message_got_read_receipt_from_target: Int = 0
+        @JvmField var circles_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var circles_message_got_receipt_from_server: Int = 0
+        @JvmField var circles_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var circles_message_got_receipt_from_target: Int = 0
+        @JvmField var circles_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var circles_message_unsent: Int = 0
+        @JvmField var circles_message_unsent_onmedia: Int = 0
+        @JvmField var coalfield_message_got_read_receipt_from_target: Int = 0
+        @JvmField var coalfield_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var coalfield_message_got_receipt_from_server: Int = 0
+        @JvmField var coalfield_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var coalfield_message_got_receipt_from_target: Int = 0
+        @JvmField var coalfield_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var coalfield_message_unsent: Int = 0
+        @JvmField var coalfield_message_unsent_onmedia: Int = 0
+        @JvmField var colorsimple_message_got_read_receipt_from_target: Int = 0
+        @JvmField var colorsimple_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var colorsimple_message_got_receipt_from_server: Int = 0
+        @JvmField var colorsimple_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var colorsimple_message_got_receipt_from_target: Int = 0
+        @JvmField var colorsimple_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var colorsimple_message_unsent: Int = 0
+        @JvmField var colorsimple_message_unsent_onmedia: Int = 0
+        @JvmField var ctoon_message_got_read_receipt_from_target: Int = 0
+        @JvmField var ctoon_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var ctoon_message_got_receipt_from_server: Int = 0
+        @JvmField var ctoon_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var ctoon_message_got_receipt_from_target: Int = 0
+        @JvmField var ctoon_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var ctoon_message_unsent: Int = 0
+        @JvmField var ctoon_message_unsent_onmedia: Int = 0
+        @JvmField var eclipsis_message_got_read_receipt_from_target: Int = 0
+        @JvmField var eclipsis_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var eclipsis_message_got_receipt_from_server: Int = 0
+        @JvmField var eclipsis_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var eclipsis_message_got_receipt_from_target: Int = 0
+        @JvmField var eclipsis_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var eclipsis_message_unsent: Int = 0
+        @JvmField var eclipsis_message_unsent_onmedia: Int = 0
+        @JvmField var face_message_got_read_receipt_from_target: Int = 0
+        @JvmField var face_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var face_message_got_receipt_from_server: Int = 0
+        @JvmField var face_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var face_message_got_receipt_from_target: Int = 0
+        @JvmField var face_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var face_message_unsent: Int = 0
+        @JvmField var face_message_unsent_onmedia: Int = 0
+        @JvmField var flatcircles_message_got_read_receipt_from_target: Int = 0
+        @JvmField var flatcircles_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var flatcircles_message_got_receipt_from_server: Int = 0
+        @JvmField var flatcircles_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var flatcircles_message_got_receipt_from_target: Int = 0
+        @JvmField var flatcircles_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var flatcircles_message_unsent: Int = 0
+        @JvmField var flatcircles_message_unsent_onmedia: Int = 0
+        @JvmField var flor_message_got_read_receipt_from_target: Int = 0
+        @JvmField var flor_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var flor_message_got_receipt_from_server: Int = 0
+        @JvmField var flor_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var flor_message_got_receipt_from_target: Int = 0
+        @JvmField var flor_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var flor_message_unsent: Int = 0
+        @JvmField var flor_message_unsent_onmedia: Int = 0
+        @JvmField var gabcircle_message_got_read_receipt_from_target: Int = 0
+        @JvmField var gabcircle_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var gabcircle_message_got_receipt_from_server: Int = 0
+        @JvmField var gabcircle_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var gabcircle_message_got_receipt_from_target: Int = 0
+        @JvmField var gabcircle_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var gabcircle_message_unsent: Int = 0
+        @JvmField var gabcircle_message_unsent_onmedia: Int = 0
+        @JvmField var googlev2_message_got_read_receipt_from_target: Int = 0
+        @JvmField var googlev2_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var googlev2_message_got_receipt_from_server: Int = 0
+        @JvmField var googlev2_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var googlev2_message_got_receipt_from_target: Int = 0
+        @JvmField var googlev2_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var googlev2_message_unsent: Int = 0
+        @JvmField var googlev2_message_unsent_onmedia: Int = 0
+        @JvmField var greentick_message_got_read_receipt_from_target: Int = 0
+        @JvmField var greentick_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var greentick_message_got_receipt_from_server: Int = 0
+        @JvmField var greentick_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var greentick_message_got_receipt_from_target: Int = 0
+        @JvmField var greentick_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var greentick_message_unsent: Int = 0
+        @JvmField var greentick_message_unsent_onmedia: Int = 0
+        @JvmField var grw_message_got_read_receipt_from_target: Int = 0
+        @JvmField var grw_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var grw_message_got_receipt_from_server: Int = 0
+        @JvmField var grw_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var grw_message_got_receipt_from_target: Int = 0
+        @JvmField var grw_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var grw_message_unsent: Int = 0
+        @JvmField var grw_message_unsent_onmedia: Int = 0
+        @JvmField var hike_message_got_read_receipt_from_target: Int = 0
+        @JvmField var hike_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var hike_message_got_receipt_from_server: Int = 0
+        @JvmField var hike_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var hike_message_got_receipt_from_target: Int = 0
+        @JvmField var hike_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var hike_message_unsent: Int = 0
+        @JvmField var hike_message_unsent_onmedia: Int = 0
+        @JvmField var icecream_message_got_read_receipt_from_target: Int = 0
+        @JvmField var icecream_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var icecream_message_got_receipt_from_server: Int = 0
+        @JvmField var icecream_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var icecream_message_got_receipt_from_target: Int = 0
+        @JvmField var icecream_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var icecream_message_unsent: Int = 0
+        @JvmField var icecream_message_unsent_onmedia: Int = 0
+        @JvmField var inbox_message_got_read_receipt_from_target: Int = 0
+        @JvmField var inbox_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var inbox_message_got_receipt_from_server: Int = 0
+        @JvmField var inbox_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var inbox_message_got_receipt_from_target: Int = 0
+        @JvmField var inbox_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var inbox_message_unsent: Int = 0
+        @JvmField var inbox_message_unsent_onmedia: Int = 0
+        @JvmField var insect_message_got_read_receipt_from_target: Int = 0
+        @JvmField var insect_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var insect_message_got_receipt_from_server: Int = 0
+        @JvmField var insect_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var insect_message_got_receipt_from_target: Int = 0
+        @JvmField var insect_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var insect_message_unsent: Int = 0
+        @JvmField var insect_message_unsent_onmedia: Int = 0
+        @JvmField var ios2_message_got_read_receipt_from_target: Int = 0
+        @JvmField var ios2_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var ios2_message_got_receipt_from_server: Int = 0
+        @JvmField var ios2_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var ios2_message_got_receipt_from_target: Int = 0
+        @JvmField var ios2_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var ios2_message_unsent: Int = 0
+        @JvmField var ios2_message_unsent_onmedia: Int = 0
+        @JvmField var jalopy_message_got_read_receipt_from_target: Int = 0
+        @JvmField var jalopy_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var jalopy_message_got_receipt_from_server: Int = 0
+        @JvmField var jalopy_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var jalopy_message_got_receipt_from_target: Int = 0
+        @JvmField var jalopy_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var jalopy_message_unsent: Int = 0
+        @JvmField var jalopy_message_unsent_onmedia: Int = 0
+        @JvmField var jessy_message_got_read_receipt_from_target: Int = 0
+        @JvmField var jessy_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var jessy_message_got_receipt_from_server: Int = 0
+        @JvmField var jessy_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var jessy_message_got_receipt_from_target: Int = 0
+        @JvmField var jessy_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var jessy_message_unsent: Int = 0
+        @JvmField var jessy_message_unsent_onmedia: Int = 0
+        @JvmField var joaquins_message_got_read_receipt_from_target: Int = 0
+        @JvmField var joaquins_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var joaquins_message_got_receipt_from_server: Int = 0
+        @JvmField var joaquins_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var joaquins_message_got_receipt_from_target: Int = 0
+        @JvmField var joaquins_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var joaquins_message_unsent: Int = 0
+        @JvmField var joaquins_message_unsent_onmedia: Int = 0
+        @JvmField var kitty_message_got_read_receipt_from_target: Int = 0
+        @JvmField var kitty_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var kitty_message_got_receipt_from_server: Int = 0
+        @JvmField var kitty_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var kitty_message_got_receipt_from_target: Int = 0
+        @JvmField var kitty_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var kitty_message_unsent: Int = 0
+        @JvmField var kitty_message_unsent_onmedia: Int = 0
+        @JvmField var letter_message_got_read_receipt_from_target: Int = 0
+        @JvmField var letter_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var letter_message_got_receipt_from_server: Int = 0
+        @JvmField var letter_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var letter_message_got_receipt_from_target: Int = 0
+        @JvmField var letter_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var letter_message_unsent: Int = 0
+        @JvmField var letter_message_unsent_onmedia: Int = 0
+        @JvmField var lettercircle_message_got_read_receipt_from_target: Int = 0
+        @JvmField var lettercircle_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var lettercircle_message_got_receipt_from_server: Int = 0
+        @JvmField var lettercircle_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var lettercircle_message_got_receipt_from_target: Int = 0
+        @JvmField var lettercircle_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var lettercircle_message_unsent: Int = 0
+        @JvmField var lettercircle_message_unsent_onmedia: Int = 0
+        @JvmField var like_message_got_read_receipt_from_target: Int = 0
+        @JvmField var like_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var like_message_got_receipt_from_server: Int = 0
+        @JvmField var like_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var like_message_got_receipt_from_target: Int = 0
+        @JvmField var like_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var like_message_unsent: Int = 0
+        @JvmField var like_message_unsent_onmedia: Int = 0
+        @JvmField var love_message_got_read_receipt_from_target: Int = 0
+        @JvmField var love_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var love_message_got_receipt_from_server: Int = 0
+        @JvmField var love_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var love_message_got_receipt_from_target: Int = 0
+        @JvmField var love_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var love_message_unsent: Int = 0
+        @JvmField var love_message_unsent_onmedia: Int = 0
+        @JvmField var material_message_got_read_receipt_from_target: Int = 0
+        @JvmField var material_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var material_message_got_receipt_from_server: Int = 0
+        @JvmField var material_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var material_message_got_receipt_from_target: Int = 0
+        @JvmField var material_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var material_message_unsent: Int = 0
+        @JvmField var material_message_unsent_onmedia: Int = 0
+        @JvmField var materialv2_message_got_read_receipt_from_target: Int = 0
+        @JvmField var materialv2_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var materialv2_message_got_receipt_from_server: Int = 0
+        @JvmField var materialv2_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var materialv2_message_got_receipt_from_target: Int = 0
+        @JvmField var materialv2_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var materialv2_message_unsent: Int = 0
+        @JvmField var materialv2_message_unsent_onmedia: Int = 0
+        @JvmField var mickeyhands_message_got_read_receipt_from_target: Int = 0
+        @JvmField var mickeyhands_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var mickeyhands_message_got_receipt_from_server: Int = 0
+        @JvmField var mickeyhands_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var mickeyhands_message_got_receipt_from_target: Int = 0
+        @JvmField var mickeyhands_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var mickeyhands_message_unsent: Int = 0
+        @JvmField var mickeyhands_message_unsent_onmedia: Int = 0
+        @JvmField var newwaca_message_got_read_receipt_from_target: Int = 0
+        @JvmField var newwaca_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var newwaca_message_got_receipt_from_server: Int = 0
+        @JvmField var newwaca_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var newwaca_message_got_receipt_from_target: Int = 0
+        @JvmField var newwaca_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var newwaca_message_unsent: Int = 0
+        @JvmField var newwaca_message_unsent_onmedia: Int = 0
+        @JvmField var ney_message_got_read_receipt_from_target: Int = 0
+        @JvmField var ney_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var ney_message_got_receipt_from_server: Int = 0
+        @JvmField var ney_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var ney_message_got_receipt_from_target: Int = 0
+        @JvmField var ney_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var ney_message_unsent: Int = 0
+        @JvmField var ney_message_unsent_onmedia: Int = 0
+        @JvmField var nh_message_got_read_receipt_from_target: Int = 0
+        @JvmField var nh_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var nh_message_got_receipt_from_server: Int = 0
+        @JvmField var nh_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var nh_message_got_receipt_from_target: Int = 0
+        @JvmField var nh_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var nh_message_unsent: Int = 0
+        @JvmField var nh_message_unsent_onmedia: Int = 0
+        @JvmField var nhsc_message_got_read_receipt_from_target: Int = 0
+        @JvmField var nhsc_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var nhsc_message_got_receipt_from_server: Int = 0
+        @JvmField var nhsc_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var nhsc_message_got_receipt_from_target: Int = 0
+        @JvmField var nhsc_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var nhsc_message_unsent: Int = 0
+        @JvmField var nhsc_message_unsent_onmedia: Int = 0
+        @JvmField var nlmod2_message_got_read_receipt_from_target: Int = 0
+        @JvmField var nlmod2_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var nlmod2_message_got_receipt_from_server: Int = 0
+        @JvmField var nlmod2_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var nlmod2_message_got_receipt_from_target: Int = 0
+        @JvmField var nlmod2_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var nlmod2_message_unsent: Int = 0
+        @JvmField var nlmod2_message_unsent_onmedia: Int = 0
+        @JvmField var oldwaca_message_got_read_receipt_from_target: Int = 0
+        @JvmField var oldwaca_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var oldwaca_message_got_receipt_from_server: Int = 0
+        @JvmField var oldwaca_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var oldwaca_message_got_receipt_from_target: Int = 0
+        @JvmField var oldwaca_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var oldwaca_message_unsent: Int = 0
+        @JvmField var oldwaca_message_unsent_onmedia: Int = 0
+        @JvmField var oldwamd_message_got_read_receipt_from_target: Int = 0
+        @JvmField var oldwamd_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var oldwamd_message_got_receipt_from_server: Int = 0
+        @JvmField var oldwamd_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var oldwamd_message_got_receipt_from_target: Int = 0
+        @JvmField var oldwamd_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var oldwamd_message_unsent: Int = 0
+        @JvmField var oldwamd_message_unsent_onmedia: Int = 0
+        @JvmField var pix_message_got_read_receipt_from_target: Int = 0
+        @JvmField var pix_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var pix_message_got_receipt_from_server: Int = 0
+        @JvmField var pix_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var pix_message_got_receipt_from_target: Int = 0
+        @JvmField var pix_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var pix_message_unsent: Int = 0
+        @JvmField var pix_message_unsent_onmedia: Int = 0
+        @JvmField var pointer_message_got_read_receipt_from_target: Int = 0
+        @JvmField var pointer_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var pointer_message_got_receipt_from_server: Int = 0
+        @JvmField var pointer_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var pointer_message_got_receipt_from_target: Int = 0
+        @JvmField var pointer_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var pointer_message_unsent: Int = 0
+        @JvmField var pointer_message_unsent_onmedia: Int = 0
+        @JvmField var pokemon_message_got_read_receipt_from_target: Int = 0
+        @JvmField var pokemon_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var pokemon_message_got_receipt_from_server: Int = 0
+        @JvmField var pokemon_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var pokemon_message_got_receipt_from_target: Int = 0
+        @JvmField var pokemon_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var pokemon_message_unsent: Int = 0
+        @JvmField var pokemon_message_unsent_onmedia: Int = 0
+        @JvmField var pony_message_got_read_receipt_from_target: Int = 0
+        @JvmField var pony_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var pony_message_got_receipt_from_server: Int = 0
+        @JvmField var pony_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var pony_message_got_receipt_from_target: Int = 0
+        @JvmField var pony_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var pony_message_unsent: Int = 0
+        @JvmField var pony_message_unsent_onmedia: Int = 0
+        @JvmField var quinn_message_got_read_receipt_from_target: Int = 0
+        @JvmField var quinn_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var quinn_message_got_receipt_from_server: Int = 0
+        @JvmField var quinn_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var quinn_message_got_receipt_from_target: Int = 0
+        @JvmField var quinn_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var quinn_message_unsent: Int = 0
+        @JvmField var quinn_message_unsent_onmedia: Int = 0
+        @JvmField var rcalo_message_got_read_receipt_from_target: Int = 0
+        @JvmField var rcalo_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var rcalo_message_got_receipt_from_server: Int = 0
+        @JvmField var rcalo_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var rcalo_message_got_receipt_from_target: Int = 0
+        @JvmField var rcalo_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var rcalo_message_unsent: Int = 0
+        @JvmField var rcalo_message_unsent_onmedia: Int = 0
+        @JvmField var rcios11_message_got_read_receipt_from_target: Int = 0
+        @JvmField var rcios11_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var rcios11_message_got_receipt_from_server: Int = 0
+        @JvmField var rcios11_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var rcios11_message_got_receipt_from_target: Int = 0
+        @JvmField var rcios11_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var rcios11_message_unsent: Int = 0
+        @JvmField var rcios11_message_unsent_onmedia: Int = 0
+        @JvmField var rctick_message_got_read_receipt_from_target: Int = 0
+        @JvmField var rctick_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var rctick_message_got_receipt_from_server: Int = 0
+        @JvmField var rctick_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var rctick_message_got_receipt_from_target: Int = 0
+        @JvmField var rctick_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var rctick_message_unsent: Int = 0
+        @JvmField var rctick_message_unsent_onmedia: Int = 0
+        @JvmField var sc_message_got_read_receipt_from_target: Int = 0
+        @JvmField var sc_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var sc_message_got_receipt_from_server: Int = 0
+        @JvmField var sc_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var sc_message_got_receipt_from_target: Int = 0
+        @JvmField var sc_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var sc_message_unsent: Int = 0
+        @JvmField var sc_message_unsent_onmedia: Int = 0
+        @JvmField var sdot_message_got_read_receipt_from_target: Int = 0
+        @JvmField var sdot_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var sdot_message_got_receipt_from_server: Int = 0
+        @JvmField var sdot_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var sdot_message_got_receipt_from_target: Int = 0
+        @JvmField var sdot_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var sdot_message_unsent: Int = 0
+        @JvmField var sdot_message_unsent_onmedia: Int = 0
+        @JvmField var seasons_message_got_read_receipt_from_target: Int = 0
+        @JvmField var seasons_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var seasons_message_got_receipt_from_server: Int = 0
+        @JvmField var seasons_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var seasons_message_got_receipt_from_target: Int = 0
+        @JvmField var seasons_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var seasons_message_unsent: Int = 0
+        @JvmField var seasons_message_unsent_onmedia: Int = 0
+        @JvmField var smail_message_got_read_receipt_from_target: Int = 0
+        @JvmField var smail_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var smail_message_got_receipt_from_server: Int = 0
+        @JvmField var smail_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var smail_message_got_receipt_from_target: Int = 0
+        @JvmField var smail_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var smail_message_unsent: Int = 0
+        @JvmField var smail_message_unsent_onmedia: Int = 0
+        @JvmField var star_message_got_read_receipt_from_target: Int = 0
+        @JvmField var star_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var star_message_got_receipt_from_server: Int = 0
+        @JvmField var star_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var star_message_got_receipt_from_target: Int = 0
+        @JvmField var star_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var star_message_unsent: Int = 0
+        @JvmField var star_message_unsent_onmedia: Int = 0
+        @JvmField var sticker_message_got_read_receipt_from_target: Int = 0
+        @JvmField var sticker_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var sticker_message_got_receipt_from_server: Int = 0
+        @JvmField var sticker_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var sticker_message_got_receipt_from_target: Int = 0
+        @JvmField var sticker_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var sticker_message_unsent: Int = 0
+        @JvmField var sticker_message_unsent_onmedia: Int = 0
+        @JvmField var stockorg_message_got_read_receipt_from_target: Int = 0
+        @JvmField var stockorg_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var stockorg_message_got_receipt_from_server: Int = 0
+        @JvmField var stockorg_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var stockorg_message_got_receipt_from_target: Int = 0
+        @JvmField var stockorg_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var stockorg_message_unsent: Int = 0
+        @JvmField var stockorg_message_unsent_onmedia: Int = 0
+        @JvmField var switchme_message_got_read_receipt_from_target: Int = 0
+        @JvmField var switchme_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var switchme_message_got_receipt_from_server: Int = 0
+        @JvmField var switchme_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var switchme_message_got_receipt_from_target: Int = 0
+        @JvmField var switchme_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var switchme_message_unsent: Int = 0
+        @JvmField var switchme_message_unsent_onmedia: Int = 0
+        @JvmField var tb_message_got_read_receipt_from_target: Int = 0
+        @JvmField var tb_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var tb_message_got_receipt_from_server: Int = 0
+        @JvmField var tb_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var tb_message_got_receipt_from_target: Int = 0
+        @JvmField var tb_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var tb_message_unsent: Int = 0
+        @JvmField var tb_message_unsent_onmedia: Int = 0
+        @JvmField var traffic_message_got_read_receipt_from_target: Int = 0
+        @JvmField var traffic_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var traffic_message_got_receipt_from_server: Int = 0
+        @JvmField var traffic_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var traffic_message_got_receipt_from_target: Int = 0
+        @JvmField var traffic_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var traffic_message_unsent: Int = 0
+        @JvmField var traffic_message_unsent_onmedia: Int = 0
+        @JvmField var treble_message_got_read_receipt_from_target: Int = 0
+        @JvmField var treble_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var treble_message_got_receipt_from_server: Int = 0
+        @JvmField var treble_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var treble_message_got_receipt_from_target: Int = 0
+        @JvmField var treble_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var treble_message_unsent: Int = 0
+        @JvmField var treble_message_unsent_onmedia: Int = 0
+        @JvmField var triangle_message_got_read_receipt_from_target: Int = 0
+        @JvmField var triangle_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var triangle_message_got_receipt_from_server: Int = 0
+        @JvmField var triangle_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var triangle_message_got_receipt_from_target: Int = 0
+        @JvmField var triangle_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var triangle_message_unsent: Int = 0
+        @JvmField var triangle_message_unsent_onmedia: Int = 0
+        @JvmField var vantcircle_message_got_read_receipt_from_target: Int = 0
+        @JvmField var vantcircle_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var vantcircle_message_got_receipt_from_server: Int = 0
+        @JvmField var vantcircle_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var vantcircle_message_got_receipt_from_target: Int = 0
+        @JvmField var vantcircle_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var vantcircle_message_unsent: Int = 0
+        @JvmField var vantcircle_message_unsent_onmedia: Int = 0
+        @JvmField var wbg_message_got_read_receipt_from_target: Int = 0
+        @JvmField var wbg_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var wbg_message_got_receipt_from_server: Int = 0
+        @JvmField var wbg_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var wbg_message_got_receipt_from_target: Int = 0
+        @JvmField var wbg_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var wbg_message_unsent: Int = 0
+        @JvmField var wbg_message_unsent_onmedia: Int = 0
+        @JvmField var x_message_got_read_receipt_from_target: Int = 0
+        @JvmField var x_message_got_read_receipt_from_target_onmedia: Int = 0
+        @JvmField var x_message_got_receipt_from_server: Int = 0
+        @JvmField var x_message_got_receipt_from_server_onmedia: Int = 0
+        @JvmField var x_message_got_receipt_from_target: Int = 0
+        @JvmField var x_message_got_receipt_from_target_onmedia: Int = 0
+        @JvmField var x_message_unsent: Int = 0
+        @JvmField var x_message_unsent_onmedia: Int = 0
+        @JvmField var ic_group_call: Int = 0
     }
-
     object string {
         @JvmField var edited_history: Int = 0
         @JvmField var dnd_message: Int = 0
@@ -183,6 +882,7 @@ object ResId {
         @JvmField var soundboard_dialog_title: Int = 0
         @JvmField var soundboard_sent: Int = 0
         @JvmField var soundboard_play_error: Int = 0
+            // Scheduler & Call Recording
         @JvmField var schedule_message: Int = 0
         @JvmField var schedule_message_sum: Int = 0
         @JvmField var scheduler_msg_label: Int = 0
@@ -208,6 +908,7 @@ object ResId {
         @JvmField var select_at_least_one_date_msg: Int = 0
         @JvmField var no_future_dates_msg: Int = 0
         @JvmField var select_contacts_required: Int = 0
+            // Voice Changer
         @JvmField var voice_changer: Int = 0
         @JvmField var voice_effect_disabled: Int = 0
         @JvmField var voice_effect_baby: Int = 0
@@ -227,6 +928,7 @@ object ResId {
         @JvmField var voice_effect_s: Int = 0
         @JvmField var voice_note_effect_s: Int = 0
         @JvmField var voice_prefix: Int = 0
+            // Audio Transcript
         @JvmField var audio_file_not_found: Int = 0
         @JvmField var transcription_failed: Int = 0
         @JvmField var api_key_required: Int = 0
@@ -235,6 +937,7 @@ object ResId {
         @JvmField var failed_check_status: Int = 0
         @JvmField var transcription_error: Int = 0
         @JvmField var transcription_failed_short: Int = 0
+            // MenuHome Toasts
         @JvmField var ghost_mode_enabled: Int = 0
         @JvmField var ghost_mode_disabled: Int = 0
         @JvmField var dnd_mode_enabled: Int = 0
@@ -250,36 +953,13 @@ object ResId {
         @JvmField var call_blocking_type_sum: Int = 0
         @JvmField var force_backup_restore: Int = 0
         @JvmField var warning_restore: Int = 0
-        @JvmField var separate_groups_sum: Int = 0
-        @JvmField var separate_groups_unsupported_sum: Int = 0
-        @JvmField var waenhancer_settings: Int = 0
     }
-
     object array {
         @JvmField var supported_versions_wpp: Int = 0
         @JvmField var supported_versions_business: Int = 0
         @JvmField var call_type_buttons: Int = 0
         @JvmField var call_type_values: Int = 0
     }
-
-    object xml {
-        @JvmField var fragment_general: Int = 0
-        @JvmField var fragment_privacy: Int = 0
-        @JvmField var fragment_media: Int = 0
-        @JvmField var fragment_customization: Int = 0
-        @JvmField var embedded_settings_root: Int = 0
-        @JvmField var embedded_settings_general: Int = 0
-        @JvmField var embedded_settings_home_screen: Int = 0
-        @JvmField var embedded_settings_conversation: Int = 0
-        @JvmField var embedded_settings_privacy: Int = 0
-        @JvmField var embedded_settings_status: Int = 0
-        @JvmField var embedded_settings_calls: Int = 0
-        @JvmField var embedded_settings_media: Int = 0
-        @JvmField var embedded_settings_audio: Int = 0
-        @JvmField var embedded_settings_appearance: Int = 0
-        @JvmField var embedded_settings_advanced: Int = 0
-    }
-
     object id {
         @JvmField var date_wrapper: Int = 0
         @JvmField var date: Int = 0
@@ -287,60 +967,33 @@ object ResId {
         @JvmField var timestamp: Int = 0
         @JvmField var view_once_control_icon: Int = 0
     }
-    
-    object style {
-        @JvmField var Theme: Int = 0
-        @JvmField var Theme_Light: Int = 0
-    }
 
-    fun initLocal(context: Context) {
-        if (string.app_name != 0) return // Already initialized
+    @JvmStatic
+    fun initLocal(context: android.content.Context) {
+        fun loadFields(obj: Any, rClass: Class<*>) {
+            obj.javaClass.declaredFields.forEach { field ->
+                try {
+                    if (field.name != "INSTANCE") {
+                        val rField = rClass.getDeclaredField(field.name)
+                        rField.isAccessible = true
+                        val id = rField.getInt(null)
+                        if (id != 0) {
+                            field.isAccessible = true
+                            field.set(obj, id)
+                        }
+                    }
+                } catch (e: Exception) {
+                }
+            }
+        }
+
         try {
-            val packageName = "com.wmods.wppenhacer"
-            val rString = Class.forName("$packageName.R\$string")
-            for (field in string::class.java.fields) {
-                try {
-                    val rField = rString.getField(field.name)
-                    field.set(null, rField.getInt(null))
-                } catch (ignored: Exception) {}
-            }
-            val rDrawable = Class.forName("$packageName.R\$drawable")
-            for (field in drawable::class.java.fields) {
-                try {
-                    val rField = rDrawable.getField(field.name)
-                    field.set(null, rField.getInt(null))
-                } catch (ignored: Exception) {}
-            }
-            val rXml = Class.forName("$packageName.R\$xml")
-            for (field in xml::class.java.fields) {
-                try {
-                    val rField = rXml.getField(field.name)
-                    field.set(null, rField.getInt(null))
-                } catch (ignored: Exception) {}
-            }
-            val rStyle = Class.forName("$packageName.R\$style")
-            for (field in style::class.java.fields) {
-                try {
-                    val rField = rStyle.getField(field.name)
-                    field.set(null, rField.getInt(null))
-                } catch (ignored: Exception) {}
-            }
-            val rArray = Class.forName("$packageName.R\$array")
-            for (field in array::class.java.fields) {
-                try {
-                    val rField = rArray.getField(field.name)
-                    field.set(null, rField.getInt(null))
-                } catch (ignored: Exception) {}
-            }
-            val rId = Class.forName("$packageName.R\$id")
-            for (field in id::class.java.fields) {
-                try {
-                    val rField = rId.getField(field.name)
-                    field.set(null, rField.getInt(null))
-                } catch (ignored: Exception) {}
-            }
+            loadFields(drawable, com.wmods.wppenhacer.R.drawable::class.java)
+            loadFields(string, com.wmods.wppenhacer.R.string::class.java)
+            loadFields(array, com.wmods.wppenhacer.R.array::class.java)
+            loadFields(id, com.wmods.wppenhacer.R.id::class.java)
         } catch (e: Exception) {
-            Log.e("WAE", "Local ResId init failed: " + e.message)
+            de.robv.android.xposed.XposedBridge.log("ResId.initLocal error: ${e.message}")
         }
     }
 }

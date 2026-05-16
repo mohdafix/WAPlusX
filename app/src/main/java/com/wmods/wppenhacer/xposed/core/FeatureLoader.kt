@@ -76,6 +76,7 @@ import com.wmods.wppenhacer.xposed.features.others.MenuHome
 import com.wmods.wppenhacer.xposed.features.others.Stickers
 import com.wmods.wppenhacer.xposed.features.others.TextStatusComposer
 import com.wmods.wppenhacer.xposed.features.others.ToastViewer
+import com.wmods.wppenhacer.xposed.features.others.VoiceChanger
 import com.wmods.wppenhacer.xposed.features.privacy.AntiWa
 import com.wmods.wppenhacer.xposed.features.privacy.CallPrivacy
 import com.wmods.wppenhacer.xposed.features.privacy.CustomPrivacy
@@ -471,7 +472,8 @@ class FeatureLoader {
                 com.wmods.wppenhacer.xposed.features.others.SoundBoard::class.java,
                 UnlockPremium::class.java,
                 PropDebugger::class.java,
-                com.wmods.wppenhacer.xposed.features.others.SwipeConversation::class.java
+                com.wmods.wppenhacer.xposed.features.others.SwipeConversation::class.java,
+                VoiceChanger::class.java
             )
 
             XposedBridge.log("Loading Plugins")

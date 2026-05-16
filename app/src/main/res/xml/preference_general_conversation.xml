@@ -135,6 +135,19 @@
             app:summary="@string/unlock_premium_sum"
             app:title="@string/unlock_premium" />
 
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="voice_changer_enabled"
+            app:summary="@string/voice_changer_enabled_sum"
+            app:title="@string/voice_changer_enabled" />
+
+        <ListPreference
+            app:dependency="voice_changer_enabled"
+            app:entries="@array/voice_effect_entries"
+            app:entryValues="@array/voice_effect_values"
+            app:key="voice_changer_effect"
+            app:summary="@string/voice_changer_effect_sum"
+            app:title="@string/voice_changer_effect" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

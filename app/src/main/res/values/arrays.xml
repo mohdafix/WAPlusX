@@ -238,4 +238,40 @@
         <item>delete</item>
     </string-array>
 
+    <string-array name="voice_effect_entries">
+        <item>@string/voice_effect_disabled</item>
+        <item>@string/voice_effect_baby</item>
+        <item>@string/voice_effect_teenager</item>
+        <item>@string/voice_effect_deep</item>
+        <item>@string/voice_effect_robot</item>
+        <item>@string/voice_effect_drunk</item>
+        <item>@string/voice_effect_fast</item>
+        <item>@string/voice_effect_slow_motion</item>
+        <item>@string/voice_effect_underwater</item>
+        <item>@string/voice_effect_fun</item>
+        <item>@string/voice_effect_optimus</item>
+        <item>@string/voice_effect_minion</item>
+        <item>@string/voice_effect_bane</item>
+        <item>@string/voice_effect_female</item>
+        <item>@string/voice_effect_male</item>
+    </string-array>
+
+    <string-array name="voice_effect_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+    </string-array>
+
 </resources>

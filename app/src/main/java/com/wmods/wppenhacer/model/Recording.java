@@ -7,13 +7,16 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.Getter;
 
 /**
  * Model class representing a call recording with metadata.
  */
-@Getter
 public class Recording {
+    public File getFile() { return file; }
+    public String getContactName() { return contactName; }
+    public long getDuration() { return duration; }
+    public long getDate() { return date; }
+    public long getSize() { return size; }
 
     private final File file;
     private String contactName;

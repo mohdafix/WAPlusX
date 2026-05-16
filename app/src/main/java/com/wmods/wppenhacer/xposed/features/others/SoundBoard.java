@@ -133,10 +133,13 @@ public class SoundBoard extends Feature {
             return;
 
         String title = null;
-        try {
-            title = activity.getString(ResId.string.soundboard_title);
-        } catch (Throwable e) {
-            log("Failed to get title from ResId: " + e.getMessage());
+        int titleResId = ResId.string.soundboard_title;
+        if (titleResId != 0) {
+            try {
+                title = activity.getString(titleResId);
+            } catch (Throwable e) {
+                log("Failed to get title from ResId: " + e.getMessage());
+            }
         }
         
         if (title == null || title.isEmpty() || title.equals("0") || title.contains("ResId")) {
@@ -184,7 +187,14 @@ public class SoundBoard extends Feature {
     private void showSoundBoardDialog(Activity activity) {
         try {
             AlertDialogWpp dialog = new AlertDialogWpp(activity);
-            dialog.setTitle(activity.getString(ResId.string.soundboard_dialog_title));
+            String title = "Soundboard";
+            int titleId = ResId.string.soundboard_dialog_title;
+            if (titleId != 0) {
+                try {
+                    title = activity.getString(titleId);
+                } catch (Throwable ignored) {}
+            }
+            dialog.setTitle(title);
             // dialog.setBlur(true);
 
             LinearLayout root = new LinearLayout(activity);
@@ -194,7 +204,14 @@ public class SoundBoard extends Feature {
 
             // Search Bar
             EditText searchBar = new EditText(activity);
-            searchBar.setHint(activity.getString(ResId.string.soundboard_search_hint));
+            String hint = "Search...";
+            int hintId = ResId.string.soundboard_search_hint;
+            if (hintId != 0) {
+                try {
+                    hint = activity.getString(hintId);
+                } catch (Throwable ignored) {}
+            }
+            searchBar.setHint(hint);
             searchBar.setSingleLine(true);
             searchBar.setPadding(p / 2, p / 2, p / 2, p / 2);
             searchBar.setTextColor(DesignUtils.getPrimaryTextColor());
@@ -233,7 +250,14 @@ public class SoundBoard extends Feature {
             root.addView(listView, listLp);
 
             dialog.setView(root);
-            dialog.setNegativeButton(activity.getString(ResId.string.cancel), (d, w) -> stopPlayback());
+            String cancelText = "Cancel";
+            int cancelId = ResId.string.cancel;
+            if (cancelId != 0) {
+                try {
+                    cancelText = activity.getString(cancelId);
+                } catch (Throwable ignored) {}
+            }
+            dialog.setNegativeButton(cancelText, (d, w) -> stopPlayback());
             dialog.create().setOnDismissListener(d -> stopPlayback());
 
             searchBar.addTextChangedListener(new TextWatcher() {
@@ -388,7 +412,14 @@ public class SoundBoard extends Feature {
         } catch (IOException e) {
             currentPlayingUrl = null;
             if (adapter != null) adapter.notifyDataSetChanged();
-            Utils.showToast(Utils.getApplication().getString(ResId.string.soundboard_play_error), Toast.LENGTH_SHORT);
+            String error = "Playback error";
+            int errorId = ResId.string.soundboard_play_error;
+            if (errorId != 0) {
+                try {
+                    error = Utils.getApplication().getString(errorId);
+                } catch (Throwable ignored) {}
+            }
+            Utils.showToast(error, Toast.LENGTH_SHORT);
         }
     }
 
