@@ -154,6 +154,38 @@ public class FeatureCatalog {
                 "general_home",
                 Arrays.asList("tasker", "automation", "intent")));
 
+        catalog.add(new SearchableFeature("wae_color_mode",
+                context.getString(R.string.wae_color_mode),
+                null,
+                SearchableFeature.Category.GENERAL_HOME,
+                SearchableFeature.FragmentType.GENERAL,
+                "general_home",
+                Arrays.asList("color", "mode", "preset", "theme")));
+
+        catalog.add(new SearchableFeature("wae_color_preset",
+                context.getString(R.string.wae_color_preset),
+                null,
+                SearchableFeature.Category.GENERAL_HOME,
+                SearchableFeature.FragmentType.GENERAL,
+                "general_home",
+                Arrays.asList("color", "preset", "green", "blue", "theme")));
+
+        catalog.add(new SearchableFeature("bootloader_spoofer_custom",
+                "Enable Custom KeyBox",
+                context.getString(R.string.bootloader_spoofer_sum),
+                SearchableFeature.Category.GENERAL_HOME,
+                SearchableFeature.FragmentType.GENERAL,
+                "general_home",
+                Arrays.asList("bootloader", "spoofer", "custom", "keybox")));
+
+        catalog.add(new SearchableFeature("props_overrides",
+                context.getString(R.string.prop_overrides),
+                context.getString(R.string.prop_overrides_sum),
+                SearchableFeature.Category.ADVANCED,
+                SearchableFeature.FragmentType.GENERAL,
+                null,
+                Arrays.asList("props", "overrides", "debug", "features")));
+
         // GENERAL FRAGMENT - Homescreen sub-preferences
         catalog.add(new SearchableFeature("buttonaction",
                 context.getString(R.string.show_menu_buttons_as_icons),
@@ -451,6 +483,30 @@ public class FeatureCatalog {
                 SearchableFeature.FragmentType.GENERAL,
                 "conversation",
                 Arrays.asList("blocked", "contact", "verify")));
+
+        catalog.add(new SearchableFeature("jump_first_message",
+                context.getString(R.string.jump_first_message),
+                context.getString(R.string.jump_first_message_sum),
+                SearchableFeature.Category.GENERAL_CONVERSATION,
+                SearchableFeature.FragmentType.GENERAL,
+                "conversation",
+                Arrays.asList("jump", "first", "message", "skip")));
+
+        catalog.add(new SearchableFeature("soundboard_enabled",
+                context.getString(R.string.soundboard_title),
+                context.getString(R.string.soundboard_summary),
+                SearchableFeature.Category.GENERAL_CONVERSATION,
+                SearchableFeature.FragmentType.GENERAL,
+                "conversation",
+                Arrays.asList("soundboard", "sounds", "myinstants", "voice")));
+
+        catalog.add(new SearchableFeature("unlock_premium",
+                context.getString(R.string.unlock_premium),
+                context.getString(R.string.unlock_premium_sum),
+                SearchableFeature.Category.GENERAL_CONVERSATION,
+                SearchableFeature.FragmentType.GENERAL,
+                "conversation",
+                Arrays.asList("premium", "beta", "unlock", "hidden")));
 
         // GENERAL FRAGMENT - Status
         catalog.add(new SearchableFeature("autonext_status",
@@ -968,6 +1024,22 @@ public class FeatureCatalog {
                 SearchableFeature.FragmentType.CUSTOMIZATION,
                 null,
                 Arrays.asList("status", "composer", "colors", "text")));
+
+        catalog.add(new SearchableFeature("swipe_conversation_action",
+                context.getString(R.string.swipe_conversation_action),
+                context.getString(R.string.swipe_conversation_action_sum),
+                SearchableFeature.Category.CUSTOMIZATION,
+                SearchableFeature.FragmentType.CUSTOMIZATION,
+                null,
+                Arrays.asList("swipe", "conversation", "action", "delete", "edit", "info")));
+
+        catalog.add(new SearchableFeature("native_igstatus",
+                context.getString(R.string.native_igstatus),
+                context.getString(R.string.native_igstatus_sum),
+                SearchableFeature.Category.CUSTOMIZATION,
+                SearchableFeature.FragmentType.CUSTOMIZATION,
+                null,
+                Arrays.asList("native", "instagram", "status", "ig")));
     }
 
     private static void addHomeActions(Context context, List<SearchableFeature> catalog) {

@@ -20,6 +20,7 @@ public class SearchableFeature {
         MEDIA("Media"),
         CUSTOMIZATION("Customization"),
         RECORDINGS("Recordings"),
+        ADVANCED("Advanced"),
         HOME_ACTIONS("Home");
 
         private final String displayName;
