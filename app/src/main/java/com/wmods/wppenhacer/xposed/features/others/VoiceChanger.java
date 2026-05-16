@@ -150,8 +150,8 @@ public class VoiceChanger extends Feature {
         } else {
             currentEffect = Integer.parseInt(prefs.getString("voice_changer_effect", "0"));
         }
-        nativeSetEffect(currentEffect);
-        log("Voice Changer initialized with effect: " + currentEffect + " (" + getEffectName(currentEffect) + ")");
+        // nativeSetEffect(currentEffect);
+        // log("Voice Changer initialized with effect: " + currentEffect + " (" + getEffectName(currentEffect) + ")");
 
         hookOpusRecorder();
         hookConversationMenu();
@@ -405,8 +405,7 @@ public class VoiceChanger extends Feature {
                 if (param.args != null && param.args.length > 0 && param.args[0] instanceof String) {
                     currentRecordingPath = (String) param.args[0];
                     recordingProcessed = false;
-                    log("OpusRecorder created with path: " + currentRecordingPath);
-
+                    // log("OpusRecorder created with path: " + currentRecordingPath);
                 }
             }
         });
@@ -450,7 +449,7 @@ public class VoiceChanger extends Feature {
                                 try {
                                     processVoiceRecording(filePath);
                                 } catch (Exception e) {
-                                    log("Error processing voice recording: " + e.getMessage());
+                                    // log("Error processing voice recording: " + e.getMessage());
                                     XposedBridge.log(e);
                                 }
                             }
@@ -496,42 +495,42 @@ public class VoiceChanger extends Feature {
         // Step 1: Decode opus to PCM
         AudioData audioData = decodeOpusToPcm(opusFile);
         if (audioData == null || audioData.pcmData == null || audioData.pcmData.length == 0) {
-            log("Failed to decode opus file");
+            // log("Failed to decode opus file");
             return;
         }
         short[] pcmData = audioData.pcmData;
         int sampleRate = audioData.sampleRate;
-        log("Decoded " + pcmData.length + " PCM samples at " + sampleRate + "Hz");
+        // log("Decoded " + pcmData.length + " PCM samples at " + sampleRate + "Hz");
 
         // Step 2: Apply voice effect via native library
         short[] processedPcm = nativeProcessAudio(pcmData, sampleRate);
         if (processedPcm == null || processedPcm.length == 0) {
-            log("Voice processing returned empty result");
+            // log("Voice processing returned empty result");
             return;
         }
-        log("Processed " + processedPcm.length + " PCM samples");
+        // log("Processed " + processedPcm.length + " PCM samples");
 
         // Step 3: Encode PCM back to opus
         File tempFile = new File(opusFile.getParent(), "voice_processed_temp.opus");
         boolean encoded = encodePcmToOpus(processedPcm, 48000, tempFile);
         if (!encoded) {
-            log("Failed to encode processed audio");
+            // log("Failed to encode processed audio");
             return;
         }
-        log("Encoded to temp file: " + tempFile.getAbsolutePath() + " (" + tempFile.length() + " bytes)");
+        // log("Encoded to temp file: " + tempFile.getAbsolutePath() + " (" + tempFile.length() + " bytes)");
 
         // Step 4: Replace original file with processed file
         if (opusFile.delete() && tempFile.renameTo(opusFile)) {
-            log("Voice recording processed successfully! Replaced original file.");
+            // log("Voice recording processed successfully! Replaced original file.");
         } else {
-            log("Failed to replace original file");
+            // log("Failed to replace original file");
             // Try alternative: copy content
             try {
                 copyFile(tempFile, opusFile);
                 tempFile.delete();
-                log("Voice recording processed successfully (via copy)");
+                // log("Voice recording processed successfully (via copy)");
             } catch (Exception e) {
-                log("Failed to copy processed file: " + e.getMessage());
+                // log("Failed to copy processed file: " + e.getMessage());
                 tempFile.delete();
             }
         }
@@ -575,7 +574,7 @@ public class VoiceChanger extends Feature {
             for (int i = 0; i < extractor.getTrackCount(); i++) {
                 MediaFormat trackFormat = extractor.getTrackFormat(i);
                 String mime = trackFormat.getString(MediaFormat.KEY_MIME);
-                XposedBridge.log("WaEnhancer: Track " + i + " mime: " + mime);
+                // XposedBridge.log("WaEnhancer: Track " + i + " mime: " + mime);
                 if (mime != null && mime.startsWith("audio/")) {
                     audioTrackIndex = i;
                     format = trackFormat;
@@ -584,11 +583,11 @@ public class VoiceChanger extends Feature {
             }
 
             if (audioTrackIndex == -1 || format == null) {
-                XposedBridge.log("WaEnhancer: No audio track found in opus file");
+                // XposedBridge.log("WaEnhancer: No audio track found in opus file");
                 return null;
             }
 
-            XposedBridge.log("WaEnhancer: Found audio track: " + format.toString());
+            // XposedBridge.log("WaEnhancer: Found audio track: " + format.toString());
             extractor.selectTrack(audioTrackIndex);
 
             String mime = format.getString(MediaFormat.KEY_MIME);
