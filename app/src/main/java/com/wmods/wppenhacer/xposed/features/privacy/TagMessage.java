@@ -52,6 +52,7 @@ public class TagMessage extends Feature {
                     var arg = (long) param.args[0];
                     if (arg == 1) {
                         if (ReflectionUtils.isCalledFromClass(forwardClass)) {
+                            logDebug("Hiding forward tag (mode: " + mode + ")");
                             param.args[0] = 0L;
                         }
                     }
@@ -62,7 +63,8 @@ public class TagMessage extends Feature {
         XposedHelpers.findAndHookMethod(Activity.class, "startActivityForResult", Intent.class, int.class, Bundle.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (!getHideTagMode().equals("dialog")) return;
+                String mode = getHideTagMode();
+                if (!mode.equals("dialog")) return;
 
                 var intent = (Intent) param.args[0];
                 if (intent == null) return;
@@ -70,28 +72,33 @@ public class TagMessage extends Feature {
                 var requestCode = (int) param.args[1];
                 var options = (Bundle) param.args[2];
 
-                if (intent.getComponent() != null && intent.getComponent().getClassName().contains("ContactPicker") && !intent.getBooleanExtra("bypass_forward", false)) {
-                    param.setResult(null);
+                if (intent.getComponent() != null) {
+                    String className = intent.getComponent().getClassName();
+                    if (className.contains("ContactPicker") && !intent.getBooleanExtra("bypass_forward", false)) {
+                        logDebug("Intercepting forwarding to: " + className);
+                        param.setResult(null);
 
-                    var dialog = new AlertDialogWpp(activity);
-                    dialog.setTitle(activity.getString(ResId.string.hide_forward_ask));
-                    dialog.setMessage(activity.getString(ResId.string.msg_hide_the_forwarding_label));
+                        var dialog = new AlertDialogWpp(activity);
+                        dialog.setTitle(activity.getString(ResId.string.hide_forward_ask));
+                        dialog.setMessage(activity.getString(ResId.string.msg_hide_the_forwarding_label));
 
-                    dialog.setPositiveButton(activity.getString(ResId.string.yes), (d, w) -> {
-                        intent.putExtra("bypass_forward", true);
-                        WppCore.setPrivBoolean("forward", true);
-                        activity.startActivityForResult(intent, requestCode, options);
-                    });
+                        dialog.setPositiveButton(activity.getString(ResId.string.yes), (d, w) -> {
+                            logDebug("User chose YES");
+                            intent.putExtra("bypass_forward", true);
+                            WppCore.setPrivBoolean("forward", true);
+                            activity.startActivityForResult(intent, requestCode, options);
+                        });
 
-                    dialog.setNegativeButton(activity.getString(ResId.string.no), (d, w) -> {
-                        intent.putExtra("bypass_forward", true);
-                        WppCore.removePrivKey("forward");
-                        activity.startActivityForResult(intent, requestCode, options);
-                    });
+                        dialog.setNegativeButton(activity.getString(ResId.string.no), (d, w) -> {
+                            logDebug("User chose NO");
+                            intent.putExtra("bypass_forward", true);
+                            WppCore.removePrivKey("forward");
+                            activity.startActivityForResult(intent, requestCode, options);
+                        });
 
-
-                    dialog.setCancelable(true);
-                    dialog.show();
+                        dialog.setCancelable(true);
+                        dialog.show();
+                    }
                 }
             }
         });
@@ -102,10 +109,13 @@ public class TagMessage extends Feature {
     }
 
     private String getHideTagMode() {
+        if (prefs.contains("forward_tag")) {
+            return prefs.getString("forward_tag", "disabled");
+        }
         if (prefs.getBoolean("hidetag", false)) {
             return "all";
         }
-        return prefs.getString("forward_tag", "disabled");
+        return "disabled";
     }
 
     private void hookBroadcastView() throws Exception {

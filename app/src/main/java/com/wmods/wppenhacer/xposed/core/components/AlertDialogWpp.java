@@ -52,17 +52,19 @@ public class AlertDialogWpp {
 
     public AlertDialogWpp(Context context) {
         mContext = context;
-        if (isSystemDialog()) {
-            mAlertDialog = new AlertDialog.Builder(context);
-            return;
+        if (!isSystemDialog()) {
+            try {
+                mAlertDialogWpp = getAlertDialog.invoke(null, context);
+                // Remove Default Message
+                setMessage(null);
+                return;
+            } catch (Exception e) {
+                XposedBridge.log("[AlertDialogWpp] Failed to create MaterialAlertDialog: " + e.getMessage());
+            }
         }
-        try {
-            mAlertDialogWpp = getAlertDialog.invoke(null, context);
-            // Remove Default Message0
-            setMessage(null);
-        } catch (Exception ignored) {
-            throw new RuntimeException("Failed to create AlertDialogWpp");
-        }
+        XposedBridge.log("[AlertDialogWpp] Falling back to System AlertDialog.Builder");
+        mAlertDialog = new AlertDialog.Builder(context);
+        mAlertDialogWpp = null;
     }
 
     public Context getContext() {
@@ -74,7 +76,7 @@ public class AlertDialogWpp {
     }
 
     public AlertDialogWpp setTitle(String title) {
-        if (isSystemDialog()) {
+        if (mAlertDialogWpp == null) {
             mAlertDialog.setTitle(title);
             return this;
         }
@@ -83,7 +85,7 @@ public class AlertDialogWpp {
     }
 
     public AlertDialogWpp setTitle(int title) {
-        if (isSystemDialog()) {
+        if (mAlertDialogWpp == null) {
             mAlertDialog.setTitle(title);
             return this;
         }
@@ -92,7 +94,7 @@ public class AlertDialogWpp {
     }
 
     public AlertDialogWpp setMessage(CharSequence message) {
-        if (isSystemDialog()) {
+        if (mAlertDialogWpp == null) {
             mAlertDialog.setMessage(message);
             return this;
         }
@@ -104,7 +106,7 @@ public class AlertDialogWpp {
     }
 
     public AlertDialogWpp setItems(CharSequence[] items, DialogInterface.OnClickListener listener) {
-        if (isSystemDialog()) {
+        if (mAlertDialogWpp == null) {
             mAlertDialog.setItems(items, listener);
             return this;
         }
@@ -118,7 +120,7 @@ public class AlertDialogWpp {
 
 
     public AlertDialogWpp setMultiChoiceItems(CharSequence[] items, boolean[] checkedItems, DialogInterface.OnMultiChoiceClickListener listener) {
-        if (isSystemDialog()) {
+        if (mAlertDialogWpp == null) {
             mAlertDialog.setMultiChoiceItems(items, checkedItems, listener);
             return this;
         }
@@ -130,7 +132,7 @@ public class AlertDialogWpp {
     }
 
     public AlertDialogWpp setNegativeButton(CharSequence text, DialogInterface.OnClickListener listener) {
-        if (isSystemDialog()) {
+        if (mAlertDialogWpp == null) {
             mAlertDialog.setNegativeButton(text, listener);
             return this;
         }
@@ -142,7 +144,7 @@ public class AlertDialogWpp {
     }
 
     public AlertDialogWpp setPositiveButton(CharSequence text, DialogInterface.OnClickListener listener) {
-        if (isSystemDialog()) {
+        if (mAlertDialogWpp == null) {
             mAlertDialog.setPositiveButton(text, listener);
             return this;
         }
@@ -154,7 +156,7 @@ public class AlertDialogWpp {
     }
 
     public AlertDialogWpp setView(View view) {
-        if (isSystemDialog()) {
+        if (mAlertDialogWpp == null) {
             mAlertDialog.setView(view);
             return this;
         }
@@ -163,7 +165,7 @@ public class AlertDialogWpp {
     }
 
     public AlertDialogWpp setCancelable(boolean cancelable) {
-        if (isSystemDialog()) {
+        if (mAlertDialogWpp == null) {
             mAlertDialog.setCancelable(cancelable);
             return this;
         }
@@ -174,7 +176,7 @@ public class AlertDialogWpp {
 
     public Dialog create() {
         if (mCreate != null) return mCreate;
-        if (isSystemDialog()) {
+        if (mAlertDialogWpp == null) {
             mCreate = mAlertDialog.create();
         } else {
             mCreate = (Dialog) XposedHelpers.callMethod(mAlertDialogWpp, "create");
@@ -194,7 +196,7 @@ public class AlertDialogWpp {
                 return;
             }
         }
-        if (isSystemDialog()) {
+        if (mAlertDialogWpp == null) {
             mAlertDialog.show();
             return;
         }
