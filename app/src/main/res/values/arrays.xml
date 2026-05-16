@@ -274,4 +274,15 @@
         <item>14</item>
     </string-array>
 
+    <string-array name="forward_tag_entries">
+        <item>@string/antirevoke_buttons_desable</item>
+        <item>Always Hide</item>
+        <item>Ask before Hide</item>
+    </string-array>
+
+    <string-array name="forward_tag_values">
+        <item>disabled</item>
+        <item>all</item>
+        <item>dialog</item>
+    </string-array>
 </resources>

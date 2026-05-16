@@ -20,6 +20,14 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.wmods.wppenhacer.xposed.core.WppCore;
+import com.wmods.wppenhacer.xposed.core.components.AlertDialogWpp;
+import com.wmods.wppenhacer.xposed.utils.ResId;
 
 public class TagMessage extends Feature {
     public TagMessage(ClassLoader loader, XSharedPreferences preferences) {
@@ -37,12 +45,53 @@ public class TagMessage extends Feature {
         XposedBridge.hookMethod(method, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (!prefs.getBoolean("hidetag", false)) return;
-                var arg = (long) param.args[0];
-                if (arg == 1) {
-                    if (ReflectionUtils.isCalledFromClass(forwardClass)) {
-                        param.args[0] = 0;
+                String mode = getHideTagMode();
+                if (mode.equals("disabled")) return;
+
+                if (mode.equals("all") || (mode.equals("dialog") && WppCore.getPrivBoolean("forward", false))) {
+                    var arg = (long) param.args[0];
+                    if (arg == 1) {
+                        if (ReflectionUtils.isCalledFromClass(forwardClass)) {
+                            param.args[0] = 0L;
+                        }
                     }
+                }
+            }
+        });
+
+        XposedHelpers.findAndHookMethod(Activity.class, "startActivityForResult", Intent.class, int.class, Bundle.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                if (!getHideTagMode().equals("dialog")) return;
+
+                var intent = (Intent) param.args[0];
+                if (intent == null) return;
+                var activity = (Activity) param.thisObject;
+                var requestCode = (int) param.args[1];
+                var options = (Bundle) param.args[2];
+
+                if (intent.getComponent() != null && intent.getComponent().getClassName().contains("ContactPicker") && !intent.getBooleanExtra("bypass_forward", false)) {
+                    param.setResult(null);
+
+                    var dialog = new AlertDialogWpp(activity);
+                    dialog.setTitle(activity.getString(ResId.string.hide_forward_ask));
+                    dialog.setMessage(activity.getString(ResId.string.msg_hide_the_forwarding_label));
+
+                    dialog.setPositiveButton(activity.getString(ResId.string.yes), (d, w) -> {
+                        intent.putExtra("bypass_forward", true);
+                        WppCore.setPrivBoolean("forward", true);
+                        activity.startActivityForResult(intent, requestCode, options);
+                    });
+
+                    dialog.setNegativeButton(activity.getString(ResId.string.no), (d, w) -> {
+                        intent.putExtra("bypass_forward", true);
+                        WppCore.removePrivKey("forward");
+                        activity.startActivityForResult(intent, requestCode, options);
+                    });
+
+
+                    dialog.setCancelable(true);
+                    dialog.show();
                 }
             }
         });
@@ -50,6 +99,13 @@ public class TagMessage extends Feature {
         if (prefs.getBoolean("broadcast_tag", false)) {
             hookBroadcastView();
         }
+    }
+
+    private String getHideTagMode() {
+        if (prefs.getBoolean("hidetag", false)) {
+            return "all";
+        }
+        return prefs.getString("forward_tag", "disabled");
     }
 
     private void hookBroadcastView() throws Exception {

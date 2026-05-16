@@ -928,6 +928,7 @@ object ResId {
         @JvmField var voice_effect_s: Int = 0
         @JvmField var voice_note_effect_s: Int = 0
         @JvmField var voice_prefix: Int = 0
+        @JvmField var hide_forward_ask: Int = 0
             // Audio Transcript
         @JvmField var audio_file_not_found: Int = 0
         @JvmField var transcription_failed: Int = 0

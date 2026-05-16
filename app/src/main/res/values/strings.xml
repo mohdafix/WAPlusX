@@ -539,4 +539,6 @@
     <string name="voice_note_effect_s">Voice Note: %s effect</string>
     <string name="voice_prefix">Voice: %s</string>
 
+    <string name="hide_forward_ask">Hide the forwarding label?</string>
+    <string name="msg_hide_the_forwarding_label">Hide the forwarding label?</string>
 </resources>

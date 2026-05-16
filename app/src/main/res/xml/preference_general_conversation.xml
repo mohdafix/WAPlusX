@@ -55,8 +55,11 @@
             app:summary="@string/removeforwardlimit_sum"
             app:title="@string/removeforwardlimit" />
 
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="hidetag"
+        <ListPreference
+            app:defaultValue="disabled"
+            app:entries="@array/forward_tag_entries"
+            app:entryValues="@array/forward_tag_values"
+            app:key="forward_tag"
             app:summary="@string/hidetag_sum"
             app:title="@string/hidetag" />
 
