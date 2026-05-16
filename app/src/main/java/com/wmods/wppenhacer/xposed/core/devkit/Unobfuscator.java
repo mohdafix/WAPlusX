@@ -2899,4 +2899,152 @@ public class Unobfuscator {
             return findFirstClassUsingStrings(classLoader, StringMatchType.Contains, "KeyValue{key=");
         });
     }
+    public synchronized static Method loadConversationSwipeMethod(ClassLoader classLoader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(classLoader, () -> {
+            var candidates = dexkit.findMethod(FindMethod.create()
+                    .matcher(MethodMatcher.create()
+                            .addUsingString("swipetoreply/vibrate", StringMatchType.Contains)));
+            if (!candidates.isEmpty()) {
+                return candidates.get(0).getMethodInstance(classLoader);
+            }
+            throw new NoSuchMethodException("ConversationSwipe method not found");
+        });
+    }
+
+    public synchronized static HashMap<String, Field> loadConversationSwipeFields(ClassLoader classLoader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMapField(classLoader, () -> {
+            var method = loadConversationSwipeMethod(classLoader);
+            if (method == null)
+                return new HashMap<>();
+            var methodData = dexkit.getMethodData(method);
+            var usingFields = methodData.getUsingFields();
+            String methodClassName = method.getDeclaringClass().getName();
+            HashMap<String, Field> intFieldMap = new HashMap<>();
+            HashMap<String, Field> viewFieldMap = new HashMap<>();
+            for (var usingField : usingFields) {
+                try {
+                    var fieldData = usingField.getField();
+                    if (!fieldData.getClassName().equals(methodClassName)) {
+                        continue;
+                    }
+                    var field = fieldData.getFieldInstance(classLoader);
+                    Class<?> type = field.getType();
+                    if (type == int.class) {
+                        int size = intFieldMap.size();
+                        if (size == 0) {
+                            intFieldMap.put("state", field);
+                        } else if (size == 1) {
+                            intFieldMap.put("downX", field);
+                        } else if (size == 2) {
+                            intFieldMap.put("slop", field);
+                        }
+                    } else if (View.class.isAssignableFrom(type)) {
+                        viewFieldMap.put("bubbleView", field);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+            HashMap<String, Field> result = new HashMap<>(intFieldMap);
+            result.putAll(viewFieldMap);
+            return result;
+        });
+    }
+
+    public synchronized static Method loadCheckIsEditableMethod(ClassLoader classLoader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(classLoader, () -> {
+            try {
+                var methods = dexkit.findMethod(FindMethod.create()
+                        .matcher(MethodMatcher.create()
+                                .addUsingNumber(3272)
+                                .returnType(boolean.class)));
+                if (!methods.isEmpty()) {
+                    return methods.get(0).getMethodInstance(classLoader);
+                }
+            } catch (Exception ignored) {
+            }
+
+            try {
+                var methods = dexkit.findMethod(FindMethod.create()
+                        .matcher(MethodMatcher.create()
+                                .addUsingString("editable_message", StringMatchType.Contains)));
+                if (!methods.isEmpty()) {
+                    return methods.get(0).getMethodInstance(classLoader);
+                }
+            } catch (Exception ignored) {
+            }
+
+            return null;
+        });
+    }
+
+    public synchronized static Class<?> loadClassFMessageUtil(ClassLoader classLoader) throws Exception {
+        return UnobfuscatorCache.getInstance().getClass(classLoader, () -> {
+            var method = loadCheckIsEditableMethod(classLoader);
+            if (method == null) {
+                return null;
+            }
+            var declaringClass = method.getDeclaringClass();
+            try {
+                var allClasses = findAllClassUsingStrings(classLoader, StringMatchType.Contains,
+                        "com.whatsapp.conversation.EditMessageActivity");
+                if (allClasses != null) {
+                    for (Class<?> cls : allClasses) {
+                        if (declaringClass.isAssignableFrom(cls)) {
+                            return cls;
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+            return declaringClass;
+        });
+    }
+
+    public synchronized static Method loadCreateDeleteDialog(ClassLoader classLoader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(classLoader, () -> {
+            try {
+                Class<?> clazz = findFirstClassUsingName(classLoader, StringMatchType.EndsWith,
+                        "DeleteMessagesDialogFragment");
+                if (clazz == null) {
+                    clazz = findFirstClassUsingName(classLoader, StringMatchType.EndsWith,
+                            "DeleteMessageDialogFragment");
+                }
+                if (clazz != null) {
+                    for (var method : clazz.getDeclaredMethods()) {
+                        if (Modifier.isStatic(method.getModifiers()) && method.getReturnType() == clazz) {
+                            return method;
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+
+            try {
+                var classes = dexkit.findClass(FindClass.create()
+                        .matcher(ClassMatcher.create()
+                                .className("DeleteMessageDialogFragment", StringMatchType.Contains)));
+                if (!classes.isEmpty()) {
+                    Class<?> clazz = classes.get(0).getInstance(classLoader);
+                    for (var method : clazz.getDeclaredMethods()) {
+                        if (Modifier.isStatic(method.getModifiers()) && method.getReturnType() == clazz) {
+                            return method;
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+            return null;
+        });
+    }
+
+    public synchronized static Method loadShowDialogMethod(ClassLoader loader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+            var id = UnobfuscatorCache.getInstance().getOfuscateIDString("dialog_fragment");
+            var results = dexkit.findMethod(
+                    new FindMethod().matcher(new MethodMatcher().addUsingNumber(id).name("show")));
+            if (results.isEmpty())
+                throw new Exception("ShowDialog method not found");
+            return results.get(0).getMethodInstance(loader);
+        });
+    }
 }

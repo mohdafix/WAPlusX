@@ -166,6 +166,14 @@
             app:key="bubble_right"
             app:summary="@string/default_color"
             app:title="@string/bubble_right" />
+
+        <ListPreference
+            app:defaultValue="disabled"
+            app:entries="@array/swipe_conversation_action_entries"
+            app:entryValues="@array/swipe_conversation_action_values"
+            app:key="swipe_conversation_action"
+            app:summary="@string/swipe_conversation_action_sum"
+            app:title="@string/swipe_conversation_action" />
     </PreferenceCategory>
 
     <PreferenceCategory

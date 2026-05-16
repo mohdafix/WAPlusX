@@ -225,4 +225,17 @@
         <item>2</item>
     </string-array>
 
+    <string-array name="swipe_conversation_action_entries">
+        <item>Disabled</item>
+        <item>Message Info</item>
+        <item>Edit Message</item>
+        <item>Delete Message</item>
+    </string-array>
+    <string-array name="swipe_conversation_action_values">
+        <item>disabled</item>
+        <item>info</item>
+        <item>edit</item>
+        <item>delete</item>
+    </string-array>
+
 </resources>

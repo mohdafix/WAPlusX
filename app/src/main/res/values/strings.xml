@@ -509,4 +509,8 @@
     <string name="prop_type_boolean">Boolean</string>
     <string name="prop_type_integer">Integer</string>
 
+    <string name="swipe_conversation_action">Swipe Conversation Action</string>
+    <string name="swipe_conversation_action_sum">Choose action for swiping left on a message bubble</string>
+    <string name="swipe_conversation_message_not_editable">Message not editable</string>
+
 </resources>

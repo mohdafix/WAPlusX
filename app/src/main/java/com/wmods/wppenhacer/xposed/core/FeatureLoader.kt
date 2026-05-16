@@ -470,7 +470,8 @@ class FeatureLoader {
                 JumpFirstMessage::class.java,
                 com.wmods.wppenhacer.xposed.features.others.SoundBoard::class.java,
                 UnlockPremium::class.java,
-                PropDebugger::class.java
+                PropDebugger::class.java,
+                com.wmods.wppenhacer.xposed.features.others.SwipeConversation::class.java
             )
 
             XposedBridge.log("Loading Plugins")
