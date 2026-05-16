@@ -130,6 +130,11 @@
             app:summary="@string/soundboard_summary"
             app:title="@string/soundboard_title" />
 
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="unlock_premium"
+            app:summary="@string/unlock_premium_sum"
+            app:title="@string/unlock_premium" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
