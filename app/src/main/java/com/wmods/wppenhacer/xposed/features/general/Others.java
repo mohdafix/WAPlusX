@@ -54,10 +54,21 @@ public class Others extends Feature {
         super(loader, preferences);
     }
 
+    private static final String PRIMARY_DEVICE_EMOJI = " \uD83D\uDCF1";
+    private static final String LINKED_DEVICE_EMOJI = " \uD83D\uDCBB";
+    private static final String DEVICE_SOURCE_SUFFIX_FIELD = "wae_device_source_suffix";
+    private static final String DEVICE_SOURCE_GUARD_FIELD = "wae_device_source_guard";
+    private boolean messageDeviceSourceConversationActive = true;
+
     @Override
     public void doHook() throws Exception {
 
         // receivedIncomingTimestamp
+
+        if (prefs.getBoolean("message_device_source", true)) {
+            hookMessageDeviceSourceTextView();
+            messageDeviceSourceTag();
+        }
 
         properties = Utils.getProperties(prefs, "custom_css", "custom_filters");
 
@@ -730,5 +741,173 @@ public class Others extends Feature {
     @Override
     public String getPluginName() {
         return "Others";
+    }
+
+    private void messageDeviceSourceTag() {
+        ConversationItemListener.conversationListeners.add(new ConversationItemListener.OnConversationItemListener() {
+            @Override
+            public void onItemBind(FMessageWpp fMessage, ViewGroup viewGroup, int position, View convertView) {
+                var dateTextView = (TextView) viewGroup.findViewById(Utils.getID("date", "id"));
+                if (dateTextView == null) return;
+                
+                var key = fMessage.getKey();
+                String messageId = key != null ? key.messageID : null;
+                if (messageId == null) return;
+
+                XposedHelpers.setAdditionalInstanceField(dateTextView, "wae_device_source_message_id", messageId);
+                
+                CompletableFuture.supplyAsync(() -> {
+                    return resolveMessageDeviceId(messageId, fMessage);
+                }).thenAcceptAsync(resolvedDeviceId -> {
+                    Object currentId = XposedHelpers.getAdditionalInstanceField(dateTextView, "wae_device_source_message_id");
+                    if (!Objects.equals(currentId, messageId)) return;
+                    
+                    String suffix = getDeviceEmojiSuffix(resolvedDeviceId);
+                    XposedHelpers.setAdditionalInstanceField(dateTextView, DEVICE_SOURCE_SUFFIX_FIELD, suffix);
+                    
+                    bindMessageDeviceSource(dateTextView, resolvedDeviceId);
+                    if (!suffix.isEmpty()) {
+                        applyDeviceSourceToMatchingTextViews(viewGroup, dateTextView, suffix);
+                    }
+                }, executor);
+            }
+        });
+    }
+
+    private static final java.util.concurrent.Executor executor = action -> {
+        var handler = new android.os.Handler(android.os.Looper.getMainLooper());
+        handler.post(action);
+    };
+
+    private int resolveMessageDeviceId(String messageId, FMessageWpp fMessage) {
+        int liveDeviceId = fMessage.getDeviceId();
+        if (liveDeviceId >= 0) {
+            com.wmods.wppenhacer.xposed.core.db.MessageDeviceSourceStore.getInstance().upsertDeviceId(messageId, liveDeviceId);
+            return liveDeviceId;
+        }
+        return com.wmods.wppenhacer.xposed.core.db.MessageDeviceSourceStore.getInstance().getDeviceId(messageId);
+    }
+
+    private void bindMessageDeviceSource(TextView dateTextView, int deviceId) {
+        String baseText = String.valueOf(dateTextView.getText())
+                .replace(PRIMARY_DEVICE_EMOJI, "")
+                .replace(LINKED_DEVICE_EMOJI, "");
+
+        String suffix = getDeviceEmojiSuffix(deviceId);
+        XposedHelpers.setAdditionalInstanceField(dateTextView, DEVICE_SOURCE_SUFFIX_FIELD, suffix);
+        bindMessageDeviceSourceClick(dateTextView, deviceId);
+
+        dateTextView.setText(baseText + suffix);
+    }
+
+    private String getDeviceEmojiSuffix(int deviceId) {
+        if (deviceId == 0) return PRIMARY_DEVICE_EMOJI;
+        if (deviceId > 0) return LINKED_DEVICE_EMOJI;
+        return "";
+    }
+
+    private void applyDeviceSourceToMatchingTextViews(ViewGroup root, TextView anchor, String suffix) {
+        if (suffix.isEmpty()) return;
+        String anchorBase = stripDeviceEmoji(String.valueOf(anchor.getText()));
+        if (TextUtils.isEmpty(anchorBase)) return;
+        int deviceId = getDeviceIdFromSuffix(suffix);
+
+        forEachTextView(root, textView -> {
+            String current = String.valueOf(textView.getText());
+            String base = stripDeviceEmoji(current);
+            if (!anchorBase.equals(base)) return;
+
+            XposedHelpers.setAdditionalInstanceField(textView, DEVICE_SOURCE_SUFFIX_FIELD, suffix);
+            bindMessageDeviceSourceClick(textView, deviceId);
+            if (!current.equals(base + suffix)) {
+                textView.setText(base + suffix);
+            }
+        });
+    }
+
+    private int getDeviceIdFromSuffix(String suffix) {
+        if (PRIMARY_DEVICE_EMOJI.equals(suffix)) return 0;
+        if (LINKED_DEVICE_EMOJI.equals(suffix)) return 1;
+        return -1;
+    }
+
+    private void bindMessageDeviceSourceClick(TextView textView, int deviceId) {
+        if (deviceId < 0) {
+            textView.setOnClickListener(null);
+            return;
+        }
+
+        textView.setOnClickListener(v -> {
+            if (deviceId == 0) {
+                Utils.showToast("This message was sent via Phone", Toast.LENGTH_SHORT);
+            } else if (deviceId > 0) {
+                Utils.showToast("This message was sent via a Linked Device (Desktop/Phone)", Toast.LENGTH_SHORT);
+            }
+        });
+    }
+
+    private void forEachTextView(View view, java.util.function.Consumer<TextView> consumer) {
+        if (view instanceof TextView textView) {
+            consumer.accept(textView);
+            return;
+        }
+        if (!(view instanceof ViewGroup group)) return;
+        for (int i = 0; i < group.getChildCount(); i++) {
+            forEachTextView(group.getChildAt(i), consumer);
+        }
+    }
+
+    private String stripDeviceEmoji(String text) {
+        return text.replace(PRIMARY_DEVICE_EMOJI, "").replace(LINKED_DEVICE_EMOJI, "");
+    }
+
+    private void hookMessageDeviceSourceTextView() {
+        XC_MethodHook setTextHook = new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                // Check if Conversation activity is active
+                com.wmods.wppenhacer.xposed.core.WppCore.ActivityChangeState.ChangeType state = 
+                    com.wmods.wppenhacer.xposed.core.ActivityStateRegistry.getStateBySimpleName("Conversation");
+                if (state != com.wmods.wppenhacer.xposed.core.WppCore.ActivityChangeState.ChangeType.RESUMED && 
+                    state != com.wmods.wppenhacer.xposed.core.WppCore.ActivityChangeState.ChangeType.CREATED) return;
+
+                if (!(param.thisObject instanceof TextView textView)) return;
+                Object suffixObj = XposedHelpers.getAdditionalInstanceField(textView, DEVICE_SOURCE_SUFFIX_FIELD);
+                if (!(suffixObj instanceof String suffix) || suffix.isEmpty()) return;
+                if (Boolean.TRUE.equals(XposedHelpers.getAdditionalInstanceField(textView, DEVICE_SOURCE_GUARD_FIELD))) {
+                    return;
+                }
+
+                String current = String.valueOf(textView.getText());
+                String base = current.replace(PRIMARY_DEVICE_EMOJI, "").replace(LINKED_DEVICE_EMOJI, "");
+                String desired = base + suffix;
+                if (desired.equals(current)) return;
+
+                XposedHelpers.setAdditionalInstanceField(textView, DEVICE_SOURCE_GUARD_FIELD, true);
+                try {
+                    textView.setText(desired);
+                } finally {
+                    XposedHelpers.setAdditionalInstanceField(textView, DEVICE_SOURCE_GUARD_FIELD, false);
+                }
+            }
+        };
+
+        try {
+            Method internalSetText = ReflectionUtils.findMethodUsingFilter(TextView.class,
+                    method -> method.getName().equals("setText")
+                            && method.getParameterCount() == 4
+                            && method.getParameterTypes()[0] == CharSequence.class
+                            && method.getParameterTypes()[1] == TextView.BufferType.class
+                            && method.getParameterTypes()[2] == boolean.class
+                            && method.getParameterTypes()[3] == int.class);
+            if (internalSetText != null) {
+                XposedBridge.hookMethod(internalSetText, setTextHook);
+                return;
+            }
+        } catch (Throwable t) {
+            logDebug("message_device_source setText hook fallback", t);
+        }
+
+        XposedBridge.hookAllMethods(TextView.class, "setText", setTextHook);
     }
 }

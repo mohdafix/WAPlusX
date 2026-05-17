@@ -175,6 +175,23 @@ class FMessageWpp(fMessage: Any?) {
             }
         }
 
+    val deviceId: Int
+        get() {
+            val dJid = deviceJid ?: return -1
+            try {
+                val dev = XposedHelpers.callMethod(dJid, "getDevice")
+                if (dev is Int) return dev
+            } catch (t: Throwable) {}
+            try {
+                val field = ReflectionUtils.getFieldByType(dJid.javaClass, Byte::class.javaPrimitiveType)
+                if (field != null) {
+                    return (field.getByte(dJid).toInt() and 0xFF)
+                }
+            } catch (t: Throwable) {}
+            return -1
+        }
+
+
     val rowId: Long
         get() {
             return try {
