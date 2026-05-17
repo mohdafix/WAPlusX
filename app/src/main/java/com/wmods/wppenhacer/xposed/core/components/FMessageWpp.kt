@@ -335,6 +335,17 @@ class FMessageWpp(fMessage: Any?) {
     val isViewOnce: Boolean
         get() = (mediaType == 82 || mediaType == 42 || mediaType == 43)
 
+    val status: Int
+        get() = try {
+            XposedHelpers.callMethod(fmessage, "getStatus") as? Int ?: -1
+        } catch (t: Throwable) {
+            try {
+                Unobfuscator.loadFmessageStatusMethod(fmessage.javaClass.classLoader).invoke(fmessage) as? Int ?: -1
+            } catch (t2: Throwable) {
+                -1
+            }
+        }
+
     /*
      * Represents the key of a WhatsApp message, containing identifiers for the message.
      */

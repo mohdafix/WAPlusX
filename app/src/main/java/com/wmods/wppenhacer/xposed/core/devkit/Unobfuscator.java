@@ -3088,4 +3088,95 @@ public class Unobfuscator {
             return null;
         });
     }
+
+    public static java.lang.reflect.Method loadGetContactDrawableStatusMethod(ClassLoader loader)
+            throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+            int resId = Utils.getID("message_got_read_receipt_from_target", "drawable");
+            if (resId <= 0) {
+                resId = Utils.getID("msg_status_server_receive", "drawable");
+            }
+            if (resId <= 0) {
+                resId = Utils.getID("msg_status_client", "drawable");
+            }
+            if (resId <= 0)
+                throw new RuntimeException("Contact status anchor resource not found");
+            var methodMatcher = MethodMatcher.create()
+                    .usingNumbers(resId)
+                    .returnType(Drawable.class);
+            var methods = dexkit.findMethod(FindMethod.create().matcher(methodMatcher));
+            if (methods.isEmpty())
+                throw new NoSuchMethodException("GetContactDrawableStatus method not found");
+            return methods.get(0).getMethodInstance(loader);
+        });
+    }
+
+    public static java.lang.reflect.Method loadFmessageStatusMethod(ClassLoader loader)
+            throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+            Class<?> fmessageClass = loadFMessageClass(loader);
+            java.lang.reflect.Method contactDrawableMethod = loadGetContactDrawableStatusMethod(loader);
+            var methodData = dexkit.getMethodData(DexSignUtil.getMethodDescriptor(contactDrawableMethod));
+            if (methodData == null)
+                throw new NoSuchMethodException("Could not get method data for contact drawable status method");
+            var invokes = methodData.getInvokes();
+            for (var invoke : invokes) {
+                if (!invoke.isMethod()) continue;
+                java.lang.reflect.Method m = invoke.getMethodInstance(loader);
+                if (m.getDeclaringClass().equals(fmessageClass)
+                        && m.getParameterCount() == 0
+                        && m.getReturnType().equals(Integer.TYPE)) {
+                    return m;
+                }
+            }
+            throw new NoSuchMethodException("FMessage status method not found in contact drawable callees");
+        });
+    }
+
+    public static Class<?> loadBubbleRelativeLayoutClass(ClassLoader loader) throws Exception {
+        return UnobfuscatorCache.getInstance().getClass(loader, () -> {
+            var clazz = findFirstClassUsingStrings(loader, StringMatchType.Contains,
+                    "BubbleRelativeLayout/ConversationRowText");
+            if (clazz == null)
+                throw new RuntimeException("BubbleRelativeLayout class not found");
+            return clazz;
+        });
+    }
+
+    public static java.lang.reflect.Method loadGetTickResourceIdMethod(ClassLoader loader)
+            throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+            int resId = Utils.getID("message_got_read_receipt_from_target", "drawable");
+            if (resId <= 0) {
+                resId = Utils.getID("message_got_receipt_from_target", "drawable");
+            }
+            if (resId <= 0)
+                throw new RuntimeException("Bubble tick anchor resource not found");
+            var methodMatcher = MethodMatcher.create()
+                    .usingNumbers(resId)
+                    .returnType(Integer.TYPE)
+                    .paramTypes(Integer.TYPE);
+            var methods = dexkit.findMethod(FindMethod.create().matcher(methodMatcher));
+            if (methods.isEmpty())
+                throw new NoSuchMethodException("GetTickResourceId method not found");
+            return methods.get(0).getMethodInstance(loader);
+        });
+    }
+
+    public static java.lang.reflect.Method loadGetTickResourceIdOnMediaMethod(ClassLoader loader)
+            throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+            int resId = Utils.getID("message_got_read_receipt_from_target_onmedia", "drawable");
+            if (resId <= 0)
+                throw new RuntimeException("Resource message_got_read_receipt_from_target_onmedia not found");
+            var methodMatcher = MethodMatcher.create()
+                    .usingNumbers(resId)
+                    .returnType(Integer.TYPE)
+                    .paramTypes(Integer.TYPE);
+            var methods = dexkit.findMethod(FindMethod.create().matcher(methodMatcher));
+            if (methods.isEmpty())
+                throw new NoSuchMethodException("GetTickResourceIdOnMedia method not found");
+            return methods.get(0).getMethodInstance(loader);
+        });
+    }
 }

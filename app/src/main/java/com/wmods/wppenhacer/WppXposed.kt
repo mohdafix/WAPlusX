@@ -34,6 +34,9 @@ class WppXposed : IXposedHookLoadPackage, IXposedHookInitPackageResources, IXpos
         var ResParam: XC_InitPackageResources.InitPackageResourcesParam? = null
 
         @JvmStatic
+        var modulePath: String? = null
+
+        @JvmStatic
         fun getPref(): XSharedPreferences {
             return pref ?: XSharedPreferences(
                 BuildConfig.APPLICATION_ID,
@@ -145,6 +148,7 @@ class WppXposed : IXposedHookLoadPackage, IXposedHookInitPackageResources, IXpos
     @Throws(Throwable::class)
     override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
         MODULE_PATH = startupParam.modulePath
+        modulePath = startupParam.modulePath
     }
 
     fun disableSecureFlag() {

@@ -299,4 +299,604 @@
         <item>0</item>
         <item>2</item>
     </string-array>
+    <string-array name="bubble_style_entries">
+        <item>Stock (Default)</item>
+        <item>3D</item>
+        <item>3D V2</item>
+        <item>Amor</item>
+        <item>aOS</item>
+        <item>Alfabet 01</item>
+        <item>Alfabet 02</item>
+        <item>Alfabet 03</item>
+        <item>Alfabet 04</item>
+        <item>Alfabet 05</item>
+        <item>Alfabet 06</item>
+        <item>Alfabet 07</item>
+        <item>Alfabet 08</item>
+        <item>Alfabet 09</item>
+        <item>Alfabet 10</item>
+        <item>Alfabet 11</item>
+        <item>Alfabet 12</item>
+        <item>Alfabet 13</item>
+        <item>Alfabet 14</item>
+        <item>Alfabet 15</item>
+        <item>Alfabet 16</item>
+        <item>Alfabet 17</item>
+        <item>Alfabet 18</item>
+        <item>Alfabet 19</item>
+        <item>Alfabet 20</item>
+        <item>Alfabet 21</item>
+        <item>Alfabet 22</item>
+        <item>Alfabet 23</item>
+        <item>Alfabet 24</item>
+        <item>Alfabet 25</item>
+        <item>Alfabet 26</item>
+        <item>Alfabet 27</item>
+        <item>Alfabet 28</item>
+        <item>Alfabet 29</item>
+        <item>Alfabet 30</item>
+        <item>Alfabet 31</item>
+        <item>Alfabet 32</item>
+        <item>Alfabet 33</item>
+        <item>Alfabet 34</item>
+        <item>Alfabet 35</item>
+        <item>Alfabet 36</item>
+        <item>Alfabet 37</item>
+        <item>Alfabet 38</item>
+        <item>Alfabet 39</item>
+        <item>Alfabet 40</item>
+        <item>Alfabet 41</item>
+        <item>Alfabet 42</item>
+        <item>Alfabet 43</item>
+        <item>Alfabet 44</item>
+        <item>Alfabet 45</item>
+        <item>Alfabet 46</item>
+        <item>Alfabet 47</item>
+        <item>Alfabet 48</item>
+        <item>Alfabet 49</item>
+        <item>Alfabet 50</item>
+        <item>Alfabet 51</item>
+        <item>Alfabet 52</item>
+        <item>Alfabet 53</item>
+        <item>Alfabet 54</item>
+        <item>Alfabet 55</item>
+        <item>Alfabet 56</item>
+        <item>Alfabet 57</item>
+        <item>Alfabet 58</item>
+        <item>Alfabet 59</item>
+        <item>Alfabet 60</item>
+        <item>Alfabet 61</item>
+        <item>Alfabet 62</item>
+        <item>Alfabet 63</item>
+        <item>Alfabet 64</item>
+        <item>Alfabet 65</item>
+        <item>Alfabet 66</item>
+        <item>Alfabet 67</item>
+        <item>Alfabet 68</item>
+        <item>Alfabet 69</item>
+        <item>Alfabet 70</item>
+        <item>Alfabet 71</item>
+        <item>Alfabet 72</item>
+        <item>Alfabet 73</item>
+        <item>Alfabet 74</item>
+        <item>Alfabet 75</item>
+        <item>Alfabet 76</item>
+        <item>Alfabet 77</item>
+        <item>Alfabet 78</item>
+        <item>Alfabet 79</item>
+        <item>Alfabet 80</item>
+        <item>Alfabet 81</item>
+        <item>Alfabet 82</item>
+        <item>Alfabet 83</item>
+        <item>Alfabet 84</item>
+        <item>Alfabet 85</item>
+        <item>Alfabet 86</item>
+        <item>Alfabet 87</item>
+        <item>Alfabet 88</item>
+        <item>Alfabet 89</item>
+        <item>Alfabet 90</item>
+        <item>Alfabet 91</item>
+        <item>Alfabet 92</item>
+        <item>Alfabet 93</item>
+        <item>Alfabet 94</item>
+        <item>Alfabet 95</item>
+        <item>Alfabet 96</item>
+        <item>Alfabet 97</item>
+        <item>Alfabet 98</item>
+        <item>Alfabet 99</item>
+        <item>Alfabet 100</item>
+        <item>Alfabet 101</item>
+        <item>Alfabet 102</item>
+        <item>Alfabet 103</item>
+        <item>Alfabet 104</item>
+        <item>Alfabet 105</item>
+        <item>Alfabet 106</item>
+        <item>Alfabet 107</item>
+        <item>Alfabet 108</item>
+        <item>Alfabet 109</item>
+        <item>Alfabet 110</item>
+        <item>Alfabet 111</item>
+        <item>Aranbor</item>
+        <item>BBM</item>
+        <item>Business</item>
+        <item>Bryed</item>
+        <item>Bubble Drop</item>
+        <item>Chat On</item>
+        <item>Cr Messenger</item>
+        <item>Crayon Alt</item>
+        <item>CV iOS</item>
+        <item>DoodleHang</item>
+        <item>Date</item>
+        <item>Dual</item>
+        <item>Eclipse</item>
+        <item>Facebook Messenger</item>
+        <item>Fold</item>
+        <item>Fold v2</item>
+        <item>Gabi Dot</item>
+        <item>Gabi Dot 2</item>
+        <item>Gabi Outline</item>
+        <item>Gabi Square</item>
+        <item>Gaby Mess</item>
+        <item>Gaby Ron</item>
+        <item>Go SMS</item>
+        <item>Hangouts v2</item>
+        <item>Hike</item>
+        <item>Ilkhang</item>
+        <item>In</item>
+        <item>iOS</item>
+        <item>Kitty</item>
+        <item>Line</item>
+        <item>Materialized</item>
+        <item>MD</item>
+        <item>Mood</item>
+        <item>Old Hangouts</item>
+        <item>Plus Messenger ED</item>
+        <item>Popzup</item>
+        <item>RC Burbuja 2</item>
+        <item>RC Burbuja 5</item>
+        <item>RC Fancy</item>
+        <item>RC Go SMS</item>
+        <item>RC Google Assistant</item>
+        <item>RC IM Line</item>
+        <item>RC iMess</item>
+        <item>RC iOS 11</item>
+        <item>RC iOS 11 v2</item>
+        <item>RC iOS Line</item>
+        <item>RC Line</item>
+        <item>RC Pal</item>
+        <item>RC SAMS BORD</item>
+        <item>RC Tran Line</item>
+        <item>Roundle</item>
+        <item>Rounded</item>
+        <item>Security</item>
+        <item>Telegram</item>
+        <item>Textra</item>
+        <item>Transparent</item>
+        <item>Trid 2</item>
+        <item>Twitter</item>
+        <item>WA+ Paper</item>
+        <item>WhatsApp LB</item>
+        <item>Win</item>
+    </string-array>
+    <string-array name="bubble_style_values">
+        <item>stock</item>
+        <item>d3</item>
+        <item>s3d2</item>
+        <item>amor</item>
+        <item>aios</item>
+        <item>alfab01</item>
+        <item>alfab02</item>
+        <item>alfab03</item>
+        <item>alfab04</item>
+        <item>alfab05</item>
+        <item>alfab06</item>
+        <item>alfab07</item>
+        <item>alfab08</item>
+        <item>alfab09</item>
+        <item>alfab10</item>
+        <item>alfab11</item>
+        <item>alfab12</item>
+        <item>alfab13</item>
+        <item>alfab14</item>
+        <item>alfab15</item>
+        <item>alfab16</item>
+        <item>alfab17</item>
+        <item>alfab18</item>
+        <item>alfab19</item>
+        <item>alfab20</item>
+        <item>alfab21</item>
+        <item>alfab22</item>
+        <item>alfab23</item>
+        <item>alfab24</item>
+        <item>alfab25</item>
+        <item>alfab26</item>
+        <item>alfab27</item>
+        <item>alfab28</item>
+        <item>alfab29</item>
+        <item>alfab30</item>
+        <item>alfab31</item>
+        <item>alfab32</item>
+        <item>alfab33</item>
+        <item>alfab34</item>
+        <item>alfab35</item>
+        <item>alfab36</item>
+        <item>alfab37</item>
+        <item>alfab38</item>
+        <item>alfab39</item>
+        <item>alfab40</item>
+        <item>alfab41</item>
+        <item>alfab42</item>
+        <item>alfab43</item>
+        <item>alfab44</item>
+        <item>alfab45</item>
+        <item>alfab46</item>
+        <item>alfab47</item>
+        <item>alfab48</item>
+        <item>alfab49</item>
+        <item>alfab50</item>
+        <item>alfab51</item>
+        <item>alfab52</item>
+        <item>alfab53</item>
+        <item>alfab54</item>
+        <item>alfab55</item>
+        <item>alfab56</item>
+        <item>alfab57</item>
+        <item>alfab58</item>
+        <item>alfab59</item>
+        <item>alfab60</item>
+        <item>alfab61</item>
+        <item>alfab62</item>
+        <item>alfab63</item>
+        <item>alfab64</item>
+        <item>alfab65</item>
+        <item>alfab66</item>
+        <item>alfab67</item>
+        <item>alfab68</item>
+        <item>alfab69</item>
+        <item>alfab70</item>
+        <item>alfab71</item>
+        <item>alfab72</item>
+        <item>alfab73</item>
+        <item>alfab74</item>
+        <item>alfab75</item>
+        <item>alfab76</item>
+        <item>alfab77</item>
+        <item>alfab78</item>
+        <item>alfab79</item>
+        <item>alfab80</item>
+        <item>alfab81</item>
+        <item>alfab82</item>
+        <item>alfab83</item>
+        <item>alfab84</item>
+        <item>alfab85</item>
+        <item>alfab86</item>
+        <item>alfab87</item>
+        <item>alfab88</item>
+        <item>alfab89</item>
+        <item>alfab90</item>
+        <item>alfab91</item>
+        <item>alfab92</item>
+        <item>alfab93</item>
+        <item>alfab94</item>
+        <item>alfab95</item>
+        <item>alfab96</item>
+        <item>alfab97</item>
+        <item>alfab98</item>
+        <item>alfab99</item>
+        <item>alfab100</item>
+        <item>alfab101</item>
+        <item>alfab102</item>
+        <item>alfab103</item>
+        <item>alfab104</item>
+        <item>alfab105</item>
+        <item>alfab106</item>
+        <item>alfab107</item>
+        <item>alfab108</item>
+        <item>alfab109</item>
+        <item>alfab110</item>
+        <item>alfab111</item>
+        <item>aranbor</item>
+        <item>bbm</item>
+        <item>business</item>
+        <item>bryed</item>
+        <item>bdrop</item>
+        <item>chaton</item>
+        <item>crmessenger</item>
+        <item>altcr</item>
+        <item>cvios</item>
+        <item>doodlehang</item>
+        <item>date</item>
+        <item>dual</item>
+        <item>eclip</item>
+        <item>fbm</item>
+        <item>fold</item>
+        <item>foldv2</item>
+        <item>gabidot</item>
+        <item>gabidot2</item>
+        <item>gabioutline</item>
+        <item>gabisqua</item>
+        <item>gabymess</item>
+        <item>gabyron</item>
+        <item>gosms</item>
+        <item>hang</item>
+        <item>hike</item>
+        <item>ilkhang</item>
+        <item>in</item>
+        <item>apple</item>
+        <item>kitty</item>
+        <item>line</item>
+        <item>materialized</item>
+        <item>md</item>
+        <item>mood</item>
+        <item>hangouts</item>
+        <item>ed</item>
+        <item>popzup</item>
+        <item>rcburbuja2</item>
+        <item>rcburbuja5</item>
+        <item>rcfancy</item>
+        <item>rcgosms</item>
+        <item>bolha</item>
+        <item>rcimline</item>
+        <item>rcimess</item>
+        <item>ios11</item>
+        <item>rcios11</item>
+        <item>rciosline</item>
+        <item>rcline</item>
+        <item>rcpal</item>
+        <item>bubble</item>
+        <item>rctranline</item>
+        <item>roundle</item>
+        <item>rounded</item>
+        <item>security</item>
+        <item>telegram</item>
+        <item>textra</item>
+        <item>trans</item>
+        <item>trid2</item>
+        <item>twitter</item>
+        <item>wapaper</item>
+        <item>walb</item>
+        <item>win</item>
+    </string-array>
+
+    <string-array name="notification_icon_entries">
+        <item>Default</item>
+        <item>White</item>
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Red</item>
+        <item>Green</item>
+        <item>Yellow</item>
+        <item>Orange</item>
+        <item>Gold</item>
+        <item>Cyan</item>
+        <item>Pink</item>
+        <item>Magenta</item>
+        <item>Purple</item>
+        <item>Blue 2</item>
+        <item>Black 2</item>
+        <item>Blue 3</item>
+        <item>Red 2</item>
+        <item>Green 2</item>
+        <item>Yellow 2</item>
+        <item>Orange 2</item>
+        <item>Gold 2</item>
+        <item>Cyan 2</item>
+        <item>Pink 2</item>
+        <item>Magenta 2</item>
+        <item>RC Notif</item>
+    </string-array>
+    <string-array name="notification_icon_values">
+        <item>default</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+    </string-array>
+
+    <string-array name="tick_style_entries">
+        <item>Default</item>
+        <item>AB</item>
+        <item>Alien</item>
+        <item>Allo</item>
+        <item>Alt Crayon</item>
+        <item>Alt Crayon V2</item>
+        <item>Aran</item>
+        <item>Bar</item>
+        <item>Bat</item>
+        <item>BBM</item>
+        <item>BBM 2</item>
+        <item>Blend</item>
+        <item>Bot</item>
+        <item>BPG</item>
+        <item>BW Ticks</item>
+        <item>Circle</item>
+        <item>Circle 2</item>
+        <item>Circle Check</item>
+        <item>Circle Print</item>
+        <item>Circles</item>
+        <item>Coalfield</item>
+        <item>Color Simple</item>
+        <item>Ctoon</item>
+        <item>Eclipsis</item>
+        <item>Face</item>
+        <item>Feet</item>
+        <item>Flat Circles</item>
+        <item>Flor</item>
+        <item>Gab Circle</item>
+        <item>Gab Face</item>
+        <item>Gabi Flo</item>
+        <item>Gif Con</item>
+        <item>Google</item>
+        <item>Google V2</item>
+        <item>Green Tick</item>
+        <item>GRW</item>
+        <item>HD</item>
+        <item>Heart</item>
+        <item>Hike</item>
+        <item>Ice Cream</item>
+        <item>Inbox</item>
+        <item>Insect</item>
+        <item>iOS</item>
+        <item>iOS 2</item>
+        <item>Jalopy</item>
+        <item>Jessy</item>
+        <item>Joaquins</item>
+        <item>Joker</item>
+        <item>Kitty</item>
+        <item>Letter</item>
+        <item>Letter Circle</item>
+        <item>Like</item>
+        <item>Love</item>
+        <item>Material</item>
+        <item>Material V2</item>
+        <item>Messenger</item>
+        <item>Mickey Hands</item>
+        <item>Minions</item>
+        <item>New Waca</item>
+        <item>Ney</item>
+        <item>NH</item>
+        <item>NHSC</item>
+        <item>NL Mod 2</item>
+        <item>Old Waca</item>
+        <item>Old WA MD</item>
+        <item>Pacman</item>
+        <item>Pix</item>
+        <item>Pointer</item>
+        <item>Pokemon</item>
+        <item>Pony</item>
+        <item>Quinn</item>
+        <item>RC Alo</item>
+        <item>RC iOS 11</item>
+        <item>RC Tick</item>
+        <item>SC</item>
+        <item>S Dot</item>
+        <item>Seasons</item>
+        <item>Smail</item>
+        <item>Star</item>
+        <item>Sticker</item>
+        <item>Stock Org</item>
+        <item>Switch Me</item>
+        <item>TB</item>
+        <item>Traffic</item>
+        <item>Treble</item>
+        <item>Triangle</item>
+        <item>Twitter</item>
+        <item>Vant Circle</item>
+        <item>WBG</item>
+        <item>X</item>
+    </string-array>
+    <string-array name="tick_style_values">
+        <item>default</item>
+        <item>ab</item>
+        <item>alien</item>
+        <item>allo</item>
+        <item>altcrayon</item>
+        <item>altcrayonv2</item>
+        <item>aran</item>
+        <item>bar</item>
+        <item>bat</item>
+        <item>bbm</item>
+        <item>bbm2</item>
+        <item>blend</item>
+        <item>bot</item>
+        <item>bpg</item>
+        <item>bwticks</item>
+        <item>circle</item>
+        <item>circle2</item>
+        <item>circheck</item>
+        <item>circleprint</item>
+        <item>circles</item>
+        <item>coalfield</item>
+        <item>colorsimple</item>
+        <item>ctoon</item>
+        <item>eclipsis</item>
+        <item>face</item>
+        <item>feet</item>
+        <item>flatcircles</item>
+        <item>flor</item>
+        <item>gabcircle</item>
+        <item>gabface</item>
+        <item>gabiflo</item>
+        <item>gifcon</item>
+        <item>google</item>
+        <item>googlev2</item>
+        <item>greentick</item>
+        <item>grw</item>
+        <item>hd</item>
+        <item>heart</item>
+        <item>hike</item>
+        <item>icecream</item>
+        <item>inbox</item>
+        <item>insect</item>
+        <item>ios</item>
+        <item>ios2</item>
+        <item>jalopy</item>
+        <item>jessy</item>
+        <item>joaquins</item>
+        <item>joker</item>
+        <item>kitty</item>
+        <item>letter</item>
+        <item>lettercircle</item>
+        <item>like</item>
+        <item>love</item>
+        <item>material</item>
+        <item>materialv2</item>
+        <item>messenger</item>
+        <item>mickeyhands</item>
+        <item>minions</item>
+        <item>newwaca</item>
+        <item>ney</item>
+        <item>nh</item>
+        <item>nhsc</item>
+        <item>nlmod2</item>
+        <item>oldwaca</item>
+        <item>oldwamd</item>
+        <item>pacman</item>
+        <item>pix</item>
+        <item>pointer</item>
+        <item>pokemon</item>
+        <item>pony</item>
+        <item>quinn</item>
+        <item>rcalo</item>
+        <item>rcios11</item>
+        <item>rctick</item>
+        <item>sc</item>
+        <item>sdot</item>
+        <item>seasons</item>
+        <item>smail</item>
+        <item>star</item>
+        <item>sticker</item>
+        <item>stockorg</item>
+        <item>switchme</item>
+        <item>tb</item>
+        <item>traffic</item>
+        <item>treble</item>
+        <item>triangle</item>
+        <item>twitter</item>
+        <item>vantcircle</item>
+        <item>wbg</item>
+        <item>x</item>
+    </string-array>
+
+
 </resources>

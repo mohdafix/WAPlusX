@@ -165,6 +165,16 @@
             app:summary="@string/default_color"
             app:title="@string/bubble_right" />
 
+        <com.wmods.wppenhacer.preference.BubbleStylePreference
+            app:key="bubble_style"
+            app:title="Bubble Style"
+            app:entries="@array/bubble_style_entries"
+            app:entryValues="@array/bubble_style_values" />
+
+        <com.wmods.wppenhacer.preference.BubbleTickStylePreference
+            app:key="bubble_tick_style"
+            app:title="Tick Style" />
+
         <ListPreference
             app:defaultValue="disabled"
             app:entries="@array/swipe_conversation_action_entries"

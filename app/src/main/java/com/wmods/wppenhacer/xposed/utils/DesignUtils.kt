@@ -167,13 +167,10 @@ object DesignUtils {
         }
 
         // Priority 2: Monet
-        // (Removed MonetColorEngine dependency for now)
-        /*
         if (prefs.getBoolean("monet_theme", false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val monetColor = MonetColorEngine.getSystemAccentColor(Utils.getApplication())
             if (monetColor != -1) return monetColor
         }
-        */
 
         return -0xda2c9a // 0xFF25d366
     }
