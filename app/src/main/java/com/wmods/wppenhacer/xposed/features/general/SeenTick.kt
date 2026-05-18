@@ -86,7 +86,7 @@ class SeenTick(
             if (originalDrawable == null) {
                 buttonImage.setImageResource(Utils.getID("ic_notif_mark_read", "drawable"))
                 if (isSeen) buttonImage.setColorFilter(Color.CYAN, PorterDuff.Mode.SRC_ATOP)
-                else buttonImage.clearColorFilter()
+                else buttonImage.setColorFilter(DesignUtils.getPrimaryTextColor(), PorterDuff.Mode.SRC_ATOP)
                 return
             }
 
@@ -115,7 +115,8 @@ class SeenTick(
                 clonedDrawable.setColorFilter(Color.CYAN, PorterDuff.Mode.SRC_ATOP)
                 cachedSeenDrawable = clonedDrawable
             } else {
-                clonedDrawable.clearColorFilter()
+                @Suppress("DEPRECATION")
+                clonedDrawable.setColorFilter(DesignUtils.getPrimaryTextColor(), PorterDuff.Mode.SRC_ATOP)
                 cachedUnseenDrawable = clonedDrawable
             }
 

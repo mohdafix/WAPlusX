@@ -21,6 +21,7 @@ import com.wmods.wppenhacer.xposed.core.WppCore;
 import com.wmods.wppenhacer.xposed.core.components.FMessageWpp;
 import com.wmods.wppenhacer.xposed.core.devkit.Unobfuscator;
 import com.wmods.wppenhacer.xposed.features.listeners.ConversationItemListener;
+import com.wmods.wppenhacer.xposed.core.components.SharedPreferencesWrapper;
 import com.wmods.wppenhacer.xposed.utils.AnimationUtil;
 import com.wmods.wppenhacer.xposed.utils.ReflectionUtils;
 import com.wmods.wppenhacer.xposed.utils.Utils;
@@ -101,10 +102,21 @@ public class Others extends Feature {
         propsBoolean.put(4497, menuWIcons);
         propsBoolean.put(4023, false);
         propsBoolean.put(4921, newSettings);
+        propsBoolean.put(16250, false);
+        
+        if (newSettings){
+            SharedPreferencesWrapper.addHook((key, value) -> {
+                if (Objects.equals(key,"is_biz_alerts_eligible"))
+                    return true;
+                return value;
+            });
+        }
+        
+        propsBoolean.put(21632, newSettings); // For enable Toolbar button
         propsBoolean.put(14862, newSettings);
         propsBoolean.put(23289, newSettings);
         propsBoolean.put(18726, newSettings);
-        propsInteger.put(18564, newSettings ? 1 : 0);
+        propsInteger.put(18564, newSettings ? 2 : 0);
 
         propsBoolean.put(2889, floatingMenu);
 

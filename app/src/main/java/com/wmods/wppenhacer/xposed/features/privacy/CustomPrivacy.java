@@ -43,6 +43,7 @@ import de.robv.android.xposed.XposedHelpers;
 public class CustomPrivacy extends Feature {
     private Method chatUserJidMethod;
     private Method groupUserJidMethod;
+    private static final java.util.concurrent.ConcurrentHashMap<String, JSONObject> jsonCache = new java.util.concurrent.ConcurrentHashMap<>();
 
     public CustomPrivacy(@NonNull ClassLoader classLoader, @NonNull XSharedPreferences preferences) {
         super(classLoader, preferences);
@@ -51,7 +52,8 @@ public class CustomPrivacy extends Feature {
     public static JSONObject getJSON(String number) {
         if (Objects.equals(Utils.xprefs.getString("custom_privacy_type", "0"), "0") || TextUtils.isEmpty(number))
             return new JSONObject();
-        return WppCore.getPrivJSON(number + "_privacy", new JSONObject());
+        
+        return jsonCache.computeIfAbsent(number, k -> WppCore.getPrivJSON(k + "_privacy", new JSONObject()));
     }
 
     @Override
@@ -301,6 +303,7 @@ public class CustomPrivacy extends Feature {
                 }
             }
             WppCore.setPrivJSON(number + "_privacy", jsonObject);
+            jsonCache.put(number, jsonObject);
         } catch (Exception e) {
             Utils.showToast(e.getMessage(), Toast.LENGTH_SHORT);
         }
