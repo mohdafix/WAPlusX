@@ -899,4 +899,72 @@
     </string-array>
 
 
+    <string-array name="audio_quality_entries">
+        <item>Default Quality</item>
+        <item>High Quality</item>
+        <item>Low Quality</item>
+    </string-array>
+
+    <string-array name="audio_quality_values">
+        <item>DEFAULT</item>
+        <item>HIGH</item>
+        <item>LOW</item>
+    </string-array>
+
+    <string-array name="mic_source_entries">
+        <item>Microphone</item>
+        <item>Voice Communication</item>
+        <item>Unprocessed (Raw)</item>
+    </string-array>
+
+    <string-array name="mic_source_values">
+        <item>MIC</item>
+        <item>VOICE_COMMUNICATION</item>
+        <item>UNPROCESSED</item>
+    </string-array>
+
+    <string-array name="video_quality_entries">
+        <item>High (1080p, 6 Mbps)</item>
+        <item>Medium (720p, 4 Mbps)</item>
+        <item>Low (480p, 2 Mbps)</item>
+    </string-array>
+    <string-array name="video_quality_values">
+        <item>high</item>
+        <item>medium</item>
+        <item>low</item>
+    </string-array>
+
+    <string-array name="video_fps_entries">
+        <item>60 FPS</item>
+        <item>45 FPS</item>
+        <item>30 FPS</item>
+        <item>24 FPS</item>
+        <item>15 FPS</item>
+    </string-array>
+    <string-array name="video_fps_values">
+        <item>60</item>
+        <item>45</item>
+        <item>30</item>
+        <item>24</item>
+        <item>15</item>
+    </string-array>
+
+    <string-array name="video_codec_entries">
+        <item>H.264 (Default/Most Compatible)</item>
+        <item>H.265 / HEVC (High Efficiency)</item>
+    </string-array>
+    <string-array name="video_codec_values">
+        <item>h264</item>
+        <item>hevc</item>
+    </string-array>
+
+    <string-array name="call_recording_mode_entries">
+        <item>@string/call_recording_mode_auto</item>
+        <item>@string/call_recording_mode_manual</item>
+    </string-array>
+    <string-array name="call_recording_mode_values">
+        <item>automatic</item>
+        <item>manual</item>
+    </string-array>
+
 </resources>

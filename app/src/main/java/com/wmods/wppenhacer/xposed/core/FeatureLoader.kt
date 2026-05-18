@@ -117,9 +117,12 @@ class FeatureLoader {
         private val list = ArrayList<ErrorItem>()
         private var supportedVersions: List<String>? = null
         private var currentVersion: String? = null
+        @JvmField
+        var modulePath: String? = null
 
         @JvmStatic
         fun start(loader: ClassLoader, pref: XSharedPreferences, sourceDir: String) {
+            modulePath = sourceDir
             if (!Unobfuscator.initWithPath(sourceDir)) {
                 XposedBridge.log("Can't init dexkit")
                 return

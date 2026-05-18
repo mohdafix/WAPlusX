@@ -74,6 +74,15 @@
             app:summary="@string/call_recording_enable_sum"
             app:title="@string/call_recording_enable" />
 
+        <ListPreference
+            android:defaultValue="automatic"
+            android:entries="@array/call_recording_mode_entries"
+            android:entryValues="@array/call_recording_mode_values"
+            app:dependency="call_recording_enable"
+            app:key="call_recording_mode"
+            app:summary="@string/call_recording_mode_sum"
+            app:title="@string/call_recording_mode" />
+
         <com.wmods.wppenhacer.preference.FileSelectPreference
             android:defaultValue="/sdcard/Music/WaEnhancer/Recordings"
             app:dependency="call_recording_enable"
@@ -88,17 +97,65 @@
             app:summary="@string/call_recording_toast_summary"
             app:title="@string/call_recording_toast_title" />
 
-        <Preference
+        <rikka.material.preference.MaterialSwitchPreference
             app:dependency="call_recording_enable"
-            app:key="call_recording_settings"
-            app:summary="@string/recording_mode_description"
-            app:title="@string/call_recording_settings" />
+            app:key="call_recording_use_root"
+            app:summary="Uses a root-level audio daemon for high-quality two-way audio recording (Requires Magisk/KernelSU)"
+            app:title="Enable Root Recording Engine" />
 
         <rikka.material.preference.MaterialSwitchPreference
-            android:enabled="false"
-            app:key="video_call_screen_rec"
-            app:summary="@string/coming_soon"
+            android:defaultValue="false"
+            app:dependency="call_recording_use_root"
+            app:key="call_recording_global_capture"
+            app:summary="Bypass all privacy restrictions to capture internal audio directly from ALSA"
+            app:title="Global Audio Capture (Experimental)" />
+
+        <ListPreference
+            android:defaultValue="HIGH"
+            android:entries="@array/audio_quality_entries"
+            android:entryValues="@array/audio_quality_values"
+            app:dependency="call_recording_use_root"
+            app:key="call_recording_audio_quality"
+            app:title="Root Audio Quality" />
+
+        <ListPreference
+            android:defaultValue="MIC"
+            android:entries="@array/mic_source_entries"
+            android:entryValues="@array/mic_source_values"
+            app:dependency="call_recording_use_root"
+            app:key="call_recording_mic_sources"
+            app:title="Audio Input Source" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            android:defaultValue="false"
+            app:dependency="call_recording_use_root"
+            app:key="call_recording_video_enabled"
+            app:summary="Enables screen/video recording during video calls"
             app:title="@string/video_call_screen_rec" />
+
+        <ListPreference
+            android:defaultValue="medium"
+            android:entries="@array/video_quality_entries"
+            android:entryValues="@array/video_quality_values"
+            app:dependency="call_recording_video_enabled"
+            app:key="call_recording_video_quality"
+            app:title="Video Recording Quality" />
+
+        <ListPreference
+            android:defaultValue="30"
+            android:entries="@array/video_fps_entries"
+            android:entryValues="@array/video_fps_values"
+            app:dependency="call_recording_video_enabled"
+            app:key="call_recording_video_fps"
+            app:title="Video Framerate (FPS)" />
+
+        <ListPreference
+            android:defaultValue="h264"
+            android:entries="@array/video_codec_entries"
+            android:entryValues="@array/video_codec_values"
+            app:dependency="call_recording_video_enabled"
+            app:key="call_recording_video_codec"
+            app:title="Video Encoder Codec" />
     </PreferenceCategory>
 
     <PreferenceCategory

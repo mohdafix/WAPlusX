@@ -39,6 +39,12 @@
     <string name="call_recording_toast_title">Show Recording Notifications</string>
     <string name="call_recording_toast_summary">Show toast when recording starts/stops</string>
     
+    <!-- Call Recording Mode -->
+    <string name="call_recording_mode">Recording Mode</string>
+    <string name="call_recording_mode_sum">Select whether calls are recorded automatically or started manually</string>
+    <string name="call_recording_mode_auto">Automatic</string>
+    <string name="call_recording_mode_manual">Manual</string>
+    
     <!-- Call Recording Settings Activity -->
     <string name="call_recording_settings">Recording Settings</string>
     <string name="select_recording_mode">Select Recording Mode</string>
