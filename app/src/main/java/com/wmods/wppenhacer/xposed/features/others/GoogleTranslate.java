@@ -491,9 +491,9 @@ public class GoogleTranslate extends Feature {
                                 lp.gravity = android.view.Gravity.CENTER_VERTICAL;
                                 btn.setLayoutParams(lp);
 
-                                btn.setOnClickListener(v -> onTranslateButtonClicked(activity));
+                                btn.setOnClickListener(v -> showTextToolsMenu(v, activity));
                                 btn.setOnLongClickListener(v -> {
-                                    showTextToolsMenu(v, activity);
+                                    onTranslateButtonClicked(activity);
                                     return true;
                                 });
 
