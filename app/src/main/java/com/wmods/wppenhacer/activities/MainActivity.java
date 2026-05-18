@@ -111,6 +111,50 @@ public class MainActivity extends BaseActivity {
         
         // Handle incoming navigation from search
         handleIncomingIntent(getIntent());
+        
+        checkCrashLogs();
+    }
+
+    private void checkCrashLogs() {
+        File crashDir = getExternalFilesDir("CrashLogs");
+        if (crashDir != null && crashDir.exists()) {
+            File[] files = crashDir.listFiles((dir, name) -> name.startsWith("crash_") && name.endsWith(".txt"));
+            if (files != null && files.length > 0) {
+                java.util.Arrays.sort(files, (f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
+                File latestCrash = files[0];
+
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                        .setTitle("WhatsApp Crashed Recently")
+                        .setMessage("We detected that WhatsApp crashed recently. Would you like to share the crash log to help us fix the issue?")
+                        .setPositiveButton("Share Log", (dialog, which) -> {
+                            try {
+                                StringBuilder sb = new StringBuilder();
+                                java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(latestCrash));
+                                String line;
+                                while ((line = br.readLine()) != null) {
+                                    sb.append(line).append('\n');
+                                }
+                                br.close();
+
+                                Intent sendIntent = new Intent();
+                                sendIntent.setAction(Intent.ACTION_SEND);
+                                sendIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
+                                sendIntent.setType("text/plain");
+                                startActivity(Intent.createChooser(sendIntent, "Share Crash Log"));
+
+                                // Delete all logs after sharing
+                                for (File f : files) f.delete();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        })
+                        .setNegativeButton("Delete Logs", (dialog, which) -> {
+                            for (File f : files) f.delete();
+                        })
+                        .setNeutralButton("Dismiss", null)
+                        .show();
+            }
+        }
     }
 
     private void createMainDir() {

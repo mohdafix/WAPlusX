@@ -158,6 +158,20 @@ class FeatureLoader {
                         application.registerActivityLifecycleCallbacks(WaCallback())
                         registerReceivers()
 
+                        val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+                        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+                            try {
+                                val stacktrace = android.util.Log.getStackTraceString(throwable)
+                                val extras = android.os.Bundle()
+                                extras.putString("stacktrace", stacktrace)
+                                application.contentResolver.call(
+                                    android.net.Uri.parse("content://${BuildConfig.APPLICATION_ID}.hookprovider"),
+                                    "record_crash", null, extras
+                                )
+                            } catch (ignored: Exception) {}
+                            defaultHandler?.uncaughtException(thread, throwable)
+                        }
+
                         try {
                             val timeMillis = System.currentTimeMillis()
                             UnobfuscatorCache.init(application)
