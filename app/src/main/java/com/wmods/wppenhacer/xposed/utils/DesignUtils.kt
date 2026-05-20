@@ -317,4 +317,10 @@ object DesignUtils {
         icon.draw(canvas)
         return BitmapDrawable(Utils.getApplication().resources, bitmap)
     }
+
+    @JvmStatic
+    fun getBackgroundColorFromMap(color: String): Int {
+        val newColor = com.wmods.wppenhacer.utils.IColors.backgroundColors.getOrDefault(color, color)
+        return com.wmods.wppenhacer.utils.IColors.parseColor(newColor)
+    }
 }
