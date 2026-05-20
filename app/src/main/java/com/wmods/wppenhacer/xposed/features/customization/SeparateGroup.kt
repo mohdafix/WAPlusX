@@ -76,6 +76,7 @@ class SeparateGroup(loader: ClassLoader, preferences: XSharedPreferences) :
     private var badgeWrapperCtor: Constructor<*>? = null
     private var badgeItemCtor: Constructor<*>? = null
     private var emptyBadgeItem: Any? = null
+    private var refreshRunnable: Runnable? = null
 
     override fun doHook() {
         if (!isAnyTabFeatureEnabled()) return
@@ -515,10 +516,13 @@ class SeparateGroup(loader: ClassLoader, preferences: XSharedPreferences) :
 
     override fun onDatabaseChanged(table: String, operation: String) {
         if (table.lowercase() == "chat" && bottomNavViewInstance != null) {
-            // Delay slightly to allow DB write to complete before querying
-            Handler(Looper.getMainLooper()).postDelayed({
+            val handler = Handler(Looper.getMainLooper())
+            refreshRunnable?.let { handler.removeCallbacks(it) }
+            val runnable = Runnable {
                 refreshBadges()
-            }, 300)
+            }
+            refreshRunnable = runnable
+            handler.postDelayed(runnable, 500)
         }
     }
 
