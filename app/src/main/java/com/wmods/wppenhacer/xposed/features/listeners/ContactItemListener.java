@@ -31,13 +31,15 @@ public class ContactItemListener extends Feature {
         logDebug(Unobfuscator.getFieldDescriptor(field1));
         var absViewHolderClass = Unobfuscator.loadAbsViewHolder(classLoader);
 
+        var viewField = ReflectionUtils.findFieldUsingFilter(absViewHolderClass, field -> field.getType() == View.class);
+        viewField.setAccessible(true);
+
         XposedBridge.hookMethod(onChangeStatus, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 var viewHolder = field1.get(param.thisObject);
                 var object = param.args[0];
                 var waContact = new WaContactWpp(object);
-                var viewField = ReflectionUtils.findFieldUsingFilter(absViewHolderClass, field -> field.getType() == View.class);
                 var view = (View) viewField.get(viewHolder);
                 var userJid = waContact.getUserJid();
                 if (userJid.isNull()) return;

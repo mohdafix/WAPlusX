@@ -489,12 +489,14 @@ public class Others extends Feature {
         logDebug(Unobfuscator.getFieldDescriptor(field1));
         var absViewHolderClass = Unobfuscator.loadAbsViewHolder(classLoader);
 
+        var viewField = ReflectionUtils.findFieldUsingFilter(absViewHolderClass, field -> field.getType() == View.class);
+        viewField.setAccessible(true);
+
         XposedBridge.hookMethod(onChangeStatus, new XC_MethodHook() {
             @Override
             @SuppressLint("ResourceType")
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 var viewHolder = field1.get(param.thisObject);
-                var viewField = ReflectionUtils.findFieldUsingFilter(absViewHolderClass, field -> field.getType() == View.class);
                 var view = (View) viewField.get(viewHolder);
                 if (!Objects.equals(animation, "default")) {
                     view.startAnimation(AnimationUtil.getAnimation(animation));
@@ -706,9 +708,10 @@ public class Others extends Feature {
 
         try {
             Method addSeachBar = Unobfuscator.loadAddOptionSearchBarMethod(classLoader);
+            Field curPageField = Unobfuscator.loadGetCurrentPageInHomeField(classLoader);
+
             XposedBridge.hookMethod(addSeachBar, new XC_MethodHook() {
                 private Object homeActivity;
-                private Field pageIdField;
                 private int originPageId;
 
                 @Override
@@ -719,18 +722,17 @@ public class Others extends Feature {
                     if (Modifier.isStatic(param.method.getModifiers())) {
                         homeActivity = param.args[0];
                     }
-                    pageIdField = XposedHelpers.findField(homeActivity.getClass(), "A01");
                     originPageId = 0;
-                    if (pageIdField.getType() == int.class) {
-                        originPageId = pageIdField.getInt(homeActivity);
-                        pageIdField.setInt(homeActivity, 1);
+                    if (curPageField.getType() == int.class) {
+                        originPageId = curPageField.getInt(homeActivity);
+                        curPageField.setInt(homeActivity, 1);
                     }
                 }
 
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     if (originPageId != 0) {
-                        pageIdField.setInt(homeActivity, originPageId);
+                        curPageField.setInt(homeActivity, originPageId);
                     }
                 }
             });
