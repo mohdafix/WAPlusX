@@ -282,17 +282,39 @@ public class Unobfuscator {
         return UnobfuscatorCache.getInstance().getMethod(classLoader, () -> {
             var methodReceipt = dexkit.getMethodData(loadReceiptMethod(classLoader));
             var classData = methodReceipt.getDeclaredClass();
-            var messageInfoClass = loadReceiptMessageInfoClass(classLoader);
-            var methodData = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
-                    .paramCount(1)
-                    .addInvoke(methodReceipt.getDescriptor())
-                    .returnType(messageInfoClass)
-                    .addUsingString("class")
-            )).singleOrNull();
-            if (methodData == null) {
-                throw new NoSuchMethodException("loadReceiptMainCallerMethod: method not found");
+            try {
+                var messageInfoClass = loadReceiptMessageInfoClass(classLoader);
+                var methodData = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
+                        .paramCount(1)
+                        .addInvoke(methodReceipt.getDescriptor())
+                        .returnType(messageInfoClass)
+                        .addUsingString("class")
+                )).singleOrNull();
+                if (methodData != null) {
+                    return methodData.getMethodInstance(classLoader);
+                }
+            } catch (Exception e) {
+                XposedBridge.log("loadReceiptMainCallerMethod: loadReceiptMessageInfoClass failed (" + e.getMessage() + "), falling back to candidates query");
             }
-            return methodData.getMethodInstance(classLoader);
+
+            // Fallback: search for candidates invoking the receipt method and containing "class"
+            var candidates = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
+                    .addInvoke(methodReceipt.getDescriptor())
+                    .addUsingString("class")
+            ));
+            if (candidates.isEmpty()) {
+                throw new NoSuchMethodException("loadReceiptMainCallerMethod: no candidates found");
+            }
+            if (candidates.size() == 1) {
+                return candidates.get(0).getMethodInstance(classLoader);
+            }
+            // Disambiguate: prefer the static method with exactly 1 parameter
+            for (var candidate : candidates) {
+                if (Modifier.isStatic(candidate.getModifiers()) && candidate.getParamCount() == 1) {
+                    return candidate.getMethodInstance(classLoader);
+                }
+            }
+            return candidates.get(0).getMethodInstance(classLoader);
         });
     }
 
