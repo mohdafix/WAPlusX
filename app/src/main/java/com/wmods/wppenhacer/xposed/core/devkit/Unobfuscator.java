@@ -260,14 +260,38 @@ public class Unobfuscator {
 
     }
 
+    public static Class<?> loadReceiptMessageInfoClass(ClassLoader classLoader) throws Exception {
+        return UnobfuscatorCache.getInstance().getClass(classLoader, () -> {
+            var method = findFirstMethodUsingStrings(classLoader, StringMatchType.Contains,
+                    "ReadReceiptUtils/buildReadReceiptHandler malformed");
+            if (method == null) {
+                throw new Exception("ReadReceiptUtils method not found");
+            }
+            var methodData = dexkit.getMethodData(method);
+            var deviceJidClass = findFirstClassUsingName(classLoader, StringMatchType.EndsWith, "jid.DeviceJid");
+            for (var caller : methodData.getCallers()) {
+                if (caller.isMethod() && caller.getParamTypeNames().contains(deviceJidClass.getName())) {
+                    return caller.getMethodInstance(classLoader).getDeclaringClass();
+                }
+            }
+            throw new Exception("ReceiptMessageInfoClass not found in callers");
+        });
+    }
+
     public static Method loadReceiptMainCallerMethod(ClassLoader classLoader)throws Exception{
         return UnobfuscatorCache.getInstance().getMethod(classLoader, () -> {
             var methodReceipt = dexkit.getMethodData(loadReceiptMethod(classLoader));
             var classData = methodReceipt.getDeclaredClass();
+            var messageInfoClass = loadReceiptMessageInfoClass(classLoader);
             var methodData = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
+                    .paramCount(1)
                     .addInvoke(methodReceipt.getDescriptor())
+                    .returnType(messageInfoClass)
                     .addUsingString("class")
-            )).single();
+            )).singleOrNull();
+            if (methodData == null) {
+                throw new NoSuchMethodException("loadReceiptMainCallerMethod: method not found");
+            }
             return methodData.getMethodInstance(classLoader);
         });
     }
