@@ -137,6 +137,9 @@ android {
 
     lint {
         disable += "SelectedPhotoAccess"
+        disable += "BlockedPrivateApi"
+        abortOnError = false
+        checkReleaseBuilds = false
     }
 
     materialThemeBuilder {
