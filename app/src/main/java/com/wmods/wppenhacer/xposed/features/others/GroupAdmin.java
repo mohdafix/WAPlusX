@@ -32,14 +32,25 @@ public class GroupAdmin extends Feature {
         var jidFactory = Unobfuscator.loadJidFactory(classLoader);
         var grpcheckAdmin = Unobfuscator.loadGroupCheckAdminMethod(classLoader);
 
+        var viewFieldCache = new java.util.concurrent.ConcurrentHashMap<Class<?>, java.lang.reflect.Field>();
+
         ConversationItemListener.conversationListeners.add(new ConversationItemListener.OnConversationItemListener() {
             @Override
             public void onItemBind(FMessageWpp fMessage, ViewGroup view, int position, View convertView) throws Throwable {
                 var chatCurrentJid = WppCore.getCurrentUserJid();
                 if (chatCurrentJid == null || !chatCurrentJid.isGroup()) return;
                 var grpcheckAdminClass = grpcheckAdmin.getDeclaringClass();
-                var field = ReflectionUtils.findFieldUsingFilter(view.getClass(), f -> f.getType().isAssignableFrom(grpcheckAdminClass));
-                field.setAccessible(true);
+                var viewClass = view.getClass();
+                var field = viewFieldCache.get(viewClass);
+                if (field == null) {
+                    try {
+                        field = ReflectionUtils.findFieldUsingFilter(viewClass, f -> f.getType().isAssignableFrom(grpcheckAdminClass));
+                        field.setAccessible(true);
+                        viewFieldCache.put(viewClass, field);
+                    } catch (Throwable t) {
+                        return;
+                    }
+                }
                 var grpParticipants = field.get(view);
                 var context = view.getContext();
                 ImageView iconAdmin;
