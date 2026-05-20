@@ -57,6 +57,7 @@ public class App extends Application {
         var mode = Integer.parseInt(sharedPreferences.getString("thememode", "0"));
         setThemeMode(mode);
         changeLanguage(this);
+        makePrefsWorldReadable(this);
         // criar um banco de dados
     }
 
@@ -114,6 +115,18 @@ public class App extends Application {
     public static boolean isOriginalPackage() {
         //noinspection ConstantValue
         return BuildConfig.APPLICATION_ID.equals("com.wmods.wppenhacer");
+    }
+
+    @SuppressLint("SetWorldReadable")
+    public static void makePrefsWorldReadable(Context context) {
+        try {
+            File prefsFile = new File(context.getFilesDir().getParent(), "shared_prefs/" + context.getPackageName() + "_preferences.xml");
+            if (prefsFile.exists()) {
+                prefsFile.setReadable(true, false);
+            }
+        } catch (Exception e) {
+            android.util.Log.e("WAE", "Failed to make preferences world readable", e);
+        }
     }
 
 }

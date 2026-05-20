@@ -20,6 +20,13 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        com.wmods.wppenhacer.App.makePrefsWorldReadable(this);
+    }
+
+
     private void applyThemeOverlay() {
         var prefs = PreferenceManager.getDefaultSharedPreferences(this);
         var colorMode = prefs.getString("wae_color_mode", "preset");

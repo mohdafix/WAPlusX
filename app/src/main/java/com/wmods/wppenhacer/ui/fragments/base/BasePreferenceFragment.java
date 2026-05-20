@@ -68,7 +68,15 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat
         Intent intent = new Intent(BuildConfig.APPLICATION_ID + ".MANUAL_RESTART");
         App.getInstance().sendBroadcast(intent);
         chanceStates(s);
+        App.makePrefsWorldReadable(requireContext());
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        App.makePrefsWorldReadable(requireContext());
+    }
+
 
     private void setPreferenceState(String key, boolean enabled) {
         var pref = findPreference(key);

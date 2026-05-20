@@ -41,3 +41,6 @@
 -keepclasseswithmembers class com.assemblyai.api.** {
      *;
 }
+
+# Keep PreferenceManager and prevent method inlining so that the Xposed hook on getDefaultSharedPreferencesMode works in release builds
+-keep class androidx.preference.PreferenceManager { *; }
