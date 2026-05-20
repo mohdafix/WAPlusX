@@ -48,7 +48,7 @@ public class PinnedLimit extends Feature {
             XposedBridge.hookMethod(setPinnedLimitMethod, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (ReflectionUtils.isCalledFromString("SyncResponseHandler"))
+                    if (ReflectionUtils.isCalledFromStrings("SyncResponseHandler"))
                         param.setResult(null);
                 }
             });
