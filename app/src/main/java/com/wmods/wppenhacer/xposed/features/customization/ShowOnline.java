@@ -213,13 +213,18 @@ public class ShowOnline extends Feature {
             public void onBind(WaContactWpp waContact, View view) {
                 try {
                     var userJid = waContact.getUserJid();
-                    if (userJid.isGroup()) return;
-
                     ImageView csDot = showOnlineIcon ? view.findViewById(0x7FFF0001) : null;
-                    if (showOnlineIcon && csDot != null) {
+                    TextView lastSeenText = showOnlineText ? view.findViewById(0x7FFF0002) : null;
+
+                    if (!userJid.isContact() || userJid.isGroup() || userJid.isNewsletter() || userJid.isBroadcast() || userJid.isStatus()) {
+                        if (csDot != null) csDot.setVisibility(View.GONE);
+                        if (lastSeenText != null) lastSeenText.setText("");
+                        return;
+                    }
+
+                    if (csDot != null) {
                         csDot.setVisibility(View.INVISIBLE);
                     }
-                    TextView lastSeenText = showOnlineText ? view.findViewById(0x7FFF0002) : null;
 
                     var tokenDBInstance = fieldTokenDBInstance.get(mInstancePresence);
                     var tokenData = ReflectionUtils.callMethod(tcTokenMethod, tokenDBInstance, userJid.userJid);
