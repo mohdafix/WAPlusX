@@ -122,7 +122,8 @@ class FeatureLoader {
 
         @JvmStatic
         fun start(loader: ClassLoader, pref: XSharedPreferences, sourceDir: String) {
-            modulePath = sourceDir
+            modulePath = com.wmods.wppenhacer.WppXposed.modulePath ?: sourceDir
+            XposedBridge.log("WaEnhancer: FeatureLoader initialized with modulePath: $modulePath, sourceDir: $sourceDir")
             if (!Unobfuscator.initWithPath(sourceDir)) {
                 XposedBridge.log("Can't init dexkit")
                 return
@@ -305,6 +306,7 @@ class FeatureLoader {
 
                     if (App.isOriginalPackage() && pref.getBoolean("update_check", true)) {
                         if (activity.javaClass.simpleName == "HomeActivity" && type == WppCore.ActivityChangeState.ChangeType.RESUMED) {
+                            if (pref.getBoolean("lite_mode",false)) return
                             activity.window.decorView.postDelayed({
                                 CompletableFuture.runAsync(UpdateChecker(activity))
                             }, 2000)
