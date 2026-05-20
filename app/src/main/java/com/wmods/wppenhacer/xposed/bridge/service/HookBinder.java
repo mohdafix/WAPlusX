@@ -59,5 +59,50 @@ public class HookBinder extends WaeIIFace.Stub {
         return Arrays.asList(files);
     }
 
+    private Process activeAudioProcess = null;
+    private Process activeVideoProcess = null;
 
+    @Override
+    public boolean startAudioRootServer(String command) throws RemoteException {
+        try {
+            stopAudioRootServer();
+            activeAudioProcess = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public void stopAudioRootServer() throws RemoteException {
+        if (activeAudioProcess != null) {
+            try {
+                activeAudioProcess.destroy();
+            } catch (Exception ignored) {}
+            activeAudioProcess = null;
+        }
+    }
+
+    @Override
+    public boolean startVideoRootServer(String command) throws RemoteException {
+        try {
+            stopVideoRootServer();
+            activeVideoProcess = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public void stopVideoRootServer() throws RemoteException {
+        if (activeVideoProcess != null) {
+            try {
+                activeVideoProcess.destroy();
+            } catch (Exception ignored) {}
+            activeVideoProcess = null;
+        }
+    }
 }

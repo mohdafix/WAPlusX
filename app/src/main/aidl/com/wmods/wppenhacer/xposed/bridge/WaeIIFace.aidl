@@ -19,4 +19,11 @@ interface WaeIIFace {
 
     boolean exists(String path);
 
+    boolean startAudioRootServer(String command);
+
+    void stopAudioRootServer();
+
+    boolean startVideoRootServer(String command);
+
+    void stopVideoRootServer();
 }

@@ -6,18 +6,16 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Process;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.system.OsConstants;
 import android.util.Log;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.Locale;
 
 public final class RootVideoRecordingServer {
 
@@ -26,7 +24,7 @@ public final class RootVideoRecordingServer {
 
     private static Context systemContext;
     private static Handler mainHandler;
-    private static java.lang.Process activeScreenrecordProcess;
+    private static ScreenVideoCaptureProvider videoCaptureProvider;
     private static boolean isRunning = false;
 
     private static String sessionId;
@@ -63,14 +61,13 @@ public final class RootVideoRecordingServer {
             }
             mainHandler = new Handler(Looper.getMainLooper());
 
-            // Kill any previously orphaned screenrecord sessions to avoid conflicts
-            cleanupOrphanedScreenrecord();
+            // Set up Stdin Monitor thread to handle clean exit when parent process dies or closes pipe
+            startStdinMonitor();
 
             // Register Shutdown Hook to clean up recording processes on JVM exit
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 logInfo("Shutdown hook triggered, cleaning up...");
-                stopRecordingProcess();
-                sendStatusBroadcast("stopped", 0, null, "shutdown");
+                stopRecording("shutdown");
             }));
 
             // Verify if target WhatsApp PID belongs to the target package name
@@ -82,7 +79,7 @@ public final class RootVideoRecordingServer {
 
             // Start recording
             isRunning = true;
-            if (startRecordingProcess()) {
+            if (startRecording()) {
                 sendStatusBroadcast("started", 0, null, null);
                 
                 // Monitor target process loop
@@ -90,8 +87,8 @@ public final class RootVideoRecordingServer {
                 
                 Looper.loop();
             } else {
-                logError("Failed to start screenrecord process");
-                sendStatusBroadcast("error", 4, "Failed to start screenrecord process", null);
+                logError("Failed to start video recording provider");
+                sendStatusBroadcast("error", 4, "Failed to start video recording provider", null);
                 System.exit(1);
             }
 
@@ -165,10 +162,64 @@ public final class RootVideoRecordingServer {
             mSystemThread.setAccessible(true);
             mSystemThread.setBoolean(activityThread, true);
 
+            if (Build.VERSION.SDK_INT >= 31) {
+                try {
+                    Constructor<?> configControllerConstructor = Class.forName("android.app.ConfigurationController")
+                            .getDeclaredConstructor(Class.forName("android.app.ActivityThreadInternal"));
+                    configControllerConstructor.setAccessible(true);
+                    Object configController = configControllerConstructor.newInstance(activityThread);
+                    Field mConfigurationController = activityThreadClass.getDeclaredField("mConfigurationController");
+                    mConfigurationController.setAccessible(true);
+                    mConfigurationController.set(activityThread, configController);
+                } catch (Throwable th) {
+                    logInfo("fillConfigurationController failed (non-fatal): " + th.getMessage());
+                }
+            }
+
+            try {
+                android.app.Instrumentation instrumentation = new android.app.Instrumentation();
+                Field mInstrumentation = activityThreadClass.getDeclaredField("mInstrumentation");
+                mInstrumentation.setAccessible(true);
+                mInstrumentation.set(activityThread, instrumentation);
+            } catch (Throwable th) {
+                logError("fillInstrumentation failed: " + th.getMessage());
+                throw new RuntimeException(th);
+            }
+
+            try {
+                Class<?> appBindDataClass = Class.forName("android.app.ActivityThread$AppBindData");
+                Constructor<?> appBindDataConstructor = appBindDataClass.getDeclaredConstructor();
+                appBindDataConstructor.setAccessible(true);
+                Object appBindData = appBindDataConstructor.newInstance();
+                
+                android.content.pm.ApplicationInfo applicationInfo = new android.content.pm.ApplicationInfo();
+                applicationInfo.packageName = "com.android.shell";
+                
+                Field appInfoField = appBindDataClass.getDeclaredField("appInfo");
+                appInfoField.setAccessible(true);
+                appInfoField.set(appBindData, applicationInfo);
+                
+                Field mBoundApplication = activityThreadClass.getDeclaredField("mBoundApplication");
+                mBoundApplication.setAccessible(true);
+                mBoundApplication.set(activityThread, appBindData);
+            } catch (Throwable th) {
+                logInfo("fillAppInfo failed (non-fatal): " + th.getMessage());
+            }
+
             Object contextObj = activityThreadClass.getDeclaredMethod("getSystemContext").invoke(activityThread);
             if (contextObj instanceof Context) {
                 systemContext = (Context) contextObj;
                 logInfo("Successfully obtained system context");
+                
+                try {
+                    android.app.Application initialApplication = android.app.Instrumentation.newApplication(
+                            android.app.Application.class, systemContext);
+                    Field mInitialApplication = activityThreadClass.getDeclaredField("mInitialApplication");
+                    mInitialApplication.setAccessible(true);
+                    mInitialApplication.set(activityThread, initialApplication);
+                } catch (Throwable th) {
+                    logInfo("fillAppContext failed (non-fatal): " + th.getMessage());
+                }
             } else {
                 throw new RuntimeException("getSystemContext returned invalid type");
             }
@@ -210,133 +261,84 @@ public final class RootVideoRecordingServer {
         }
     }
 
-    private static void cleanupOrphanedScreenrecord() {
+    private static boolean startRecording() {
         try {
-            logInfo("Cleaning up any running screenrecord instances...");
-            java.lang.Process p = Runtime.getRuntime().exec(new String[]{"pkill", "-9", "screenrecord"});
-            p.waitFor();
-        } catch (Exception ignored) {}
-    }
-
-    private static boolean startRecordingProcess() {
-        try {
-            File outFile = new File(outputPath);
-            File parentDir = outFile.getParentFile();
-            if (parentDir != null && !parentDir.exists() && !parentDir.mkdirs()) {
-                logError("Failed to create parent directories for video output");
-                return false;
+            VideoCodec parsedCodec = VideoCodec.H264;
+            String lowerCodec = codec.toLowerCase(Locale.ROOT);
+            if (lowerCodec.contains("h265") || lowerCodec.contains("hevc")) {
+                parsedCodec = VideoCodec.H265;
+            } else if (lowerCodec.contains("av1")) {
+                parsedCodec = VideoCodec.AV1;
             }
 
-            // Clean up any existing file at output path
-            if (outFile.exists() && !outFile.delete()) {
-                logInfo("Could not delete existing file at: " + outputPath);
-            }
+            VideoCaptureConfig config = new VideoCaptureConfig(
+                    0, // Default primary display (displayId = 0)
+                    new File(outputPath),
+                    maxSize,
+                    bitrate,
+                    fps,
+                    2, // Default I-Frame interval
+                    parsedCodec
+            );
 
-            // Query native physical screen size
-            String physicalSize = getPhysicalScreenSize();
-            String recordSize = calculateRecordSize(physicalSize, maxSize);
-
-            // Construct screenrecord command
-            java.util.List<String> command = new java.util.ArrayList<>();
-            command.add("/system/bin/screenrecord");
-            command.add("--bit-rate");
-            command.add(String.valueOf(bitrate));
-            
-            if (recordSize != null) {
-                command.add("--size");
-                command.add(recordSize);
-            }
-            
-            command.add("--time-limit");
-            command.add("3600"); // Up to 1 hour
-            
-            command.add(outputPath);
-
-            logInfo("Launching screenrecord: " + command.toString());
-            ProcessBuilder builder = new ProcessBuilder(command);
-            builder.redirectErrorStream(true);
-            activeScreenrecordProcess = builder.start();
-
-            // Read output stream of screenrecord in a separate thread for diagnostic logging
-            new Thread(() -> {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(activeScreenrecordProcess.getInputStream()))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        logInfo("[screenrecord] " + line);
-                    }
-                } catch (Exception ignored) {}
-            }, "ScreenrecordLogger").start();
+            logInfo("Initializing ScreenVideoCaptureProvider...");
+            videoCaptureProvider = new ScreenVideoCaptureProvider();
+            videoCaptureProvider.start(config);
 
             // Wait a short time to verify it didn't exit immediately due to error
-            Thread.sleep(800);
-            try {
-                int exitValue = activeScreenrecordProcess.exitValue();
-                logError("screenrecord process exited immediately with: " + exitValue);
+            Thread.sleep(1500);
+            if (!videoCaptureProvider.isRunning()) {
+                logError("ScreenVideoCaptureProvider failed to run or exited immediately.");
                 return false;
-            } catch (IllegalThreadStateException ignored) {
-                // Process is still running, which is what we want!
-                return true;
             }
-
+            return true;
         } catch (Exception e) {
-            logError("Exception in startRecordingProcess: " + e.getMessage());
+            logError("Exception in startRecording: " + e.getMessage());
             return false;
         }
     }
 
-    private static void stopRecordingProcess() {
-        if (activeScreenrecordProcess != null) {
+    private static synchronized void stopRecording(String reason) {
+        if (videoCaptureProvider != null) {
             try {
-                logInfo("Stopping active screenrecord process...");
-                // screenrecord finishes cleanly on SIGINT or standard process termination in Java
-                activeScreenrecordProcess.destroy();
-                activeScreenrecordProcess = null;
+                logInfo("Stopping ScreenVideoCaptureProvider (reason=" + reason + ")...");
+                videoCaptureProvider.stop(3000);
+                videoCaptureProvider = null;
             } catch (Exception e) {
-                logError("Failed to destroy screenrecord process: " + e.getMessage());
+                logError("Failed to stop ScreenVideoCaptureProvider: " + e.getMessage());
+            }
+        }
+        if (isRunning) {
+            isRunning = false;
+            sendStatusBroadcast("stopped", 0, null, reason);
+            
+            // Quit looper to let main exit cleanly
+            if (mainHandler != null) {
+                mainHandler.post(() -> {
+                    Looper mainLooper = Looper.getMainLooper();
+                    if (mainLooper != null) {
+                        mainLooper.quitSafely();
+                    }
+                });
             }
         }
     }
 
-    private static String getPhysicalScreenSize() {
-        try {
-            java.lang.Process p = Runtime.getRuntime().exec("wm size");
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-                String line = reader.readLine();
-                if (line != null && line.contains("Physical size:")) {
-                    return line.substring(line.indexOf(":") + 1).trim();
+    private static void startStdinMonitor() {
+        Thread monitorThread = new Thread(() -> {
+            try {
+                logInfo("Starting stdin monitor...");
+                while (System.in.read() != -1) {
+                    // loop until stdin is closed
                 }
+                logInfo("stdin closed, stopping video recording...");
+                stopRecording("requested");
+            } catch (Exception e) {
+                logError("Error in stdin monitor: " + e.getMessage());
             }
-        } catch (Exception ignored) {}
-        return null;
-    }
-
-    private static String calculateRecordSize(String physicalSize, int maxEdgeSize) {
-        if (physicalSize == null || !physicalSize.contains("x")) {
-            return null;
-        }
-        try {
-            String[] parts = physicalSize.split("x");
-            int w = Integer.parseInt(parts[0].trim());
-            int h = Integer.parseInt(parts[1].trim());
-            int maxDimension = Math.max(w, h);
-            
-            if (maxDimension <= maxEdgeSize) {
-                // Ensure dimensions are multiples of 2
-                w = (w / 2) * 2;
-                h = (h / 2) * 2;
-                return w + "x" + h;
-            }
-            
-            double scale = (double) maxEdgeSize / maxDimension;
-            int newW = (int) Math.round(w * scale);
-            int newH = (int) Math.round(h * scale);
-            
-            // screenrecord requires width and height to be even
-            newW = (newW / 2) * 2;
-            newH = (newH / 2) * 2;
-            return newW + "x" + newH;
-        } catch (Exception ignored) {}
-        return null;
+        }, "RootVideoServer-StdinMonitor");
+        monitorThread.setDaemon(true);
+        monitorThread.start();
     }
 
     private static void monitorTargetProcess() {
@@ -344,23 +346,16 @@ public final class RootVideoRecordingServer {
         while (isRunning) {
             if (!isTargetProcessValid(targetPid, targetPackage)) {
                 logInfo("Target package " + targetPackage + " (PID " + targetPid + ") exited. Stopping recording.");
-                isRunning = false;
-                stopRecordingProcess();
-                sendStatusBroadcast("stopped", 0, null, "target_exited");
-                
-                // Quit looper to let main exit cleanly
-                if (mainHandler != null) {
-                    mainHandler.post(() -> {
-                        Looper mainLooper = Looper.getMainLooper();
-                        if (mainLooper != null) {
-                            mainLooper.quitSafely();
-                        }
-                    });
-                }
+                stopRecording("target_exited");
+                break;
+            }
+            if (videoCaptureProvider != null && !videoCaptureProvider.isRunning()) {
+                logInfo("ScreenVideoCaptureProvider stopped running unexpectedly.");
+                stopRecording("unexpected_stop");
                 break;
             }
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
