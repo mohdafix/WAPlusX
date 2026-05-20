@@ -311,6 +311,15 @@ class AntiRevoke(loader: ClassLoader, preferences: XSharedPreferences) : Feature
 
     private fun bindRevokedMessageUI(fMessage: FMessageWpp, dateTextView: TextView?, antirevokeType: String) {
         if (dateTextView == null) return
+        val antirevokeValue = prefs.getString(antirevokeType, "0")?.toIntOrNull() ?: 0
+        if (antirevokeValue == 0) {
+            val originalMessage = XposedHelpers.getAdditionalInstanceField(dateTextView, "wae_original_text") as? String
+            dateTextView.setCompoundDrawables(null, null, null, null)
+            if (originalMessage != null) dateTextView.text = originalMessage
+            dateTextView.paint.isUnderlineText = false
+            dateTextView.setOnClickListener(null)
+            return
+        }
 
         val key = fMessage.key
         val messageRevokedList = getRevokedMessagesForJid(fMessage)
@@ -341,8 +350,6 @@ class AntiRevoke(loader: ClassLoader, preferences: XSharedPreferences) : Feature
             }
         }
 
-        prefs.reload()
-        val antirevokeValue = prefs.getString(antirevokeType, "0")?.toIntOrNull() ?: 0
         XposedBridge.log("AntiRevoke: bindRevokedMessageUI type=$antirevokeType value=$antirevokeValue messageID=$messageID")
         when (antirevokeValue) {
             1 -> {
