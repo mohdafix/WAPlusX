@@ -45,8 +45,13 @@ public class RootRecordingManager {
             if (isGlobal) cmd.append(" --global-capture true");
             if (isAdvanced) cmd.append(" --advanced-enabled true");
 
-            activeRootProcess = Runtime.getRuntime().exec(new String[]{"su", "-c", cmd.toString()});
-            return true;
+            com.wmods.wppenhacer.xposed.bridge.WaeIIFace bridge = com.wmods.wppenhacer.xposed.core.WppCore.getClientBridge();
+            if (bridge != null) {
+                return bridge.startAudioRootServer(cmd.toString());
+            } else {
+                activeRootProcess = Runtime.getRuntime().exec(new String[]{"su", "-c", cmd.toString()});
+                return true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -54,6 +59,14 @@ public class RootRecordingManager {
     }
 
     public static void stopRootServer() {
+        try {
+            com.wmods.wppenhacer.xposed.bridge.WaeIIFace bridge = com.wmods.wppenhacer.xposed.core.WppCore.getClientBridge();
+            if (bridge != null) {
+                bridge.stopAudioRootServer();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (activeRootProcess != null) {
             try {
                 activeRootProcess.destroy();

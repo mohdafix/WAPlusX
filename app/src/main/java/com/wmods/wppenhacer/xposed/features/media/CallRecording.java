@@ -601,6 +601,14 @@ public class CallRecording extends Feature {
             if (shouldRecordVideo) {
                 try {
                     String apkPath = FeatureLoader.modulePath;
+                    try {
+                        Context context = FeatureLoader.mApp;
+                        if (context != null) {
+                            apkPath = context.getPackageManager().getApplicationInfo("com.wmods.wppenhacer", 0).sourceDir;
+                        }
+                    } catch (Exception e) {
+                        logDebug("WaEnhancer: Failed to resolve apkPath dynamically: " + e.getMessage());
+                    }
                     int myPid = android.os.Process.myPid();
                     String videoSessionId = String.valueOf(System.currentTimeMillis());
 
@@ -630,7 +638,7 @@ public class CallRecording extends Feature {
                     String codec = prefs.getString("call_recording_video_codec", "h264");
 
                     StringBuilder cmd = new StringBuilder();
-                    cmd.append("export CLASSPATH=").append(shellEscape(apkPath)).append(" && ");
+                    cmd.append("CLASSPATH=").append(shellEscape(apkPath)).append(" ");
                     cmd.append("app_process / com.wmods.wppenhacer.xposed.bridge.video.RootVideoRecordingServer ");
                     cmd.append("--session-id ").append(shellEscape(videoSessionId)).append(" ");
                     cmd.append("--target-package ").append(shellEscape(packageName)).append(" ");
@@ -642,8 +650,15 @@ public class CallRecording extends Feature {
                     cmd.append("--codec ").append(shellEscape(codec));
 
                     logDebug("WaEnhancer: Launching video server command: " + cmd.toString());
-                    Process videoProcess = Runtime.getRuntime().exec(new String[]{"su", "-c", cmd.toString()});
-                    activeVideoProcess.set(videoProcess);
+                    bridge = WppCore.getClientBridge();
+                    if (bridge != null) {
+                        boolean ok = bridge.startVideoRootServer(cmd.toString());
+                        logDebug("WaEnhancer: Video server launch via bridge status: " + ok);
+                    } else {
+                        logDebug("WaEnhancer: Bridge unavailable, falling back to local su execution");
+                        Process videoProcess = Runtime.getRuntime().exec(new String[]{"su", "-c", cmd.toString()});
+                        activeVideoProcess.set(videoProcess);
+                    }
                 } catch (Exception e) {
                     logDebug("WaEnhancer: Failed to start root video server: " + e.getMessage());
                 }
@@ -788,6 +803,12 @@ public class CallRecording extends Feature {
             File outputFile = outputFileRef.getAndSet(null);
             closeOutputResources(!saved);
 
+            WaeIIFace bridge = WppCore.getClientBridge();
+            if (bridge != null) {
+                try {
+                    bridge.stopVideoRootServer();
+                } catch (Exception ignored) {}
+            }
             Process videoProc = activeVideoProcess.getAndSet(null);
             if (videoProc != null) {
                 try {
