@@ -257,6 +257,34 @@ public class Unobfuscator {
                             + "]"
             );
         });
+
+    }
+
+    public static Method loadReceiptMainCallerMethod(ClassLoader classLoader)throws Exception{
+        return UnobfuscatorCache.getInstance().getMethod(classLoader, () -> {
+            var methodReceipt = dexkit.getMethodData(loadReceiptMethod(classLoader));
+            var classData = methodReceipt.getDeclaredClass();
+            var methodData = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
+                    .addInvoke(methodReceipt.getDescriptor())
+                    .addUsingString("class")
+            )).single();
+            return methodData.getMethodInstance(classLoader);
+        });
+    }
+
+
+    public static Method[] loadReceiptCallersMethod(ClassLoader classLoader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethods(classLoader, () -> {
+            var methodData = dexkit.getMethodData(loadReceiptMainCallerMethod(classLoader));
+            ArrayList<Method> methods = new ArrayList<>();
+            for (var methodCaller: methodData.getCallers()){
+                if (methodCaller.getParamCount() > 1 && methodCaller.getParamTypes().get(0).getSimpleName().equals("Message")){
+                    methods.add(methodCaller.getMethodInstance(classLoader));
+                }
+            }
+            if (methods.isEmpty())return null;
+            return methods.toArray(new Method[0]);
+        });
     }
 
     public synchronized static Method loadReceiptOutsideChat(ClassLoader classLoader) throws Exception {
@@ -3179,4 +3207,16 @@ public class Unobfuscator {
             return methods.get(0).getMethodInstance(loader);
         });
     }
+
+    public static java.lang.reflect.Field loadGetCurrentPageInHomeField(@NonNull ClassLoader classLoader) throws Exception {
+        return UnobfuscatorCache.getInstance().getField(classLoader, ()-> {
+            var method = dexkit.getMethodData(loadAddOptionSearchBarMethod(classLoader));
+            for (var uField: method.getUsingFields()){
+                if (uField.getField().getDeclaredClassName().equals(method.getDeclaredClassName()) && uField.getField().getTypeName().equals("int"))
+                    return uField.getField().getFieldInstance(classLoader);
+            }
+            throw new NoSuchFieldException("CurrentPageInHome field not found");
+        });
+    }
 }
+
