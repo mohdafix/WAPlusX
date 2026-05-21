@@ -65,6 +65,9 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String s) {
+        if (!isAdded() || getContext() == null) {
+            return;
+        }
         Intent intent = new Intent(BuildConfig.APPLICATION_ID + ".MANUAL_RESTART");
         App.getInstance().sendBroadcast(intent);
         chanceStates(s);
@@ -75,6 +78,14 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat
     public void onPause() {
         super.onPause();
         App.makePrefsWorldReadable(requireContext());
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mPrefs != null) {
+            mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        }
+        super.onDestroy();
     }
 
 
