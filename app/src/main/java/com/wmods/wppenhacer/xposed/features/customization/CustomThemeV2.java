@@ -55,6 +55,18 @@ public class CustomThemeV2 extends Feature {
     private Properties properties;
     // private ViewGroup mContent;
 
+    private boolean cachedLiteMode;
+    private boolean cachedWallpaper;
+    private int cachedWallpaperAlpha;
+    private int cachedWallpaperAlphaNav;
+    private int cachedWallpaperAlphaToolbar;
+
+    private int cachedPrimaryColor;
+    private int cachedTextColor;
+    private int cachedBackgroundColor;
+    private boolean cachedChangeColorEnabled;
+    private String cachedChangeColorMode;
+
     public CustomThemeV2(@NonNull ClassLoader classLoader, @NonNull XSharedPreferences preferences) {
         super(classLoader, preferences);
     }
@@ -114,6 +126,19 @@ public class CustomThemeV2 extends Feature {
     @Override
     public void doHook() throws Throwable {
         properties = Utils.getProperties(prefs, "custom_css", "custom_filters");
+        
+        cachedLiteMode = prefs.getBoolean("lite_mode", false);
+        cachedWallpaper = prefs.getBoolean("wallpaper", false);
+        cachedWallpaperAlpha = prefs.getInt("wallpaper_alpha", 30);
+        cachedWallpaperAlphaNav = prefs.getInt("wallpaper_alpha_navigation", 30);
+        cachedWallpaperAlphaToolbar = prefs.getInt("wallpaper_alpha_toolbar", 30);
+
+        cachedPrimaryColor = prefs.getInt("primary_color", 0);
+        cachedTextColor = prefs.getInt("text_color", 0);
+        cachedBackgroundColor = prefs.getInt("background_color", 0);
+        cachedChangeColorEnabled = prefs.getBoolean("changecolor", false);
+        cachedChangeColorMode = prefs.getString("changecolor_mode", "manual");
+
         hookTheme();
         hookWallpaper();
         XposedBridge.hookAllMethods(XposedHelpers.findClass("android.app.ActivityThread", classLoader),
@@ -127,25 +152,25 @@ public class CustomThemeV2 extends Feature {
     }
 
     private void loadAndApplyColorsWallpaper() {
-        if (prefs.getBoolean("lite_mode", false))
+        if (cachedLiteMode)
             return;
-        var customWallpaper = prefs.getBoolean("wallpaper", false);
+        var customWallpaper = cachedWallpaper;
 
         if (customWallpaper || properties.containsKey("wallpaper")) {
 
             wallAlpha = new HashMap<>(IColors.colors);
-            var wallpaperAlpha = customWallpaper ? prefs.getInt("wallpaper_alpha", 30)
+            var wallpaperAlpha = customWallpaper ? cachedWallpaperAlpha
                     : Utils.tryParseInt(properties.getProperty("wallpaper_alpha"), 30);
             replaceTransparency(wallAlpha, (100 - wallpaperAlpha) / 100.0f);
 
             navAlpha = new HashMap<>(IColors.colors);
-            var wallpaperAlphaNav = customWallpaper ? prefs.getInt("wallpaper_alpha_navigation", 30)
+            var wallpaperAlphaNav = customWallpaper ? cachedWallpaperAlphaNav
                     : Utils.tryParseInt(properties.getProperty("wallpaper_alpha_navigation"), 30);
             replaceTransparency(navAlpha, (100 - wallpaperAlphaNav) / 100.0f);
 
             toolbarAlpha = new HashMap<>(IColors.colors);
 
-            var wallpaperToolbarAlpha = customWallpaper ? prefs.getInt("wallpaper_alpha_toolbar", 30)
+            var wallpaperToolbarAlpha = customWallpaper ? cachedWallpaperAlphaToolbar
                     : Utils.tryParseInt(properties.getProperty("wallpaper_alpha_toolbar"), 30);
             replaceTransparency(toolbarAlpha, (100 - wallpaperToolbarAlpha) / 100.0f);
         }
@@ -162,7 +187,7 @@ public class CustomThemeV2 extends Feature {
 
     private void hookWallpaper() throws Exception {
 
-        if (!prefs.getBoolean("wallpaper", false))
+        if (!cachedWallpaper)
             return;
 
         loadAndApplyColorsWallpaper();
@@ -298,11 +323,11 @@ public class CustomThemeV2 extends Feature {
 
         IColors.initColors();
 
-        var primaryColorInt = prefs.getInt("primary_color", 0);
-        var textColorInt = prefs.getInt("text_color", 0);
-        var backgroundColorInt = prefs.getInt("background_color", 0);
-        var changeColorEnabled = prefs.getBoolean("changecolor", false);
-        var changeColorMode = prefs.getString("changecolor_mode", "manual");
+        var primaryColorInt = cachedPrimaryColor;
+        var textColorInt = cachedTextColor;
+        var backgroundColorInt = cachedBackgroundColor;
+        var changeColorEnabled = cachedChangeColorEnabled;
+        var changeColorMode = cachedChangeColorMode;
         var useMonetColors = changeColorEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
                 && Objects.equals(changeColorMode, "monet");
 
