@@ -455,9 +455,23 @@ public class UnobfuscatorCache {
     }
 
     private String getKeyName() {
-        AtomicReference<String> keyName = new AtomicReference<>("");
-        Arrays.stream(Thread.currentThread().getStackTrace()).filter(stackTraceElement -> stackTraceElement.getClassName().equals(Unobfuscator.class.getName())).findFirst().ifPresent(stackTraceElement -> keyName.set(stackTraceElement.getMethodName()));
-        return keyName.get();
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        for (StackTraceElement element : stackTrace) {
+            String className = element.getClassName();
+            String methodName = element.getMethodName();
+            if (className.equals(Unobfuscator.class.getName())) {
+                // Skip synthetic/lambda methods to find the real calling method name in Unobfuscator
+                if (methodName.contains("lambda$") || methodName.contains("$") || methodName.equals("call")) {
+                    continue;
+                }
+                return methodName;
+            }
+        }
+        // Fallback: look at index 3
+        if (stackTrace.length > 3) {
+            return stackTrace[3].getMethodName();
+        }
+        return "";
     }
 
     public Constructor getConstructor(ClassLoader loader, FunctionCall functionCall) throws Exception {

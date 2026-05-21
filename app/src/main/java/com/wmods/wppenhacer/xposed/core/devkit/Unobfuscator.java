@@ -207,9 +207,8 @@ public class Unobfuscator {
     // TODO: Classes and Methods for FreezeSeen
     public synchronized static Method loadFreezeSeenMethod(ClassLoader classLoader) throws Exception {
         return UnobfuscatorCache.getInstance().getMethod(classLoader,
-                () -> UnobfuscatorCache.getInstance().getMethod(classLoader,
-                        () -> findFirstMethodUsingStrings(classLoader, StringMatchType.Contains,
-                                "presencestatemanager/setAvailable/new-state")));
+                () -> findFirstMethodUsingStrings(classLoader, StringMatchType.Contains,
+                        "presencestatemanager/setAvailable/new-state"));
     }
 
     // TODO: Classes and Methods for GhostMode
@@ -284,14 +283,16 @@ public class Unobfuscator {
             var classData = methodReceipt.getDeclaredClass();
             try {
                 var messageInfoClass = loadReceiptMessageInfoClass(classLoader);
-                var methodData = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
+                var methods = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
                         .paramCount(1)
                         .addInvoke(methodReceipt.getDescriptor())
                         .returnType(messageInfoClass)
                         .addUsingString("class")
-                )).singleOrNull();
-                if (methodData != null) {
-                    return methodData.getMethodInstance(classLoader);
+                ));
+                if (methods.size() == 1) {
+                    return methods.get(0).getMethodInstance(classLoader);
+                } else if (methods.size() > 1) {
+                    XposedBridge.log("loadReceiptMainCallerMethod: multiple methods found (" + methods.size() + "), falling back to candidates query");
                 }
             } catch (Exception e) {
                 XposedBridge.log("loadReceiptMainCallerMethod: loadReceiptMessageInfoClass failed (" + e.getMessage() + "), falling back to candidates query");

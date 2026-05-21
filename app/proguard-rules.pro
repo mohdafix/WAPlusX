@@ -28,27 +28,24 @@
      public static <fields>;
 }
 
--keepclasseswithmembers class com.wmods.** {
-     *;
-}
+# Keep all com.wmods classes and members to prevent obfuscation/shrinking in the Xposed module
+-keep class com.wmods.** { *; }
+-keepclassmembers class com.wmods.** { *; }
 
--keepclasseswithmembernames class com.wmods.**
+-keep class cz.vutbr.** { *; }
 
--keepclasseswithmembers class cz.vutbr.** {
-     *;
-}
-
--keepclasseswithmembers class com.assemblyai.api.** {
-     *;
-}
+-keep class com.assemblyai.api.** { *; }
 
 # Keep PreferenceManager and prevent method inlining so that the Xposed hook on getDefaultSharedPreferencesMode works in release builds
 -keep class androidx.preference.PreferenceManager { *; }
 
+# Keep DexKit classes and members
+-keep class org.luckypray.dexkit.** { *; }
+-keepclassmembers class org.luckypray.dexkit.** { *; }
+-dontwarn org.luckypray.dexkit.**
+
 # Keep source file names and line numbers for better retracing and runtime stacktrace inspection
 -keepattributes SourceFile,LineNumberTable
 
-# Disable method inlining to ensure stack trace-based lookups (e.g. in UnobfuscatorCache) work correctly in release builds
--optimizations !method/inlining/*
 
 
