@@ -43,4 +43,12 @@
 }
 
 # Keep PreferenceManager and prevent method inlining so that the Xposed hook on getDefaultSharedPreferencesMode works in release builds
--keep class androidx.preference.PreferenceManager { *; }
+-keep class androidx.preference.PreferenceManager { *; }
+
+# Keep source file names and line numbers for better retracing and runtime stacktrace inspection
+-keepattributes SourceFile,LineNumberTable
+
+# Disable method inlining to ensure stack trace-based lookups (e.g. in UnobfuscatorCache) work correctly in release builds
+-optimizations !method/inlining/*
+
+
