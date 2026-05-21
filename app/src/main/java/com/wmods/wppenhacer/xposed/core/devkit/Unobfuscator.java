@@ -1711,6 +1711,104 @@ public class Unobfuscator {
         });
     }
 
+    public synchronized static Method loadGroupAdminMethod(ClassLoader loader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+            // Try searching by string anchors first (more robust)
+            var method = findFirstMethodUsingStrings(loader, StringMatchType.Contains,
+                    "ConversationRow/setupUserNameInGroupView/",
+                    "ConversationRow/setupUserNameInGroupView",
+                    "setupUserNameInGroupView");
+
+            if (method == null) {
+                // Fallback 1: Find the class that uses name_in_group AND has getFMessage()
+                // Then find the render/bind method within that class
+                int nameInGroupId = Utils.getID("name_in_group", "id");
+                if (nameInGroupId > 0) {
+                    var globalResults = dexkit.findMethod(FindMethod.create()
+                            .matcher(MethodMatcher.create().addUsingNumber(nameInGroupId)));
+
+                    // Step 1: Find the target class (has getFMessage + is a View)
+                    Class<?> targetClass = null;
+                    for (var mData : globalResults) {
+                        if (mData.getName().equals("<init>") || mData.getName().equals("<clinit>")) continue;
+                        
+                        Class<?> cls;
+                        try {
+                            cls = mData.getDeclaredClass().getInstance(loader);
+                        } catch (Throwable t) {
+                            continue;
+                        }
+
+                        boolean hasFMessage = false;
+                        Class<?> check = cls;
+                        while (check != null && check != Object.class) {
+                            try {
+                                check.getDeclaredMethod("getFMessage");
+                                hasFMessage = true;
+                                break;
+                            } catch (NoSuchMethodException ignored) {
+                            }
+                            check = check.getSuperclass();
+                        }
+
+                        if (hasFMessage && android.view.View.class.isAssignableFrom(cls)) {
+                            targetClass = cls;
+                            break;
+                        }
+                    }
+
+                    // Step 2: In the target class, find bind candidates (Priority: Static -> Member)
+                    if (targetClass != null) {
+                        var fMessageClass = loadFMessageClass(loader);
+                        var classData = dexkit.getClassData(targetClass);
+                        if (classData != null) {
+                            // Priority 1: static A04(Row, Message, ..., ...) - Wildcard message type
+                            var bindMethods = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
+                                    .modifiers(Modifier.STATIC)
+                                    .paramCount(4)
+                                    .paramTypes(targetClass.getName(), null, null, "java.lang.String")
+                                    .returnType("void")));
+
+                            // Priority 2: static A03(Row, Message) - Wildcard message type
+                            if (bindMethods.isEmpty()) {
+                                bindMethods = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
+                                        .modifiers(Modifier.STATIC)
+                                        .paramCount(2)
+                                        .paramTypes(targetClass.getName(), null)
+                                        .returnType("void")));
+                            }
+                            
+                            // Priority 3: member setFMessage(Message)
+                            if (bindMethods.isEmpty()) {
+                                bindMethods = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
+                                        .paramCount(1)
+                                        .paramTypes(fMessageClass.getName())
+                                        .returnType("void")));
+                            }
+                            
+                            if (!bindMethods.isEmpty()) {
+                                method = bindMethods.get(0).getMethodInstance(loader);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (method == null) {
+                // Fallback to original name (if not obfuscated)
+                var results = dexkit.findMethod(
+                        FindMethod.create().matcher(MethodMatcher.create().name("setupUsernameInGroupViewContainer")));
+                if (!results.isEmpty()) {
+                    method = results.get(0).getMethodInstance(loader);
+                }
+            }
+
+            if (method == null)
+                throw new RuntimeException("GroupAdmin method not found");
+            return method;
+        });
+    }
+
     public synchronized static Method loadGroupCheckAdminMethod(ClassLoader loader) throws Exception {
         return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
 

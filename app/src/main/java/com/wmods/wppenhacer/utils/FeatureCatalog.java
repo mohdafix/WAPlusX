@@ -953,6 +953,14 @@ public class FeatureCatalog {
                 null,
                 Arrays.asList("admin", "group", "icon")));
 
+        catalog.add(new SearchableFeature("admin_emoji",
+                context.getString(R.string.admin_emoji_title),
+                context.getString(R.string.admin_emoji_sum),
+                SearchableFeature.Category.CUSTOMIZATION,
+                SearchableFeature.FragmentType.CUSTOMIZATION,
+                null,
+                Arrays.asList("admin", "group", "emoji", "text", "badge", "indicator")));
+
         catalog.add(new SearchableFeature("floatingmenu",
                 context.getString(R.string.new_context_menu_ui),
                 context.getString(R.string.new_context_menu_ui_sum),
