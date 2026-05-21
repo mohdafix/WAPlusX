@@ -142,35 +142,10 @@ class HideSeen(loader: ClassLoader, preferences: XSharedPreferences) :
     }
 
     private fun hookReceiptMethod() {
-
         val receiptMethod = Unobfuscator.loadReceiptMethod(classLoader)
-        val receiptMainCallerMethod = Unobfuscator.loadReceiptMainCallerMethod(classLoader);
-        val receiptCallerMethods = Unobfuscator.loadReceiptCallersMethod(classLoader);
-
-        val inManualReceiptCheck = ThreadLocal<Boolean>();
-
-        val hookCallerMethod = object : XC_MethodHook(){
-            override fun beforeHookedMethod(param: MethodHookParam) {
-                val firstArg = param.args[0] as? Message ?: return
-                if (firstArg.arg1 != 419 && firstArg.arg1 != 89)return
-                val obj = firstArg.obj
-                inManualReceiptCheck.set(true)
-                val checkResult = try {
-                    receiptMainCallerMethod.invoke(null, obj);
-                }finally {
-                    inManualReceiptCheck.set(false)
-                }
-
-                if (checkResult == null)
-                    param.result = null;
-            }
-        }
-        receiptCallerMethods.forEach { XposedBridge.hookMethod(it, hookCallerMethod) }
 
         XposedBridge.hookMethod(receiptMethod, object : XC_MethodHook() {
-
             override fun afterHookedMethod(param: MethodHookParam) {
-
                 val protocolTreeNodeWpp = ProtocolTreeNodeWpp(param.result)
 
                 val typeKV = protocolTreeNodeWpp.attributes.firstOrNull {
@@ -187,11 +162,6 @@ class HideSeen(loader: ClassLoader, preferences: XSharedPreferences) :
 
                 if (hideSeenItem?.viewed ?: false) return
 
-                hideSeenItem?.let {
-                    param.result = null
-                    return
-                }
-
                 val hideSeen = checkPrivacyAndHideSeen(fmessageKey)
                 val hideReceipt = checkPrivacyAndHideReceipt(fmessageKey)
 
@@ -206,9 +176,7 @@ class HideSeen(loader: ClassLoader, preferences: XSharedPreferences) :
                     protocolTreeNodeWpp.removeAllKeyValuesByKey("type")
                 }
 
-                if (inManualReceiptCheck.get() ?: false)return
-
-                if (hideReceipt || hideSeen) {
+                if (hideSeenItem == null && (hideReceipt || hideSeen)) {
                     MessageHistoryStore.getInstance().insertHideSeenMessage(
                         fmessageKey.remoteJid.phoneRawString,
                         fmessageKey.messageID,
