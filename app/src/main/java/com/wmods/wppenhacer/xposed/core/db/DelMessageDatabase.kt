@@ -112,23 +112,27 @@ abstract class DelMessageDatabase : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 // --- Fix delmessages table ---
                 db.execSQL(
-                    "CREATE TABLE delmessages_new (" +
+                    "CREATE TABLE IF NOT EXISTS delmessages_new (" +
                             "_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                             "jid TEXT, " +
                             "msgid TEXT, " +
                             "timestamp INTEGER DEFAULT 0)"
                 )
-                db.execSQL(
-                    "INSERT INTO delmessages_new (_id, jid, msgid, timestamp) " +
-                            "SELECT _id, jid, msgid, timestamp FROM delmessages"
-                )
-                db.execSQL("DROP TABLE delmessages")
+                try {
+                    db.execSQL(
+                        "INSERT INTO delmessages_new (_id, jid, msgid, timestamp) " +
+                                "SELECT _id, jid, msgid, timestamp FROM delmessages"
+                    )
+                    db.execSQL("DROP TABLE delmessages")
+                } catch (e: Exception) {
+                    // Ignore, table might not exist
+                }
                 db.execSQL("ALTER TABLE delmessages_new RENAME TO delmessages")
-                db.execSQL("CREATE UNIQUE INDEX index_delmessages_jid_msgid ON delmessages (jid, msgid)")
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_delmessages_jid_msgid ON delmessages (jid, msgid)")
 
                 // --- Fix deleted_for_me table ---
                 db.execSQL(
-                    "CREATE TABLE deleted_for_me_new (" +
+                    "CREATE TABLE IF NOT EXISTS deleted_for_me_new (" +
                             "_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                             "key_id TEXT, " +
                             "chat_jid TEXT, " +
@@ -143,18 +147,22 @@ abstract class DelMessageDatabase : RoomDatabase() {
                             "contact_name TEXT, " +
                             "package_name TEXT DEFAULT 'com.whatsapp')"
                 )
-                db.execSQL(
-                    "INSERT INTO deleted_for_me_new (" +
-                            "_id, key_id, chat_jid, sender_jid, timestamp, original_timestamp, " +
-                            "media_type, text_content, media_path, media_caption, is_from_me, " +
-                            "contact_name, package_name) " +
-                            "SELECT _id, key_id, chat_jid, sender_jid, timestamp, original_timestamp, " +
-                            "media_type, text_content, media_path, media_caption, is_from_me, " +
-                            "contact_name, COALESCE(package_name, 'com.whatsapp') FROM deleted_for_me"
-                )
-                db.execSQL("DROP TABLE deleted_for_me")
+                try {
+                    db.execSQL(
+                        "INSERT INTO deleted_for_me_new (" +
+                                "_id, key_id, chat_jid, sender_jid, timestamp, original_timestamp, " +
+                                "media_type, text_content, media_path, media_caption, is_from_me, " +
+                                "contact_name, package_name) " +
+                                "SELECT _id, key_id, chat_jid, sender_jid, timestamp, original_timestamp, " +
+                                "media_type, text_content, media_path, media_caption, is_from_me, " +
+                                "contact_name, COALESCE(package_name, 'com.whatsapp') FROM deleted_for_me"
+                    )
+                    db.execSQL("DROP TABLE deleted_for_me")
+                } catch (e: Exception) {
+                    // Ignore, table might not exist
+                }
                 db.execSQL("ALTER TABLE deleted_for_me_new RENAME TO deleted_for_me")
-                db.execSQL("CREATE UNIQUE INDEX index_deleted_for_me_key_id_chat_jid ON deleted_for_me (key_id, chat_jid)")
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_deleted_for_me_key_id_chat_jid ON deleted_for_me (key_id, chat_jid)")
             }
         }
 
