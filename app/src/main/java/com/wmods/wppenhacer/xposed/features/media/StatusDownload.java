@@ -46,7 +46,11 @@ public class StatusDownload extends Feature {
                 var fMessage = fMessageList.get(currentIndex);
                 if (fMessage.getKey().isFromMe) return null;
                 if (!fMessage.isMediaFile()) return null;
-                return menu.add(0, R.string.download, 0, R.string.download);
+                var menuItem = menu.add(0, R.string.download, 0, R.string.download);
+                if (fMessage.getMediaFile() == null) {
+                    menuItem.setTitle(Utils.getApplication().getString(R.string.download) + " \u23F3");
+                }
+                return menuItem;
             }
 
             @Override
