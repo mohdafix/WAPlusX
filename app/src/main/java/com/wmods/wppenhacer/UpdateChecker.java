@@ -104,6 +104,9 @@ public class UpdateChecker implements Runnable {
                     showUpdateDialog(finalHash, finalChangelog, finalPublishedAt);
                 });
             }
+        } catch (java.io.IOException e) {
+            // Ignore network timeouts and connection errors to avoid spamming Xposed logs
+            XposedBridge.log("UpdateChecker: Network error - " + e.getMessage());
         } catch (Exception e) {
             XposedBridge.log(e);
         }
