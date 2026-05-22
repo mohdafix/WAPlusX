@@ -308,7 +308,8 @@ class FeatureLoader {
                         if (activity.javaClass.simpleName == "HomeActivity" && type == WppCore.ActivityChangeState.ChangeType.RESUMED) {
                             if (pref.getBoolean("lite_mode",false)) return
                             activity.window.decorView.postDelayed({
-                                CompletableFuture.runAsync(UpdateChecker(activity))
+                                // Disable update checker for now
+                                // CompletableFuture.runAsync(UpdateChecker(activity))
                             }, 2000)
                         }
                     }
