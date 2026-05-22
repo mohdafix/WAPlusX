@@ -193,6 +193,10 @@
         </receiver>
 
 
+    
+        <activity
+            android:name=".ui.fragments.SupportedVersionsActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 

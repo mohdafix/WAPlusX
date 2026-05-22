@@ -147,6 +147,18 @@ object WppCore {
         loadWADatabase()
         hookStatusToMessageMapper(loader)
 
+        XposedBridge.hookAllMethods(Activity::class.java, "onStart", object : XC_MethodHook() {
+            override fun beforeHookedMethod(param: MethodHookParam) {
+                mCurrentActivity = param.thisObject as Activity
+            }
+        })
+
+        XposedBridge.hookAllMethods(Activity::class.java, "onResume", object : XC_MethodHook() {
+            override fun beforeHookedMethod(param: MethodHookParam) {
+                mCurrentActivity = param.thisObject as Activity
+            }
+        })
+
         if (!pref.getBoolean("lite_mode", false)) {
             initBridge(Utils.getApplication())
         }

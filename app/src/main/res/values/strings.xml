@@ -558,4 +558,10 @@
     <string name="bottom_navigation_tab_visibility">Toggle tab visibility</string>
     <string name="bottom_navigation_tab_chats_locked">Main chats tab cannot be hidden</string>
     <string name="bottom_navigation_tab_updates_locked">Updates tab is locked in this configuration</string>
+    <string name="update">Update</string>
+    <string name="release_channel_title">Update Channel</string>
+    <string name="release_channel_stable">Stable</string>
+    <string name="clear_obfuscate_cache">Clear Obfuscate Cache</string>
+    <string name="view_changelog">View Changelog</string>
+    <string name="release_channel_beta">Beta</string>
 </resources>
