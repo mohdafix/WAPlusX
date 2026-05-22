@@ -134,8 +134,10 @@ object WppCore {
 
         // load me current PhoneJid
         val meManagerClass = Unobfuscator.loadMeManagerClass(loader)
-        meManagerPhoneJidField =
-            ReflectionUtils.getFieldByType(meManagerClass, FMessageWpp.UserJid.TYPE_PHONEUSERJID)
+        if (FMessageWpp.UserJid.TYPE_PHONEUSERJID != null) {
+            meManagerPhoneJidField =
+                ReflectionUtils.getFieldByType(meManagerClass, FMessageWpp.UserJid.TYPE_PHONEUSERJID!!)
+        }
         XposedBridge.hookAllConstructors(meManagerClass, object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {

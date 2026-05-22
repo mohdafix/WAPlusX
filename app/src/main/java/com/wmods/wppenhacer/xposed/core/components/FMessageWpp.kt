@@ -508,7 +508,7 @@ class FMessageWpp(fMessage: Any?) {
 
             lateinit var TYPE_JID: Class<*>
 
-            lateinit var TYPE_PHONEUSERJID: Class<*>
+            var TYPE_PHONEUSERJID: Class<*>? = null
 
             private fun checkValidLID(lid: String?): Boolean {
                 return lid != null && lid.endsWith("@lid")
@@ -526,7 +526,20 @@ class FMessageWpp(fMessage: Any?) {
                     "jid.Jid"
                 )
                 val convertLidToJid = Unobfuscator.loadConvertLidToJid(classLoader)
-                TYPE_PHONEUSERJID = convertLidToJid.returnType
+                if (convertLidToJid != null) {
+                    TYPE_PHONEUSERJID = convertLidToJid.returnType
+                } else {
+                    // Fallback for versions where the method was removed or obfuscated
+                    try {
+                        TYPE_PHONEUSERJID = Unobfuscator.findFirstClassUsingName(
+                            classLoader,
+                            StringMatchType.EndsWith,
+                            "jid.PhoneUserJid"
+                        )
+                    } catch (e: Exception) {
+                        XposedBridge.log("Failed to find TYPE_PHONEUSERJID: " + e.message)
+                    }
+                }
                 TYPE_DEVICEJID = Unobfuscator.findFirstClassUsingName(
                     classLoader,
                     StringMatchType.EndsWith,

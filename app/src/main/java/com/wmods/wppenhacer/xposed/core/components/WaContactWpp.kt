@@ -109,7 +109,9 @@ class WaContactWpp(mInstance: Any?) {
             try {
                 TYPE = Unobfuscator.loadWaContactClass(classLoader)
                 val convertLidToJid = Unobfuscator.loadConvertLidToJid(classLoader)
-                val classPhoneUserJid = convertLidToJid.returnType
+                val classPhoneUserJid = convertLidToJid?.returnType ?: Unobfuscator.findFirstClassUsingName(
+                    classLoader, StringMatchType.EndsWith, "jid.PhoneUserJid"
+                )
                 val classJid = Unobfuscator.findFirstClassUsingName(
                     classLoader, StringMatchType.EndsWith, "jid.Jid"
                 )
