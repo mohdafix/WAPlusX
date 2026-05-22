@@ -143,9 +143,40 @@ class HideSeen(loader: ClassLoader, preferences: XSharedPreferences) :
 
     private fun hookReceiptMethod() {
         val receiptMethod = Unobfuscator.loadReceiptMethod(classLoader)
+        val receiptMainCallerMethod = Unobfuscator.loadReceiptMainCallerMethod(classLoader)
+        val receiptCallersMethod = Unobfuscator.loadReceiptCallersMethod(classLoader)
+
+        val isHandlingReceipt = java.lang.ThreadLocal<Boolean>()
+        isHandlingReceipt.set(false)
+
+        val messageHandlerHook = object : XC_MethodHook() {
+            override fun beforeHookedMethod(param: MethodHookParam) {
+                val message = param.args[0] as? Message ?: return
+                val arg1 = message.arg1
+                if (arg1 == 419 || arg1 == 89) {
+                    val obj = message.obj
+                    isHandlingReceipt.set(true)
+                    try {
+                        if (receiptMainCallerMethod.invoke(null, obj) == null) {
+                            param.result = null
+                        }
+                    } catch (e: Exception) {
+                        XposedBridge.log(e)
+                    } finally {
+                        isHandlingReceipt.set(false)
+                    }
+                }
+            }
+        }
+
+        for (caller in receiptCallersMethod) {
+            XposedBridge.hookMethod(caller, messageHandlerHook)
+        }
 
         XposedBridge.hookMethod(receiptMethod, object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam) {
+                if (isHandlingReceipt.get() != true) return
+
                 val protocolTreeNodeWpp = ProtocolTreeNodeWpp(param.result)
 
                 val typeKV = protocolTreeNodeWpp.attributes.firstOrNull {
