@@ -260,20 +260,15 @@ public class Unobfuscator {
     }
 
     public static Class<?> loadReceiptMessageInfoClass(ClassLoader classLoader) throws Exception {
-        return UnobfuscatorCache.getInstance().getClass(classLoader, () -> {
-            var method = findFirstMethodUsingStrings(classLoader, StringMatchType.Contains,
-                    "ReadReceiptUtils/buildReadReceiptHandler malformed");
-            if (method == null) {
-                throw new Exception("ReadReceiptUtils method not found");
-            }
-            var methodData = dexkit.getMethodData(method);
-            var deviceJidClass = findFirstClassUsingName(classLoader, StringMatchType.EndsWith, "jid.DeviceJid");
-            for (var caller : methodData.getCallers()) {
-                if (caller.isMethod() && caller.getParamTypeNames().contains(deviceJidClass.getName())) {
-                    return caller.getMethodInstance(classLoader).getDeclaringClass();
+        return UnobfuscatorCache.getInstance().getClass(classLoader, ()-> {
+            var methodData = dexkit.findMethod(FindMethod.create().matcher(MethodMatcher.create().addUsingString("ReadReceiptUtils/buildReadReceiptHandler malformed"))).single();
+            var deviceJid = findFirstClassUsingName(classLoader, StringMatchType.EndsWith, "jid.DeviceJid");
+            for (var invoke : methodData.getInvokes()){
+                if (invoke.isConstructor() && invoke.getParamTypeNames().contains(deviceJid.getName())) {
+                    return invoke.getClassInstance(classLoader);
                 }
             }
-            throw new Exception("ReceiptMessageInfoClass not found in callers");
+            return null;
         });
     }
 
@@ -281,41 +276,14 @@ public class Unobfuscator {
         return UnobfuscatorCache.getInstance().getMethod(classLoader, () -> {
             var methodReceipt = dexkit.getMethodData(loadReceiptMethod(classLoader));
             var classData = methodReceipt.getDeclaredClass();
-            try {
-                var messageInfoClass = loadReceiptMessageInfoClass(classLoader);
-                var methods = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
-                        .paramCount(1)
-                        .addInvoke(methodReceipt.getDescriptor())
-                        .returnType(messageInfoClass)
-                        .addUsingString("class")
-                ));
-                if (methods.size() == 1) {
-                    return methods.get(0).getMethodInstance(classLoader);
-                } else if (methods.size() > 1) {
-                    XposedBridge.log("loadReceiptMainCallerMethod: multiple methods found (" + methods.size() + "), falling back to candidates query");
-                }
-            } catch (Exception e) {
-                XposedBridge.log("loadReceiptMainCallerMethod: loadReceiptMessageInfoClass failed (" + e.getMessage() + "), falling back to candidates query");
-            }
-
-            // Fallback: search for candidates invoking the receipt method and containing "class"
-            var candidates = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
+            var messageInfoClass = loadReceiptMessageInfoClass(classLoader);
+            var methodData = classData.findMethod(FindMethod.create().matcher(MethodMatcher.create()
                     .addInvoke(methodReceipt.getDescriptor())
+                    .paramCount(1)
+                    .paramTypes(messageInfoClass)
                     .addUsingString("class")
-            ));
-            if (candidates.isEmpty()) {
-                throw new NoSuchMethodException("loadReceiptMainCallerMethod: no candidates found");
-            }
-            if (candidates.size() == 1) {
-                return candidates.get(0).getMethodInstance(classLoader);
-            }
-            // Disambiguate: prefer the static method with exactly 1 parameter
-            for (var candidate : candidates) {
-                if (Modifier.isStatic(candidate.getModifiers()) && candidate.getParamCount() == 1) {
-                    return candidate.getMethodInstance(classLoader);
-                }
-            }
-            return candidates.get(0).getMethodInstance(classLoader);
+            )).single();
+            return methodData.getMethodInstance(classLoader);
         });
     }
 
@@ -1348,8 +1316,7 @@ public class Unobfuscator {
 
     public synchronized static Method loadChatLimitDelete2Method(ClassLoader loader) throws Exception {
         return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
-            var method = findFirstMethodUsingStrings(loader, StringMatchType.Contains, "pref_revoke_admin_nux",
-                    "dialog/delete no messages");
+            var method = findFirstMethodUsingStrings(loader, StringMatchType.Contains, "dialog/delete no messages","pref_delete_media");
             if (method == null)
                 throw new RuntimeException("ChatLimitDelete2 method not found");
             return method;
