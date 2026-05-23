@@ -440,4 +440,34 @@ public class ReflectionUtils {
         } catch (Exception ignored) {
         }
     }
+
+    public static void setFinalField(Field field, Object instance, Object value) {
+        try {
+            field.setAccessible(true);
+            Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+            Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
+            theUnsafeField.setAccessible(true);
+            Object unsafe = theUnsafeField.get(null);
+            
+            if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+                Method staticFieldBaseMethod = unsafeClass.getMethod("staticFieldBase", Field.class);
+                Method staticFieldOffsetMethod = unsafeClass.getMethod("staticFieldOffset", Field.class);
+                Object base = staticFieldBaseMethod.invoke(unsafe, field);
+                long offset = (Long) staticFieldOffsetMethod.invoke(unsafe, field);
+                
+                Method putObjectMethod = unsafeClass.getMethod("putObject", Object.class, long.class, Object.class);
+                putObjectMethod.invoke(unsafe, base, offset, value);
+            } else {
+                Method objectFieldOffsetMethod = unsafeClass.getMethod("objectFieldOffset", Field.class);
+                long offset = (Long) objectFieldOffsetMethod.invoke(unsafe, field);
+                
+                Method putObjectMethod = unsafeClass.getMethod("putObject", Object.class, long.class, Object.class);
+                putObjectMethod.invoke(unsafe, instance, offset, value);
+            }
+        } catch (Exception e) {
+            try {
+                field.set(instance, value);
+            } catch (Exception ignored) {}
+        }
+    }
 }

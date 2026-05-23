@@ -27,7 +27,7 @@ public class Recording {
     private final long date;
     private final long size;
 
-    private static final Pattern PHONE_PATTERN = Pattern.compile("Call_([+\\w\\s]+)_\\d{8}_\\d{6}.(wav|m4a)");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("Call_(.+)_\\d{8}_\\d{6}\\.(wav|m4a|aac|mp3)", Pattern.CASE_INSENSITIVE);
 
     public Recording(File file) {
         this.file = file;
@@ -54,6 +54,16 @@ public class Recording {
             return;
         }
 
+        String cacheKey = "dur_" + file.getName() + "_" + file.length() + "_" + file.lastModified();
+        android.content.Context context = com.wmods.wppenhacer.App.getInstance();
+        if (context != null) {
+            android.content.SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context);
+            if (prefs.contains(cacheKey)) {
+                duration = prefs.getLong(cacheKey, 0);
+                return;
+            }
+        }
+
         try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
             retriever.setDataSource(file.getAbsolutePath());
             String timeStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
@@ -61,6 +71,10 @@ public class Recording {
                 duration = Long.parseLong(timeStr);
             } else {
                 duration = 0;
+            }
+            if (context != null) {
+                android.content.SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context);
+                prefs.edit().putLong(cacheKey, duration).apply();
             }
         } catch (Exception e) {
             duration = 0;

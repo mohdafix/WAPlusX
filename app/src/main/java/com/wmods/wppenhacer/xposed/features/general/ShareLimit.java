@@ -26,23 +26,23 @@ public class ShareLimit extends Feature {
         XposedBridge.hookMethod(
                 shareLimitMethod,
                 new XC_MethodHook() {
-                    private HashMap<Object, Object> fakeMap;
-                    private HashMap<Object, Object> mMap;
+                    private java.util.HashMap<Object, Object> fakeMap;
+                    private java.util.Map<Object, Object> mMap;
 
                     /**
                      * @noinspection unchecked
                      */
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        fakeMap = new HashMap<>();
-                        mMap = (HashMap<Object, Object>) shareItemField.get(param.thisObject);
-                        shareItemField.set(param.thisObject, fakeMap);
+                        fakeMap = new java.util.HashMap<>();
+                        mMap = (java.util.Map<Object, Object>) shareItemField.get(param.thisObject);
+                        com.wmods.wppenhacer.xposed.utils.ReflectionUtils.setFinalField(shareItemField, param.thisObject, fakeMap);
                     }
 
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         mMap.putAll(fakeMap);
-                        shareItemField.set(param.thisObject, mMap);
+                        com.wmods.wppenhacer.xposed.utils.ReflectionUtils.setFinalField(shareItemField, param.thisObject, mMap);
                         fakeMap.clear();
                     }
                 });
