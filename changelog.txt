@@ -8,3 +8,5 @@
 * Fixed the Wallpaper not appearing on the home screen
 * Fixed Seen Tick status not instantly updating from red to green
 * Fixed UI lagging in the audio recordings tab by running operations in background
+* Fixed video not saving and missing audio during screen call recording (Scoped Storage bypass)
+* Removed unnecessary logging to keep logcat clean
