@@ -1,6 +1,10 @@
 [ADDED]
-* Added support to WA 2.26.18.xx
+* Added support to WA 2.26.20.xx
+* Changed branding to WAPlusX with new custom icons
+* Modernized app UI with pill-shaped navigation and new royal blue theme
 
 [FIXED]
-* Fixed error in the Download status notification
-
+* Fixed the camera button not appearing on the home screen
+* Fixed the Wallpaper not appearing on the home screen
+* Fixed Seen Tick status not instantly updating from red to green
+* Fixed UI lagging in the audio recordings tab by running operations in background
