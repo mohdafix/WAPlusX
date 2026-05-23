@@ -112,6 +112,19 @@ public class Others extends Feature {
             });
         }
         
+        if (newSettings) {
+            XposedBridge.hookAllMethods(WppCore.getHomeActivityClass(classLoader), "onCreateOptionsMenu", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    var menu = (Menu)param.args[0];
+                    var menuItem = menu.findItem(Utils.getID("me_tab_menu_item","id"));
+                    if (menuItem != null){
+                        menuItem.setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
+                    }
+                }
+            });
+        }
+
         propsBoolean.put(21632, newSettings); // For enable Toolbar button
         propsBoolean.put(14862, newSettings);
         propsBoolean.put(23289, newSettings);
