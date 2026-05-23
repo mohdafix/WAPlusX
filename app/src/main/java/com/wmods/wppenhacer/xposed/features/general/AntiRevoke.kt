@@ -372,7 +372,7 @@ class AntiRevoke(loader: ClassLoader, preferences: XSharedPreferences) : Feature
 
     private fun handleRevocationAttempt(fMessage: FMessageWpp, messageId: String): Int {
         try {
-            showRevocationToast(fMessage)
+            showRevocationNotification(fMessage)
         } catch (e: Exception) {
             log(e)
         }
@@ -411,17 +411,21 @@ class AntiRevoke(loader: ClassLoader, preferences: XSharedPreferences) : Feature
         return revokeBoolean
     }
 
-    private fun showRevocationToast(fMessage: FMessageWpp) {
+    private fun showRevocationNotification(fMessage: FMessageWpp) {
         val jidAuthor = fMessage.key.remoteJid
         val isStatus = jidAuthor.isStatus
         val actualAuthor = if (isStatus) fMessage.userJid else jidAuthor
         
         val contactName = WppCore.getContactName(actualAuthor)
         val messageSuffix = Utils.getApplication().getString(if (isStatus) R.string.deleted_status else R.string.deleted_message)
+        val title = if (isStatus) "Deleted Status" else "Deleted Message"
         
         val toastDeletedOption = try { prefs.getString("toastdeleted", "0")?.toIntOrNull() ?: 0 } catch (e: Exception) { 0 }
-        if (toastDeletedOption != 0) {
+        
+        if (toastDeletedOption == 1) {
             Utils.showToast("$contactName $messageSuffix", Toast.LENGTH_LONG)
+        } else if (toastDeletedOption == 2) {
+            Utils.showNotification(title, "$contactName $messageSuffix")
         }
         
         val taskerAction = if (isStatus) "deleted_status" else "deleted_message"

@@ -6,6 +6,18 @@
         <item>android</item>
     </string-array>
 
+    <string-array name="toastdeleted_entries">
+        <item>@string/disabled</item>
+        <item>Toast</item>
+        <item>Notification</item>
+    </string-array>
+
+    <string-array name="toastdeleted_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
 
     <string-array name="antirevoke_entries">
         <item>@string/antirevoke_buttons_desable</item>
