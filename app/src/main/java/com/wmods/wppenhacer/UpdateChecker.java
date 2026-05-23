@@ -23,7 +23,7 @@ public class UpdateChecker implements Runnable {
 
     private static final String LATEST_RELEASE_API = "https://api.github.com/repos/mohdafix/WAPlusX/releases/latest";
     private static final String RELEASE_TAG_PREFIX = "debug-";
-    private static final String TELEGRAM_UPDATE_URL = "https://t.me/waenhancher";
+    private static final String GITHUB_UPDATE_URL = "https://github.com/mohdafix/WAPlusX/releases/latest";
 
     // Singleton OkHttpClient - expensive to create, reuse across all checks
     private static OkHttpClient httpClient;
@@ -135,7 +135,7 @@ public class UpdateChecker implements Runnable {
                 dialog1.dismiss();
             });
             dialog.setPositiveButton("Update Now", (dialog1, which) -> {
-                Utils.openLink(mActivity, TELEGRAM_UPDATE_URL);
+                Utils.openLink(mActivity, GITHUB_UPDATE_URL);
                 dialog1.dismiss();
             });
             dialog.show();

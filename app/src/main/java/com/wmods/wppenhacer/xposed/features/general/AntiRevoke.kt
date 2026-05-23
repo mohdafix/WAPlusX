@@ -425,11 +425,56 @@ class AntiRevoke(loader: ClassLoader, preferences: XSharedPreferences) : Feature
         if (toastDeletedOption == 1) {
             Utils.showToast("$contactName $messageSuffix", Toast.LENGTH_LONG)
         } else if (toastDeletedOption == 2) {
-            Utils.showNotification(title, "$contactName $messageSuffix")
+            val pendingIntent = createNotificationIntent(jidAuthor, isStatus)
+            Utils.showNotification(title, "$contactName $messageSuffix", pendingIntent)
         }
         
         val taskerAction = if (isStatus) "deleted_status" else "deleted_message"
         Tasker.sendTaskerEvent(contactName, actualAuthor.phoneNumber ?: "", taskerAction)
+    }
+
+    private fun createNotificationIntent(jidObj: FMessageWpp.UserJid?, isStatus: Boolean): android.app.PendingIntent? {
+        if (jidObj == null) return null
+        try {
+            val app = Utils.getApplication() ?: return null
+            val intent = android.content.Intent()
+            
+            val jidString = jidObj.userRawString ?: return null
+            val rawJid = if (jidString.contains("@")) jidString else "$jidString@s.whatsapp.net"
+            
+            if (isStatus) {
+                val statusClass = Unobfuscator.getClassByName("StatusPlaybackActivity", classLoader)
+                if (statusClass != null) {
+                    intent.setClassName(app.packageName, statusClass.name)
+                    intent.putExtra("jid", rawJid)
+                } else {
+                    intent.setClassName(app.packageName, "com.whatsapp.HomeActivity")
+                }
+            } else {
+                intent.setClassName(app.packageName, "com.whatsapp.Conversation")
+                val waJid = WppCore.createUserJid(rawJid)
+                if (waJid != null) {
+                    try {
+                        intent.putExtra("jid", waJid as android.os.Parcelable)
+                    } catch (e: Exception) {
+                        intent.putExtra("jid", rawJid)
+                    }
+                } else {
+                    intent.putExtra("jid", rawJid)
+                }
+            }
+
+            intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP or android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            
+            var flags = android.app.PendingIntent.FLAG_UPDATE_CURRENT
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                flags = flags or android.app.PendingIntent.FLAG_IMMUTABLE
+            }
+            return android.app.PendingIntent.getActivity(app, rawJid.hashCode(), intent, flags)
+        } catch (e: Exception) {
+            XposedBridge.log("AntiRevoke: Error creating intent: $e")
+            return null
+        }
     }
 
     private fun findTextViewRecursive(view: View): TextView? {
