@@ -72,56 +72,25 @@ class SeenTick(
         private var participantInfoConstructor: Constructor<*>? = null
 
         fun setSeenButton(buttonImage: ImageView, isSeen: Boolean) {
-            if (isSeen && cachedSeenDrawable != null) {
-                buttonImage.setImageDrawable(cachedSeenDrawable)
-                buttonImage.postInvalidate()
-                return
-            } else if (!isSeen && cachedUnseenDrawable != null) {
-                buttonImage.setImageDrawable(cachedUnseenDrawable)
-                buttonImage.postInvalidate()
-                return
-            }
-
             val originalDrawable = DesignUtils.getDrawableByName("ic_notif_mark_read")
-            if (originalDrawable == null) {
-                buttonImage.setImageResource(Utils.getID("ic_notif_mark_read", "drawable"))
-                if (isSeen) buttonImage.setColorFilter(Color.CYAN, PorterDuff.Mode.SRC_ATOP)
-                else buttonImage.setColorFilter(DesignUtils.getPrimaryTextColor(), PorterDuff.Mode.SRC_ATOP)
-                return
-            }
-
-            val clonedDrawable: Drawable = if (originalDrawable is BitmapDrawable) {
-                val bitmap = originalDrawable.bitmap
-                val config = bitmap.config ?: Bitmap.Config.ARGB_8888
-                val clonedBitmap = try {
-                    bitmap.copy(config, true)
-                } catch (_: Exception) {
-                    val fallbackBitmap =
-                        createBitmap(bitmap.width, bitmap.height)
-                    try {
-                        val canvas = Canvas(fallbackBitmap)
-                        canvas.drawBitmap(bitmap, 0f, 0f, null)
-                    } catch (_: Exception) {
-                    }
-                    fallbackBitmap
-                }
-                clonedBitmap.toDrawable(buttonImage.resources)
+            val clonedDrawable = if (originalDrawable == null) {
+                @Suppress("DEPRECATION")
+                buttonImage.resources.getDrawable(Utils.getID("ic_notif_mark_read", "drawable"))?.mutate()
             } else {
                 originalDrawable.constantState?.newDrawable()?.mutate() ?: originalDrawable.mutate()
             }
 
-            if (isSeen) {
-                @Suppress("DEPRECATION")
-                clonedDrawable.setColorFilter(Color.CYAN, PorterDuff.Mode.SRC_ATOP)
-                cachedSeenDrawable = clonedDrawable
-            } else {
-                @Suppress("DEPRECATION")
-                clonedDrawable.setColorFilter(DesignUtils.getPrimaryTextColor(), PorterDuff.Mode.SRC_ATOP)
-                cachedUnseenDrawable = clonedDrawable
+            if (clonedDrawable != null) {
+                if (isSeen) {
+                    @Suppress("DEPRECATION")
+                    clonedDrawable.setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
+                } else {
+                    @Suppress("DEPRECATION")
+                    clonedDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP)
+                }
+                buttonImage.setImageDrawable(clonedDrawable)
             }
-
-            buttonImage.setImageDrawable(clonedDrawable)
-            buttonImage.postInvalidate()
+            buttonImage.invalidate()
         }
     }
 
@@ -264,6 +233,13 @@ class SeenTick(
                         }
                     )
 
+                    val tag = "wae_seen_tick_container"
+                    val existing = contentView.findViewWithTag<View>(tag)
+                    if (existing != null) {
+                        contentView.removeView(existing)
+                    }
+                    containerButton.tag = tag
+
                     replyBarBackground.post {
                         val containerSize = replyBarBackground.height
 
@@ -289,7 +265,7 @@ class SeenTick(
                             sendBlueTickStatus(
                                 listOf(fMessage)
                             )
-                            withContext(Dispatchers.Main) {
+                            Utils.postToMainThread {
                                 setSeenButton(buttonImage, true)
                             }
                         }
@@ -301,7 +277,7 @@ class SeenTick(
                             key.messageID,
                             MessageHistoryStore.ReceiptType.READ
                         )
-                        withContext(Dispatchers.Main) {
+                        Utils.postToMainThread {
                             setSeenButton(buttonImage, item?.viewed ?: false)
                         }
                     }
