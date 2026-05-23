@@ -353,8 +353,8 @@ public class GroupAdmin extends Feature {
                 CharSequence text = tv.getText();
                 if (text != null && text.length() > 0) {
                     String str = text.toString().trim();
-                    // Skip timestamps, numbers only, etc.
-                    if (str.length() > 1 && !str.matches("^\\d+$") && !str.matches("^\\d{1,2}:\\d{2}$") && !str.contains("AM") && !str.contains("PM") && !str.contains(":")) {
+                    // Skip timestamps, numbers only, Edited labels, etc.
+                    if (str.length() > 1 && !str.matches("^\\d+$") && !str.matches("^\\d{1,2}:\\d{2}$") && !str.contains("AM") && !str.contains("PM") && !str.contains(":") && !str.toLowerCase().contains("edited") && !str.contains("📝")) {
                         return tv;
                     }
                 }
@@ -375,8 +375,8 @@ public class GroupAdmin extends Feature {
             CharSequence text = tv.getText();
             if (text != null && text.length() > 0) {
                 String str = text.toString().trim();
-                // Skip timestamps, numbers only, etc.
-                if (str.length() > 1 && !str.matches("^\\d+$") && !str.matches("^\\d{1,2}:\\d{2}$") && !str.contains("AM") && !str.contains("PM") && !str.contains(":")) {
+                // Skip timestamps, numbers only, Edited labels, etc.
+                if (str.length() > 1 && !str.matches("^\\d+$") && !str.matches("^\\d{1,2}:\\d{2}$") && !str.contains("AM") && !str.contains("PM") && !str.contains(":") && !str.toLowerCase().contains("edited") && !str.contains("📝")) {
                     return tv;
                 }
             }
