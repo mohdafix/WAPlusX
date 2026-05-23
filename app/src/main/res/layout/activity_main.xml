@@ -31,25 +31,38 @@
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/nav_view"
+        app:layout_constraintBottom_toTopOf="@id/nav_card"
         app:layout_constraintTop_toBottomOf="@id/appBarLayout" />
 
     <View
         android:id="@+id/nav_shadow"
         android:layout_width="match_parent"
         android:layout_height="4dp"
+        android:visibility="gone"
         android:background="@drawable/shadow_top"
-        app:layout_constraintBottom_toTopOf="@id/nav_view" />
+        app:layout_constraintBottom_toTopOf="@id/nav_card" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
-        style="@style/BottomNavStyle"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/nav_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/nav_background"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="16dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="@color/nav_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+        app:layout_constraintRight_toRightOf="parent">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/nav_view"
+            style="@style/BottomNavStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:menu="@menu/bottom_nav_menu" />
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

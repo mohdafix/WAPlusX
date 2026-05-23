@@ -50,6 +50,19 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat
 
     @NonNull
     @Override
+    public androidx.recyclerview.widget.RecyclerView onCreateRecyclerView(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle savedInstanceState) {
+        androidx.recyclerview.widget.RecyclerView recyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState);
+        recyclerView.addItemDecoration(new PreferenceCardDecoration(requireContext()));
+        
+        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+        recyclerView.setPadding(padding, padding, padding, padding * 2);
+        recyclerView.setClipToPadding(false);
+        
+        return recyclerView;
+    }
+
+    @NonNull
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         chanceStates(null);

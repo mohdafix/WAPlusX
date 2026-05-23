@@ -22,8 +22,8 @@
     <color name="primary_background">@color/background_light</color>
     <color name="codeview_strings">#24D52B</color>
 
-    <color name="gradient_start_primary">#26A69A</color>
-    <color name="gradient_end_primary">#00796B</color>
+    <color name="gradient_start_primary">#60A5FA</color>
+    <color name="gradient_end_primary">#2563EB</color>
     <color name="gradient_start_success">#4CAF50</color>
     <color name="gradient_end_success">#1B5E20</color>
     <color name="gradient_start_error">#FF5252</color>
@@ -31,9 +31,9 @@
     <color name="gradient_start_warning">#FFD740</color>
     <color name="gradient_end_warning">#FF6D00</color>
 
-    <color name="whatsapp_green">#25D366</color>
-    <color name="whatsapp_dark_green">#128C7E</color>
-    <color name="whatsapp_teal">#075E54</color>
+    <color name="whatsapp_green">#2563EB</color>
+    <color name="whatsapp_dark_green">#1D4ED8</color>
+    <color name="whatsapp_teal">#1E40AF</color>
 
     <color name="surface_elevated">#FAFAFA</color>
     <color name="surface_container">#F5F5F5</color>
@@ -57,18 +57,18 @@
 
     <color name="background_color">#FAFAFA</color>
     <color name="surface_color">#FFFFFF</color>
-    <color name="primary_color">#00796B</color>
+    <color name="primary_color">#2563EB</color>
     <color name="selected_item_color">#4D2196F3</color> 
-<color name="splash_background">#414E5A</color>
-    <color name="md_theme_light_primary">#008069</color> 
+    <color name="splash_background">#FFFFFF</color>
+    <color name="md_theme_light_primary">#2563EB</color> 
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
-    <color name="md_theme_light_primaryContainer">#E1F3EF</color>
-    <color name="md_theme_light_onPrimaryContainer">#002119</color>
+    <color name="md_theme_light_primaryContainer">#DBEAFE</color>
+    <color name="md_theme_light_onPrimaryContainer">#1E3A8A</color>
     
-    <color name="md_theme_light_secondary">#4A4A4A</color>
+    <color name="md_theme_light_secondary">#475569</color>
     <color name="md_theme_light_onSecondary">#FFFFFF</color>
-    <color name="md_theme_light_secondaryContainer">#F0F0F0</color>
-    <color name="md_theme_light_onSecondaryContainer">#1A1A1A</color>
+    <color name="md_theme_light_secondaryContainer">#F1F5F9</color>
+    <color name="md_theme_light_onSecondaryContainer">#0F172A</color>
     
     <color name="md_theme_light_tertiary">#EFEFEF</color>
     <color name="md_theme_light_onTertiary">#000000</color>
@@ -85,15 +85,15 @@
     <color name="md_theme_light_outline">#E0E0E0</color> 
     <color name="md_theme_light_outlineVariant">#EAEAEA</color>
 
-    <color name="md_theme_dark_primary">#00A884</color> 
-    <color name="md_theme_dark_onPrimary">#00372D</color>
-    <color name="md_theme_dark_primaryContainer">#005140</color>
-    <color name="md_theme_dark_onPrimaryContainer">#36FFCD</color>
+    <color name="md_theme_dark_primary">#60A5FA</color> 
+    <color name="md_theme_dark_onPrimary">#EFF6FF</color>
+    <color name="md_theme_dark_primaryContainer">#1E3A8A</color>
+    <color name="md_theme_dark_onPrimaryContainer">#DBEAFE</color>
     
-    <color name="md_theme_dark_secondary">#B0B0B0</color>
+    <color name="md_theme_dark_secondary">#94A3B8</color>
     <color name="md_theme_dark_onSecondary">#000000</color>
-    <color name="md_theme_dark_secondaryContainer">#222222</color>
-    <color name="md_theme_dark_onSecondaryContainer">#E0E0E0</color>
+    <color name="md_theme_dark_secondaryContainer">#1E293B</color>
+    <color name="md_theme_dark_onSecondaryContainer">#F1F5F9</color>
     
     <color name="md_theme_dark_tertiary">#1A1A1A</color>
     <color name="md_theme_dark_onTertiary">#FFFFFF</color>
@@ -113,7 +113,7 @@
     <color name="destructive_red">#DC2626</color>
 
     
-    <color name="primary_dark_light_light_status_bar">#005E4E</color>
+    <color name="primary_dark_light_light_status_bar">#1E40AF</color>
 
     
     </resources>
