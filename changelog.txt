@@ -1,13 +1,5 @@
 [ADDED]
-* Added new call blocking type: Busy (On another call).
-* Added Native Embedded Settings UI directly into WhatsApp settings.
-
-[REMOVED]
-* Removed the "Rejected" type call blocking, it was not working.
-* Removed redundant WAE settings shortcut from the WhatsApp home menu.
-
-[FIXED]
-* Fixed the Settings icon with profile photo on the home screen (now the camera button also appears)
-* Fixed problem with call blocker for unknown numbers
-* Fixed the logic to hide the ticks
-* Fixed ClassCastException causing crashes in the new settings integration.
+* Clickable notifications for deleted messages/statuses to open the associated chat or status viewer.
+* Changed the "Update Now" button to navigate directly to the GitHub releases page instead of Telegram.
+* Synchronized upstream caching logic to eliminate UI lag during list scrolling.
+* Migrated ConversationItemListener to Kotlin for better stability.
