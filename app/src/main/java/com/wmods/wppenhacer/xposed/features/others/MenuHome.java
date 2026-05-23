@@ -48,25 +48,6 @@ public class MenuHome extends Feature {
 
         // freeze last seen
         menuItems.add((menu, activity) -> InsertFreezeLastSeenOption(menu, activity, action));
-
-        // open WAE
-        menuItems.add(this::InsertOpenWae);
-
-    }
-
-    private void InsertOpenWae(Menu menu, Activity activity) {
-        var waeMenu = prefs.getBoolean("open_wae", true);
-        if (!waeMenu) return;
-        var itemMenu = menu.add(0, 0, 9999, " " + activity.getString(R.string.app_name));
-        var iconDraw = DesignUtils.getDrawableByName("ic_settings");
-        iconDraw.setTint(0xff8696a0);
-        itemMenu.setIcon(iconDraw);
-        itemMenu.setOnMenuItemClickListener(item -> {
-            Intent intent = activity.getPackageManager().getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            activity.startActivity(intent);
-            return true;
-        });
     }
 
     private void InsertGhostModeOption(Menu menu, Activity activity, boolean newSettings) {

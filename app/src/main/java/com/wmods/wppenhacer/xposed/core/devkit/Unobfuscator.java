@@ -3330,5 +3330,25 @@ public class Unobfuscator {
             throw new NoSuchFieldException("CurrentPageInHome field not found");
         });
     }
+
+    public static @Nullable java.lang.reflect.Field loadWaContactNumberField(@NonNull ClassLoader classLoader) throws Exception {
+        return UnobfuscatorCache.getInstance().getField(classLoader,()-> {
+            var waContact = loadWaContactClass(classLoader);
+            var waContactData = dexkit.getClassData(waContact);
+            if (waContactData == null)throw new NoSuchFieldException("WaContact class data not found");
+
+            var methodData = waContactData.findMethod(org.luckypray.dexkit.query.FindMethod.create().matcher(org.luckypray.dexkit.query.matchers.MethodMatcher.create()
+                    .usingNumbers(-4,0)
+                    .returnType(long.class)
+            )).firstOrNull();
+            if (methodData == null) throw new NoSuchFieldException("Number Method not found!");
+            for (var ufield: methodData.getUsingFields()){
+                var field = ufield.getField().getFieldInstance(classLoader);
+                if (field.getDeclaringClass().equals(waContact) && !field.getType().isPrimitive())
+                    return field;
+            }
+            return null;
+        });
+    }
 }
 
