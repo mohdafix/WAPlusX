@@ -1,12 +1,13 @@
 [ADDED]
-* Added support to WA 2.26.20.xx
-* Changed branding to WAPlusX with new custom icons
-* Modernized app UI with pill-shaped navigation and new royal blue theme
+* Added new call blocking type: Busy (On another call).
+* Added Native Embedded Settings UI directly into WhatsApp settings.
+
+[REMOVED]
+* Removed the "Rejected" type call blocking, it was not working.
+* Removed redundant WAE settings shortcut from the WhatsApp home menu.
 
 [FIXED]
-* Fixed the camera button not appearing on the home screen
-* Fixed the Wallpaper not appearing on the home screen
-* Fixed Seen Tick status not instantly updating from red to green
-* Fixed UI lagging in the audio recordings tab by running operations in background
-* Fixed video not saving and missing audio during screen call recording (Scoped Storage bypass)
-* Removed unnecessary logging to keep logcat clean
+* Fixed the Settings icon with profile photo on the home screen (now the camera button also appears)
+* Fixed problem with call blocker for unknown numbers
+* Fixed the logic to hide the ticks
+* Fixed ClassCastException causing crashes in the new settings integration.
