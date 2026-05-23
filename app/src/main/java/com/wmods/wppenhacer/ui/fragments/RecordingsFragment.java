@@ -31,6 +31,10 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RecordingsFragment extends Fragment implements RecordingsAdapter.OnRecordingActionListener {
 
@@ -38,8 +42,10 @@ public class RecordingsFragment extends Fragment implements RecordingsAdapter.On
     private RecordingsAdapter adapter;
     private List<Recording> allRecordings = new ArrayList<>();
     private List<File> baseDirs = new ArrayList<>();
-    private boolean isGroupByContact = false;
+    private boolean isGroupByContact = true;
+    private String currentContactFilter = null;
     private int currentSortType = 1; // 1=date, 2=name, 3=duration, 4=contact
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Nullable
     @Override
@@ -72,12 +78,14 @@ public class RecordingsFragment extends Fragment implements RecordingsAdapter.On
         // View mode toggle
         binding.chipList.setOnClickListener(v -> {
             isGroupByContact = false;
-            loadRecordings();
+            currentContactFilter = null;
+            updateDisplayList();
         });
         
         binding.chipGroupByContact.setOnClickListener(v -> {
             isGroupByContact = true;
-            loadRecordings();
+            currentContactFilter = null;
+            updateDisplayList();
         });
 
         // Selection bar buttons
@@ -155,62 +163,138 @@ public class RecordingsFragment extends Fragment implements RecordingsAdapter.On
             return;
         }
 
-        allRecordings.clear();
+        binding.swipeRefresh.setRefreshing(true);
+        executorService.execute(() -> {
+            List<Recording> recordings = new ArrayList<>();
+            try {
+                for (File baseDir : baseDirs) {
+                    if (baseDir.exists() && baseDir.isDirectory()) {
+                        traverseDirectory(baseDir, recordings);
+                    }
+                }
 
-        try {
-            for (File baseDir : baseDirs) {
-                if (baseDir.exists() && baseDir.isDirectory()) {
-                    traverseDirectory(baseDir);
+                // Apply sorting on the background thread
+                applySort(recordings);
+
+                if (getActivity() != null) {
+                    requireActivity().runOnUiThread(() -> {
+                        if (binding == null) return;
+                        
+                        allRecordings.clear();
+                        allRecordings.addAll(recordings);
+                        
+                        if (allRecordings.isEmpty()) {
+                            binding.emptyView.setVisibility(View.VISIBLE);
+                            binding.recyclerView.setVisibility(View.GONE);
+                        } else {
+                            binding.emptyView.setVisibility(View.GONE);
+                            binding.recyclerView.setVisibility(View.VISIBLE);
+                            updateDisplayList();
+                        }
+                        binding.swipeRefresh.setRefreshing(false);
+                    });
+                }
+            } catch (Exception ignored) {
+                if (getActivity() != null) {
+                    requireActivity().runOnUiThread(() -> {
+                        if (binding != null) {
+                            binding.swipeRefresh.setRefreshing(false);
+                        }
+                    });
                 }
             }
-
-            if (allRecordings.isEmpty()) {
-                binding.emptyView.setVisibility(View.VISIBLE);
-                binding.recyclerView.setVisibility(View.GONE);
-            } else {
-                binding.emptyView.setVisibility(View.GONE);
-                binding.recyclerView.setVisibility(View.VISIBLE);
-
-                // Apply sorting
-                applySort();
-
-                if (isGroupByContact) {
-                    // For group by contact, we'll navigate to ContactRecordingsActivity when a contact is clicked
-                    // For now, just show sorted list (full group UI needs ContactRecordingsActivity)
-                    adapter.setRecordings(allRecordings);
-                } else {
-                    adapter.setRecordings(allRecordings);
-                }
-            }
-        } finally {
-            binding.swipeRefresh.setRefreshing(false);
-        }
+        });
     }
 
-    private void traverseDirectory(File dir) {
+    private void traverseDirectory(File dir, List<Recording> recordings) {
         File[] files = dir.listFiles();
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
-                    traverseDirectory(file);
+                    traverseDirectory(file, recordings);
                 } else {
                     String name = file.getName().toLowerCase();
                     if (name.endsWith(".wav") || name.endsWith(".mp3") || name.endsWith(".aac") || name.endsWith(".m4a")) {
-                        allRecordings.add(new Recording(file));
+                        recordings.add(new Recording(file));
                     }
                 }
             }
         }
     }
 
-    private void applySort() {
+    private void applySort(List<Recording> recordings) {
         switch (currentSortType) {
-            case 1 -> allRecordings.sort((r1, r2) -> Long.compare(r2.getDate(), r1.getDate())); // Date desc
-            case 2 -> allRecordings.sort(Comparator.comparing(Recording::getContactName)); // Name
-            case 3 -> allRecordings.sort((r1, r2) -> Long.compare(r2.getDuration(), r1.getDuration())); // Duration desc
-            case 4 -> allRecordings.sort(Comparator.comparing(Recording::getContactName)
+            case 1 -> recordings.sort((r1, r2) -> Long.compare(r2.getDate(), r1.getDate())); // Date desc
+            case 2 -> recordings.sort(Comparator.comparing(Recording::getContactName)); // Name
+            case 3 -> recordings.sort((r1, r2) -> Long.compare(r2.getDuration(), r1.getDuration())); // Duration desc
+            case 4 -> recordings.sort(Comparator.comparing(Recording::getContactName)
                     .thenComparing((r1, r2) -> Long.compare(r2.getDate(), r1.getDate()))); // Contact then date
         }
+    }
+
+    private void updateDisplayList() {
+        if (isGroupByContact && currentContactFilter == null) {
+            executorService.execute(() -> {
+                Map<String, List<Recording>> groups = allRecordings.stream()
+                        .collect(Collectors.groupingBy(Recording::getGroupKey));
+
+                List<Recording> contactItems = new ArrayList<>();
+                groups.forEach((name, recs) -> {
+                    if (recs == null || recs.isEmpty()) return;
+
+                    long latestDate = 0L;
+                    for (Recording r : recs) {
+                        if (r.getDate() > latestDate) latestDate = r.getDate();
+                    }
+
+                    final long latestDateFinal = latestDate;
+                    final int countFinal = recs.size();
+
+                    Recording groupItem = new Recording(recs.get(0).getFile()) {
+                        @Override
+                        public String getFormattedSize() { return countFinal + " recordings"; }
+                        @Override
+                        public String getFormattedDuration() { return ""; }
+                        @Override
+                        public long getDuration() { return 0; }
+                        @Override
+                        public long getDate() { return latestDateFinal; }
+                    };
+                    contactItems.add(groupItem);
+                });
+
+                contactItems.sort(getGroupedSortComparator());
+                
+                if (getActivity() != null) {
+                    requireActivity().runOnUiThread(() -> {
+                        if (isAdded() && binding != null) {
+                            adapter.setGroupedMode(true);
+                            adapter.setRecordings(contactItems);
+                        }
+                    });
+                }
+            });
+        } else if (currentContactFilter != null) {
+            List<Recording> filtered = allRecordings.stream()
+                    .filter(r -> r.getGroupKey().equals(currentContactFilter))
+                    .collect(Collectors.toList());
+            adapter.setGroupedMode(false);
+            adapter.setRecordings(filtered);
+        } else {
+            adapter.setGroupedMode(false);
+            adapter.setRecordings(allRecordings);
+        }
+    }
+
+    private Comparator<Recording> getGroupedSortComparator() {
+        return switch (currentSortType) {
+            case 1 -> Comparator.comparingLong(Recording::getDate).reversed()
+                    .thenComparing(Recording::getContactName, String.CASE_INSENSITIVE_ORDER);
+            case 2, 3 -> Comparator.comparing(Recording::getContactName, String.CASE_INSENSITIVE_ORDER);
+            case 4 -> Comparator.comparing(Recording::getContactName, String.CASE_INSENSITIVE_ORDER)
+                    .thenComparingLong(Recording::getDate).reversed();
+            default -> Comparator.comparing(Recording::getContactName, String.CASE_INSENSITIVE_ORDER);
+        };
     }
 
     private void showSortMenu() {
@@ -222,8 +306,8 @@ public class RecordingsFragment extends Fragment implements RecordingsAdapter.On
         
         popup.setOnMenuItemClickListener(item -> {
             currentSortType = item.getItemId();
-            applySort();
-            adapter.setRecordings(allRecordings);
+            applySort(allRecordings);
+            updateDisplayList();
             return true;
         });
         popup.show();
@@ -233,35 +317,66 @@ public class RecordingsFragment extends Fragment implements RecordingsAdapter.On
 
     @Override
     public void onPlay(Recording recording) {
-        // Use in-app audio player
-        AudioPlayerDialog dialog = new AudioPlayerDialog(requireContext(), recording.getFile());
-        dialog.show();
+        if (isGroupByContact && currentContactFilter == null) {
+            currentContactFilter = recording.getGroupKey();
+            updateDisplayList();
+        } else {
+            AudioPlayerDialog dialog = new AudioPlayerDialog(requireContext(), recording.getFile());
+            dialog.show();
+        }
     }
 
     @Override
     public void onShare(Recording recording) {
+        if (isGroupByContact && currentContactFilter == null) {
+            Toast.makeText(requireContext(), "Sharing not available for grouped items", Toast.LENGTH_SHORT).show();
+            return;
+        }
         shareRecording(recording.getFile());
     }
 
     @Override
     public void onDelete(Recording recording) {
-        new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.delete_confirmation)
-                .setMessage(recording.getFile().getName())
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    if (recording.getFile().delete()) {
+        if (isGroupByContact && currentContactFilter == null) {
+            String groupKey = recording.getGroupKey();
+            List<Recording> recordingsToDelete = allRecordings.stream()
+                    .filter(r -> r.getGroupKey().equals(groupKey))
+                    .collect(Collectors.toList());
+            
+            new AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.delete_confirmation)
+                    .setMessage("Delete " + recordingsToDelete.size() + " recordings for " + groupKey + "?")
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        int deleted = 0;
+                        for (Recording rec : recordingsToDelete) {
+                            if (rec.getFile().delete()) {
+                                deleted++;
+                            }
+                        }
+                        Toast.makeText(requireContext(), "Deleted " + deleted + " recordings", Toast.LENGTH_SHORT).show();
                         loadRecordings();
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to delete", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null)
-                .show();
+                    })
+                    .setNegativeButton(android.R.string.no, null)
+                    .show();
+        } else {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.delete_confirmation)
+                    .setMessage(recording.getFile().getName())
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        if (recording.getFile().delete()) {
+                            loadRecordings();
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to delete", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null)
+                    .show();
+        }
     }
 
     @Override
     public void onLongPress(Recording recording, int position) {
-        // Enter selection mode
+        if (isGroupByContact && currentContactFilter == null) return;
         adapter.setSelectionMode(true);
         adapter.toggleSelection(position);
     }
@@ -335,5 +450,11 @@ public class RecordingsFragment extends Fragment implements RecordingsAdapter.On
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        executorService.shutdown();
     }
 }

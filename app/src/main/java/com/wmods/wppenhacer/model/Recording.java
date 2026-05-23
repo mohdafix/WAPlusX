@@ -17,6 +17,9 @@ public class Recording {
     public long getDuration() { return duration; }
     public long getDate() { return date; }
     public long getSize() { return size; }
+    
+    public String getPhoneNumber() { return contactName; }
+    public String getGroupKey() { return (contactName != null && !contactName.isEmpty()) ? contactName : "Unknown"; }
 
     private final File file;
     private String contactName;

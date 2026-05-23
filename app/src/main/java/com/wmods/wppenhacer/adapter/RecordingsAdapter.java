@@ -32,6 +32,18 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Vi
     private boolean isSelectionMode = false;
     private final Set<Integer> selectedPositions = new HashSet<>();
     private OnSelectionChangeListener selectionChangeListener;
+    private boolean isGroupedMode = false;
+
+    public void setGroupedMode(boolean groupedMode) {
+        if (this.isGroupedMode != groupedMode) {
+            this.isGroupedMode = groupedMode;
+            notifyDataSetChanged();
+        }
+    }
+
+    public boolean isGroupedMode() {
+        return isGroupedMode;
+    }
 
     public void setSelectionChangeListener(OnSelectionChangeListener selectionChangeListener) {
         this.selectionChangeListener = selectionChangeListener;
@@ -125,8 +137,27 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Vi
         // Contact name
         holder.contactName.setText(recording.getContactName());
 
-        // Duration
-        holder.duration.setText(recording.getFormattedDuration());
+        // Duration and UI elements based on mode
+        if (isGroupedMode) {
+            holder.duration.setVisibility(View.GONE);
+            // Action buttons visibility
+            if (!isSelectionMode) {
+                holder.actionsContainer.setVisibility(View.VISIBLE);
+                holder.btnPlay.setVisibility(View.GONE);
+                holder.btnShare.setVisibility(View.GONE);
+                holder.btnDelete.setVisibility(View.VISIBLE);
+            }
+        } else {
+            holder.duration.setVisibility(View.VISIBLE);
+            holder.duration.setText(recording.getFormattedDuration());
+            // Action buttons visibility
+            if (!isSelectionMode) {
+                holder.actionsContainer.setVisibility(View.VISIBLE);
+                holder.btnPlay.setVisibility(View.VISIBLE);
+                holder.btnShare.setVisibility(View.VISIBLE);
+                holder.btnDelete.setVisibility(View.VISIBLE);
+            }
+        }
         
         // Details: size and date
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
@@ -141,7 +172,6 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Vi
             holder.card.setChecked(selectedPositions.contains(position));
         } else {
             holder.checkbox.setVisibility(View.GONE);
-            holder.actionsContainer.setVisibility(View.VISIBLE);
             holder.card.setChecked(false);
         }
         
@@ -155,7 +185,7 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Vi
         });
         
         holder.itemView.setOnLongClickListener(v -> {
-            if (!isSelectionMode) {
+            if (!isSelectionMode && !isGroupedMode) {
                 listener.onLongPress(recording, position);
             }
             return true;
