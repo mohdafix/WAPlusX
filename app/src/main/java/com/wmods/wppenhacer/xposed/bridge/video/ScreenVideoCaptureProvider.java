@@ -119,6 +119,13 @@ public final class ScreenVideoCaptureProvider {
         signalEndOfStream();
         drainEncoderFinal(encoder, mediaMuxer, bufferInfo, trackIndex, muxerStarted);
 
+        try {
+            config.getOutputFile().setReadable(true, false);
+            config.getOutputFile().setWritable(true, false);
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to set final file permissions: " + e.getMessage());
+        }
+
         Log.i(TAG, "Screen capture saved: " + config.getOutputFile().getAbsolutePath());
     }
 
@@ -161,10 +168,17 @@ public final class ScreenVideoCaptureProvider {
 
     private void drainEncoderFinal(MediaCodec codec, MediaMuxer muxer, MediaCodec.BufferInfo bufferInfo, int trackIndex, boolean muxerStarted) {
         DrainResult result;
+        int maxAttempts = 100; // 100 attempts * 10ms = ~1 second
+        int attempts = 0;
         do {
             result = drainEncoder(codec, muxer, bufferInfo, trackIndex, muxerStarted);
             trackIndex = result.trackIndex;
             muxerStarted = result.muxerStarted;
+            attempts++;
+            if (attempts > maxAttempts) {
+                Log.w(TAG, "Timed out waiting for EOS during drainEncoderFinal");
+                break;
+            }
         } while (!result.endOfStream);
     }
 
@@ -185,6 +199,13 @@ public final class ScreenVideoCaptureProvider {
         }
         if (file.exists() && !file.delete()) {
             throw new IllegalArgumentException("Failed to overwrite output file: " + file.getAbsolutePath());
+        }
+        try {
+            file.createNewFile();
+            file.setReadable(true, false);
+            file.setWritable(true, false);
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to set file permissions: " + e.getMessage());
         }
     }
 

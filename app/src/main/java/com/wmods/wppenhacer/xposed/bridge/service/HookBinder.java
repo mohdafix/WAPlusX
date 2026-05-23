@@ -78,7 +78,11 @@ public class HookBinder extends WaeIIFace.Stub {
     public void stopAudioRootServer() throws RemoteException {
         if (activeAudioProcess != null) {
             try {
-                activeAudioProcess.destroy();
+                activeAudioProcess.getOutputStream().close();
+                boolean exited = activeAudioProcess.waitFor(6, java.util.concurrent.TimeUnit.SECONDS);
+                if (!exited) {
+                    activeAudioProcess.destroyForcibly();
+                }
             } catch (Exception ignored) {}
             activeAudioProcess = null;
         }
@@ -100,7 +104,14 @@ public class HookBinder extends WaeIIFace.Stub {
     public void stopVideoRootServer() throws RemoteException {
         if (activeVideoProcess != null) {
             try {
-                activeVideoProcess.destroy();
+                // Close stdin to trigger graceful shutdown via the StdinMonitor thread
+                activeVideoProcess.getOutputStream().close();
+                // Wait up to 6 seconds for the video server to finalize the MP4
+                // (it needs ~3s for MediaMuxer.stop() + time to write MOOV atom)
+                boolean exited = activeVideoProcess.waitFor(6, java.util.concurrent.TimeUnit.SECONDS);
+                if (!exited) {
+                    activeVideoProcess.destroyForcibly();
+                }
             } catch (Exception ignored) {}
             activeVideoProcess = null;
         }

@@ -39,36 +39,52 @@ public class TextStatusComposer extends Feature {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         var activity = WppCore.getCurrentActivity();
                         var viewRoot = (View) param.args[1];
+                        colorData.textColor = -1;
+                        colorData.backgroundColor = -1;
+
+                        if (activity == null || viewRoot == null) return;
+
                         var pickerColor = viewRoot.findViewById(Utils.getID("color_picker_btn", "id"));
                         var entry = (EditText) viewRoot.findViewById(Utils.getID("entry", "id"));
 
-                        pickerColor.setOnLongClickListener(v -> {
-                            var dialog = new SimpleColorPickerDialog(activity, color -> {
-                                try {
-                                    activity.getWindow().setBackgroundDrawable(new ColorDrawable(color));
-                                    viewRoot.findViewById(Utils.getID("background","id")).setBackgroundColor(color);
-                                    var controls = viewRoot.findViewById(Utils.getID("controls", "id"));
-                                    controls.setBackgroundColor(color);
-                                    colorData.backgroundColor = color;
-                                } catch (Exception e) {
-                                    log(e);
-                                }
+                        if (pickerColor != null) {
+                            pickerColor.setOnLongClickListener(v -> {
+                                var dialog = new SimpleColorPickerDialog(activity, color -> {
+                                    try {
+                                        activity.getWindow().setBackgroundDrawable(new ColorDrawable(color));
+                                        var background = viewRoot.findViewById(Utils.getID("background", "id"));
+                                        if (background != null) {
+                                            background.setBackgroundColor(color);
+                                        }
+                                        var controls = viewRoot.findViewById(Utils.getID("controls", "id"));
+                                        if (controls != null) {
+                                            controls.setBackgroundColor(color);
+                                        }
+                                        colorData.backgroundColor = color;
+                                    } catch (Exception e) {
+                                        log(e);
+                                    }
+                                });
+                                dialog.create().setCanceledOnTouchOutside(false);
+                                dialog.show();
+                                return true;
                             });
-                            dialog.create().setCanceledOnTouchOutside(false);
-                            dialog.show();
-                            return true;
-                        });
+                        }
 
                         var textColor = viewRoot.findViewById(Utils.getID("font_picker_btn", "id"));
-                        textColor.setOnLongClickListener(v -> {
-                            var dialog = new SimpleColorPickerDialog(activity, color -> {
-                                colorData.textColor = color;
-                                entry.setTextColor(color);
+                        if (textColor != null) {
+                            textColor.setOnLongClickListener(v -> {
+                                var dialog = new SimpleColorPickerDialog(activity, color -> {
+                                    colorData.textColor = color;
+                                    if (entry != null) {
+                                        entry.setTextColor(color);
+                                    }
+                                });
+                                dialog.create().setCanceledOnTouchOutside(false);
+                                dialog.show();
+                                return true;
                             });
-                            dialog.create().setCanceledOnTouchOutside(false);
-                            dialog.show();
-                            return true;
-                        });
+                        }
                     }
                 });
 

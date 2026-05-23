@@ -49,16 +49,17 @@ public final class RootVideoRecordingServer {
             // Exemption for Hidden APIs on modern Android
             exemptHiddenApis();
 
-            // Initialize ActivityThread and system Context
-            initializeSystemContext();
-
-            // Prepare Main Looper
+            // Prepare Main Looper FIRST, because ActivityThread/DisplayManager need it
             Looper.prepare();
             synchronized (Looper.class) {
                 Field declaredField = Looper.class.getDeclaredField("sMainLooper");
                 declaredField.setAccessible(true);
                 declaredField.set(null, Looper.myLooper());
             }
+
+            // Initialize ActivityThread and system Context
+            initializeSystemContext();
+
             mainHandler = new Handler(Looper.getMainLooper());
 
             // Set up Stdin Monitor thread to handle clean exit when parent process dies or closes pipe
@@ -77,6 +78,15 @@ public final class RootVideoRecordingServer {
                 System.exit(1);
             }
 
+            // Ensure output directory exists before starting
+            File outputFile = new File(outputPath);
+            File parentFile = outputFile.getParentFile();
+            if (parentFile != null && !parentFile.exists() && !parentFile.mkdirs()) {
+                logError("Failed to create output directory: " + parentFile.getAbsolutePath());
+                sendStatusBroadcast("error", 4, "Cannot create output directory", null);
+                System.exit(1);
+            }
+
             // Start recording
             isRunning = true;
             if (startRecording()) {
@@ -85,6 +95,7 @@ public final class RootVideoRecordingServer {
                 // Monitor target process loop
                 new Thread(RootVideoRecordingServer::monitorTargetProcess, "TargetMonitor").start();
                 
+                logInfo("Recording loop started for file: " + outputFile.getAbsolutePath());
                 Looper.loop();
             } else {
                 logError("Failed to start video recording provider");
@@ -331,10 +342,12 @@ public final class RootVideoRecordingServer {
                 while (System.in.read() != -1) {
                     // loop until stdin is closed
                 }
-                logInfo("stdin closed, stopping video recording...");
-                stopRecording("requested");
+                logInfo("stdin closed normally");
             } catch (Exception e) {
-                logError("Error in stdin monitor: " + e.getMessage());
+                logError("Error or pipe closed in stdin monitor: " + e.getMessage());
+            } finally {
+                logInfo("Stopping video recording from stdin monitor...");
+                stopRecording("requested");
             }
         }, "RootVideoServer-StdinMonitor");
         monitorThread.setDaemon(true);

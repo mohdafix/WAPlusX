@@ -612,8 +612,7 @@ public class CallRecording extends Feature {
                     int myPid = android.os.Process.myPid();
                     String videoSessionId = String.valueOf(System.currentTimeMillis());
 
-                    File videoTempFile = new File(outputTarget.file.getParent(),
-                            outputTarget.file.getName().replace(".m4a", "_video.mp4").replace(".wav", "_video.mp4"));
+                    File videoTempFile = createVideoTempFile(outputTarget.file);
                     videoOutputFileRef.set(videoTempFile);
 
                     String videoQuality = prefs.getString("call_recording_video_quality", "medium");
@@ -850,23 +849,30 @@ public class CallRecording extends Feature {
             android.media.MediaExtractor videoExtractor = null;
             android.media.MediaExtractor audioExtractor = null;
             android.media.MediaMuxer muxer = null;
+            ParcelFileDescriptor videoPfd = null;
+            ParcelFileDescriptor audioPfd = null;
+            ParcelFileDescriptor muxOutputPfd = null;
             boolean success = false;
 
             File parentDir = audioFile.getParentFile();
             String name = audioFile.getName();
             String finalName = name.replace(".m4a", ".mp4").replace(".wav", ".mp4");
-            File finalOutputFile = new File(parentDir, finalName);
+            File preferredOutputFile = new File(parentDir, finalName);
+            File finalOutputFile = preferredOutputFile;
 
             try {
                 logDebug("WaEnhancer: Starting MediaMuxer...");
 
                 videoExtractor = new android.media.MediaExtractor();
-                videoExtractor.setDataSource(videoFile.getAbsolutePath());
+                videoPfd = setExtractorDataSource(videoExtractor, videoFile);
 
                 audioExtractor = new android.media.MediaExtractor();
-                audioExtractor.setDataSource(audioFile.getAbsolutePath());
+                audioPfd = setExtractorDataSource(audioExtractor, audioFile);
 
-                muxer = new android.media.MediaMuxer(finalOutputFile.getAbsolutePath(), android.media.MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+                MuxOutputTarget muxOutputTarget = openMuxOutputTarget(preferredOutputFile);
+                finalOutputFile = muxOutputTarget.file;
+                muxOutputPfd = muxOutputTarget.parcelFileDescriptor;
+                muxer = muxOutputTarget.muxer;
 
                 int videoTrackIndex = -1;
                 for (int i = 0; i < videoExtractor.getTrackCount(); i++) {
@@ -896,6 +902,7 @@ public class CallRecording extends Feature {
 
                 muxer.start();
 
+                long videoStartTime = -1;
                 android.media.MediaCodec.BufferInfo videoBufferInfo = new android.media.MediaCodec.BufferInfo();
                 java.nio.ByteBuffer videoBuffer = java.nio.ByteBuffer.allocate(1024 * 1024);
                 while (true) {
@@ -903,13 +910,18 @@ public class CallRecording extends Feature {
                     if (videoBufferInfo.size < 0) {
                         break;
                     }
-                    videoBufferInfo.presentationTimeUs = videoExtractor.getSampleTime();
+                    long pts = videoExtractor.getSampleTime();
+                    if (videoStartTime == -1) {
+                        videoStartTime = pts;
+                    }
+                    videoBufferInfo.presentationTimeUs = pts - videoStartTime;
                     videoBufferInfo.flags = videoExtractor.getSampleFlags();
                     videoBufferInfo.offset = 0;
                     muxer.writeSampleData(videoTrackIndex, videoBuffer, videoBufferInfo);
                     videoExtractor.advance();
                 }
 
+                long audioStartTime = -1;
                 android.media.MediaCodec.BufferInfo audioBufferInfo = new android.media.MediaCodec.BufferInfo();
                 java.nio.ByteBuffer audioBuffer = java.nio.ByteBuffer.allocate(1024 * 1024);
                 while (true) {
@@ -917,7 +929,11 @@ public class CallRecording extends Feature {
                     if (audioBufferInfo.size < 0) {
                         break;
                     }
-                    audioBufferInfo.presentationTimeUs = audioExtractor.getSampleTime();
+                    long pts = audioExtractor.getSampleTime();
+                    if (audioStartTime == -1) {
+                        audioStartTime = pts;
+                    }
+                    audioBufferInfo.presentationTimeUs = pts - audioStartTime;
                     audioBufferInfo.flags = audioExtractor.getSampleFlags();
                     audioBufferInfo.offset = 0;
                     muxer.writeSampleData(audioTrackIndex, audioBuffer, audioBufferInfo);
@@ -936,6 +952,15 @@ public class CallRecording extends Feature {
                     if (audioExtractor != null) audioExtractor.release();
                 } catch (Exception ignored) {}
                 try {
+                    if (videoPfd != null) videoPfd.close();
+                } catch (Exception ignored) {}
+                try {
+                    if (audioPfd != null) audioPfd.close();
+                } catch (Exception ignored) {}
+                try {
+                    if (muxOutputPfd != null) muxOutputPfd.close();
+                } catch (Exception ignored) {}
+                try {
                     if (muxer != null) {
                         if (success) {
                             muxer.stop();
@@ -947,6 +972,37 @@ public class CallRecording extends Feature {
                 if (success) {
                     if (videoFile.exists()) videoFile.delete();
                     if (audioFile.exists()) audioFile.delete();
+
+                    if (!finalOutputFile.getAbsolutePath().equals(preferredOutputFile.getAbsolutePath())) {
+                        try {
+                            WaeIIFace bridge = WppCore.getClientBridge();
+                            boolean copied = false;
+                            if (bridge != null) {
+                                ParcelFileDescriptor pfd = bridge.openFile(preferredOutputFile.getAbsolutePath(), true);
+                                if (pfd != null) {
+                                    try (java.io.FileInputStream fis = new java.io.FileInputStream(finalOutputFile);
+                                         java.io.FileOutputStream fos = new java.io.FileOutputStream(pfd.getFileDescriptor())) {
+                                        byte[] buf = new byte[8192];
+                                        int len;
+                                        while ((len = fis.read(buf)) > 0) {
+                                            fos.write(buf, 0, len);
+                                        }
+                                        copied = true;
+                                    } finally {
+                                        pfd.close();
+                                    }
+                                }
+                            }
+                            if (copied) {
+                                logDebug("WaEnhancer: Successfully copied fallback mux output to preferred path: " + preferredOutputFile.getAbsolutePath());
+                                finalOutputFile.delete();
+                                finalOutputFile = preferredOutputFile;
+                            }
+                        } catch (Exception e) {
+                            logDebug("WaEnhancer: Failed to copy fallback mux output to preferred path: " + e.getMessage());
+                        }
+                    }
+
                     Utils.scanFile(finalOutputFile);
                     if (prefs.getBoolean("call_recording_toast", false)) {
                         Utils.showToast("Call recording saved with video!", Toast.LENGTH_SHORT);
@@ -959,8 +1015,35 @@ public class CallRecording extends Feature {
         }, "WaEnhancer-VideoMux").start();
     }
 
+    @androidx.annotation.Nullable
+    private ParcelFileDescriptor setExtractorDataSource(@androidx.annotation.NonNull android.media.MediaExtractor extractor, @androidx.annotation.NonNull File file) throws IOException {
+        if (file.canRead()) {
+            try (java.io.FileInputStream fis = new java.io.FileInputStream(file)) {
+                extractor.setDataSource(fis.getFD());
+                return null;
+            } catch (Exception e) {
+                throw new IOException("Failed to set data source via direct FD: " + file.getAbsolutePath() + ": " + e.getMessage(), e);
+            }
+        }
+
+        try {
+            WaeIIFace bridge = WppCore.getClientBridge();
+            if (bridge != null) {
+                ParcelFileDescriptor pfd = bridge.openFile(file.getAbsolutePath(), false);
+                if (pfd != null) {
+                    extractor.setDataSource(pfd.getFileDescriptor());
+                    return pfd;
+                }
+            }
+        } catch (Exception e) {
+            throw new IOException("Failed to set data source via bridge FD: " + file.getAbsolutePath() + ": " + e.getMessage(), e);
+        }
+
+        throw new IOException("File is not readable and bridge openFile failed: " + file.getAbsolutePath());
+    }
+
     private void closeOutputResources(boolean deleteOutputFile) {
-        FileOutputStream stream = outputStreamRef.getAndSet(null);
+        java.io.FileOutputStream stream = outputStreamRef.getAndSet(null);
         ParcelFileDescriptor pfd = outputPfdRef.getAndSet(null);
         File outputFile = outputFileRef.getAndSet(null);
 
@@ -982,8 +1065,75 @@ public class CallRecording extends Feature {
         }
     }
 
-    @NonNull
-    private OutputTarget openOutputTarget(WaeIIFace bridge, @NonNull File preferredDir, @NonNull String fileName) throws IOException {
+    @androidx.annotation.NonNull
+    private File createVideoTempFile(@androidx.annotation.NonNull File audioOutputFile) {
+        String videoName = audioOutputFile.getName().replace(".m4a", "_video.mp4").replace(".wav", "_video.mp4");
+
+        File appExternalDir = FeatureLoader.mApp.getExternalFilesDir(null);
+        if (appExternalDir != null) {
+            File tempDir = new File(appExternalDir, "RecordingsTemp");
+            if ((tempDir.exists() || tempDir.mkdirs()) && tempDir.canWrite()) {
+                return new File(tempDir, videoName);
+            }
+        }
+
+        return new File(audioOutputFile.getParent(), videoName);
+    }
+
+    @androidx.annotation.NonNull
+    private MuxOutputTarget openMuxOutputTarget(@androidx.annotation.NonNull File preferredOutputFile) throws IOException {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            try {
+                WaeIIFace bridge = WppCore.getClientBridge();
+                if (bridge != null) {
+                    ParcelFileDescriptor pfd = bridge.openFile(preferredOutputFile.getAbsolutePath(), true);
+                    if (pfd != null) {
+                        android.media.MediaMuxer muxer = new android.media.MediaMuxer(
+                                pfd.getFileDescriptor(),
+                                android.media.MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4
+                        );
+                        return new MuxOutputTarget(preferredOutputFile, pfd, muxer);
+                    }
+                }
+            } catch (Throwable t) {
+                logDebug("WaEnhancer: Bridge mux output open failed, fallback path: " + t.getMessage());
+            }
+        }
+
+        File fallbackBase = FeatureLoader.mApp.getExternalFilesDir(null);
+        if (fallbackBase == null) {
+            throw new IOException("Could not resolve app external files directory for mux output");
+        }
+        File fallbackDir = new File(fallbackBase, "Recordings");
+        if (!fallbackDir.exists() && !fallbackDir.mkdirs()) {
+            throw new IOException("Could not create mux fallback directory: " + fallbackDir.getAbsolutePath());
+        }
+
+        File fallbackFile = new File(fallbackDir, preferredOutputFile.getName());
+        android.media.MediaMuxer muxer = new android.media.MediaMuxer(
+                fallbackFile.getAbsolutePath(),
+                android.media.MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4
+        );
+        logDebug("WaEnhancer: Mux output fallback path: " + fallbackFile.getAbsolutePath());
+        return new MuxOutputTarget(fallbackFile, null, muxer);
+    }
+
+    private static final class MuxOutputTarget {
+        @androidx.annotation.NonNull
+        private final File file;
+        private final ParcelFileDescriptor parcelFileDescriptor;
+        @androidx.annotation.NonNull
+        private final android.media.MediaMuxer muxer;
+
+        private MuxOutputTarget(@androidx.annotation.NonNull File file, ParcelFileDescriptor parcelFileDescriptor, @androidx.annotation.NonNull android.media.MediaMuxer muxer) {
+            this.file = file;
+            this.parcelFileDescriptor = parcelFileDescriptor;
+            this.muxer = muxer;
+        }
+    }
+
+    @androidx.annotation.NonNull
+    private OutputTarget openOutputTarget(WaeIIFace bridge, @androidx.annotation.NonNull File preferredDir, @androidx.annotation.NonNull String fileName) throws IOException {
         File preferredFile = new File(preferredDir, fileName);
         if (bridge != null) {
             try {

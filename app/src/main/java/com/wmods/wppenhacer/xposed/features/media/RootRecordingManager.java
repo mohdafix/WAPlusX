@@ -69,11 +69,15 @@ public class RootRecordingManager {
         }
         if (activeRootProcess != null) {
             try {
-                activeRootProcess.destroy();
-                activeRootProcess = null;
+                activeRootProcess.getOutputStream().close();
+                boolean exited = activeRootProcess.waitFor(6, java.util.concurrent.TimeUnit.SECONDS);
+                if (!exited) {
+                    activeRootProcess.destroyForcibly();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            activeRootProcess = null;
         }
     }
 }

@@ -116,9 +116,9 @@ public class UnlockPremium extends Feature {
                         Boolean val = PREMIUM_BOOLS.get(key);
                         if (val != null) {
                             param.setResult(val);
-                            if (!Utils.isSpam("PremiumBool_" + key, 60000)) {
-                                log("Overriding Boolean Key " + key + " -> " + val);
-                            }
+                            // if (!Utils.isSpam("PremiumBool_" + key, 60000)) {
+                            //     log("Overriding Boolean Key " + key + " -> " + val);
+                            // }
                         }
                     }
                 }
@@ -149,9 +149,9 @@ public class UnlockPremium extends Feature {
                         Integer val = PREMIUM_INTS.get(key);
                         if (val != null) {
                             param.setResult(val);
-                            if (!Utils.isSpam("PremiumInt_" + key, 60000)) {
-                                log("Overriding Integer Key " + key + " -> " + val);
-                            }
+                            // if (!Utils.isSpam("PremiumInt_" + key, 60000)) {
+                            //     log("Overriding Integer Key " + key + " -> " + val);
+                            // }
                         }
                     }
                 }
