@@ -21,7 +21,7 @@ import okhttp3.OkHttpClient;
 
 public class UpdateChecker implements Runnable {
 
-    private static final String LATEST_RELEASE_API = "https://api.github.com/repos/Dev4Mod/WaEnhancer/releases/latest";
+    private static final String LATEST_RELEASE_API = "https://api.github.com/repos/mohdafix/WAPlusX/releases/latest";
     private static final String RELEASE_TAG_PREFIX = "debug-";
     private static final String TELEGRAM_UPDATE_URL = "https://t.me/waenhancher";
 

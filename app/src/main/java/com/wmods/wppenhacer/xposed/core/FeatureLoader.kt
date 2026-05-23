@@ -309,7 +309,7 @@ class FeatureLoader {
                             if (pref.getBoolean("lite_mode",false)) return
                             activity.window.decorView.postDelayed({
                                 // Disable update checker for now
-                                // CompletableFuture.runAsync(UpdateChecker(activity))
+                                CompletableFuture.runAsync(UpdateChecker(activity))
                             }, 2000)
                         }
                     }
