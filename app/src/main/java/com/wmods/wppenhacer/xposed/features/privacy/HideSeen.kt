@@ -142,40 +142,34 @@ class HideSeen(loader: ClassLoader, preferences: XSharedPreferences) :
     }
 
     private fun hookReceiptMethod() {
+
         val receiptMethod = Unobfuscator.loadReceiptMethod(classLoader)
-        val receiptMainCallerMethod = Unobfuscator.loadReceiptMainCallerMethod(classLoader)
-        val receiptCallersMethod = Unobfuscator.loadReceiptCallersMethod(classLoader)
+        val receiptMainCallerMethod = Unobfuscator.loadReceiptMainCallerMethod(classLoader);
+        val receiptCallerMethods = Unobfuscator.loadReceiptCallersMethod(classLoader);
 
-        val isHandlingReceipt = java.lang.ThreadLocal<Boolean>()
-        isHandlingReceipt.set(false)
+        val inManualReceiptCheck = java.lang.ThreadLocal<Boolean>();
 
-        val messageHandlerHook = object : XC_MethodHook() {
+        val hookCallerMethod = object : XC_MethodHook(){
             override fun beforeHookedMethod(param: MethodHookParam) {
-                val message = param.args[0] as? Message ?: return
-                val arg1 = message.arg1
-                if (arg1 == 419 || arg1 == 89) {
-                    val obj = message.obj
-                    isHandlingReceipt.set(true)
-                    try {
-                        if (receiptMainCallerMethod.invoke(null, obj) == null) {
-                            param.result = null
-                        }
-                    } catch (e: Exception) {
-                        XposedBridge.log(e)
-                    } finally {
-                        isHandlingReceipt.set(false)
-                    }
+                val firstArg = param.args[0] as? Message ?: return
+                if (firstArg.arg1 != 419 && firstArg.arg1 != 89)return
+                val obj = firstArg.obj
+                inManualReceiptCheck.set(true)
+                val checkResult = try {
+                    receiptMainCallerMethod.invoke(null, obj);
+                }finally {
+                    inManualReceiptCheck.set(false)
                 }
+
+                if (checkResult == null)
+                    param.result = null;
             }
         }
-
-        for (caller in receiptCallersMethod) {
-            XposedBridge.hookMethod(caller, messageHandlerHook)
-        }
+        receiptCallerMethods.forEach { XposedBridge.hookMethod(it, hookCallerMethod) }
 
         XposedBridge.hookMethod(receiptMethod, object : XC_MethodHook() {
+
             override fun afterHookedMethod(param: MethodHookParam) {
-                if (isHandlingReceipt.get() != true) return
 
                 val protocolTreeNodeWpp = ProtocolTreeNodeWpp(param.result)
 
@@ -193,8 +187,15 @@ class HideSeen(loader: ClassLoader, preferences: XSharedPreferences) :
 
                 if (hideSeenItem?.viewed ?: false) return
 
+                hideSeenItem?.let {
+                    param.result = null
+                    return
+                }
+
                 val hideSeen = checkPrivacyAndHideSeen(fmessageKey)
                 val hideReceipt = checkPrivacyAndHideReceipt(fmessageKey)
+
+                var isHide = false
 
                 if (hideReceipt) {
                     if (typeKV == null) {
@@ -202,12 +203,17 @@ class HideSeen(loader: ClassLoader, preferences: XSharedPreferences) :
                     } else {
                         typeKV.value = "inactive"
                     }
+                    protocolTreeNodeWpp.removeAllKeyValuesByKey("sts")
+                    isHide = true
                 } else if (hideSeen && typeKV?.value == "read") {
                     protocolTreeNodeWpp.removeAllKeyValuesByKey("sts")
                     protocolTreeNodeWpp.removeAllKeyValuesByKey("type")
+                    isHide = true
                 }
 
-                if (hideSeenItem == null && (hideReceipt || hideSeen)) {
+                if (inManualReceiptCheck.get() ?: false)return
+
+                if (isHide) {
                     MessageHistoryStore.getInstance().insertHideSeenMessage(
                         fmessageKey.remoteJid.phoneRawString,
                         fmessageKey.messageID,
