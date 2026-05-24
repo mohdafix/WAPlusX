@@ -41,14 +41,31 @@ public class ScopeHook {
     private static void hookSettings(XC_LoadPackage.LoadPackageParam lpparam) throws Exception {
         Class<?> clsSet = XposedHelpers.findClass("com.android.providers.settings.SettingsProvider", lpparam.classLoader);
 
-        // Bundle call(String method, String arg, Bundle extras)
-        Method mCall = clsSet.getMethod("call", String.class, String.class, Bundle.class);
-        XposedBridge.hookMethod(mCall, new XC_MethodHook() {
+        XposedBridge.hookAllMethods(clsSet, "call", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 try {
-                    String method = (String) param.args[0];
-                    String arg = (String) param.args[1];
+                    if (param.args.length < 3) return;
+
+                    String method = null;
+                    String arg = null;
+
+                    if (param.args.length == 3) {
+                        if (param.args[0] instanceof String) {
+                            method = (String) param.args[0];
+                        }
+                        if (param.args[1] instanceof String) {
+                            arg = (String) param.args[1];
+                        }
+                    } else if (param.args.length >= 4) {
+                        if (param.args[1] instanceof String) {
+                            method = (String) param.args[1];
+                        }
+                        if (param.args[2] instanceof String) {
+                            arg = (String) param.args[2];
+                        }
+                    }
+
                     if ("WaEnhancer".equals(method)) {
                         if ("getHookBinder".equals(arg)) {
                             Method mGetContext = param.thisObject.getClass().getMethod("getContext");
@@ -84,6 +101,8 @@ public class ScopeHook {
         var hooked = XposedBridge.hookMethod(addService, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                if (param.args.length < 2) return;
+                if (!(param.args[0] instanceof String)) return;
                 var service = (String) param.args[0];
                 if (Objects.equals(service, "package")) {
                     if (hookedService.get() != null) {
@@ -103,6 +122,8 @@ public class ScopeHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
+                        if (param.args.length < 5) return;
+                        if (!(param.args[1] instanceof Integer)) return;
                         var snapshot = param.args[0];
                         var callingUid = (int) param.args[1];
                         if (callingUid == 1000) return;
@@ -120,9 +141,8 @@ public class ScopeHook {
                             }
                         }
                     } catch (Exception e) {
-                        XposedBridge.log("Error while hooking Android System");
+                        XposedBridge.log("Error while hooking Android System (AppsFilterBase)");
                         XposedBridge.log(e);
-                        unhook();
                     }
                 }
             });
@@ -131,6 +151,8 @@ public class ScopeHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
+                        if (param.args.length < 4) return;
+                        if (!(param.args[0] instanceof Integer)) return;
                         var callingUid = (int) param.args[0];
                         if (callingUid == 1000) return;
                         var callingApps = Utils.binderLocalScope(() -> {
@@ -146,14 +168,12 @@ public class ScopeHook {
                             }
                         }
                     } catch (Exception e) {
-                        XposedBridge.log("Error while hooking Android System");
+                        XposedBridge.log("Error while hooking Android System (AppsFilter)");
                         XposedBridge.log(e);
-                        unhook();
                     }
                 }
             });
         }
-
     }
 
     private static void unhook() {

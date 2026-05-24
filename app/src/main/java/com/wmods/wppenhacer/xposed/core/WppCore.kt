@@ -220,19 +220,33 @@ object WppCore {
         ) // 0 for ProviderClient first, 1 for BridgeClient first
 
         var connected = false
-        if (preferredOrder == 0) {
-            if (tryConnectBridge(ProviderClientKt(context))) {
-                connected = true
-            } else if (tryConnectBridge(BridgeClientKt(context))) {
-                connected = true
-                preferredOrder = 1 // Update preference to BridgeClient first
+        var attempts = 3
+        while (attempts > 0 && !connected) {
+            XposedBridge.log("initBridge: Connection attempt remaining: $attempts")
+            if (preferredOrder == 0) {
+                if (tryConnectBridge(ProviderClientKt(context))) {
+                    connected = true
+                } else if (tryConnectBridge(BridgeClientKt(context))) {
+                    connected = true
+                    preferredOrder = 1 // Update preference to BridgeClient first
+                }
+            } else {
+                if (tryConnectBridge(BridgeClientKt(context))) {
+                    connected = true
+                } else if (tryConnectBridge(ProviderClientKt(context))) {
+                    connected = true
+                    preferredOrder = 0 // Update preference to ProviderClient first
+                }
             }
-        } else {
-            if (tryConnectBridge(BridgeClientKt(context))) {
-                connected = true
-            } else if (tryConnectBridge(ProviderClientKt(context))) {
-                connected = true
-                preferredOrder = 0 // Update preference to ProviderClient first
+            if (!connected) {
+                attempts--
+                if (attempts > 0) {
+                    XposedBridge.log("initBridge: Both clients failed to connect, retrying in 1500ms...")
+                    try {
+                        Thread.sleep(1500)
+                    } catch (ignored: InterruptedException) {
+                    }
+                }
             }
         }
 
@@ -252,8 +266,10 @@ object WppCore {
             client = baseClient
             val canLoadFuture: CompletableFuture<Boolean> = baseClient.connect()
             val canLoad = canLoadFuture.get()
-            if (!canLoad) throw Exception()
-        } catch (_: Exception) {
+            if (!canLoad) throw Exception("Connection verification returned false")
+        } catch (e: Exception) {
+            XposedBridge.log("Failed to connect to ${baseClient.javaClass.simpleName}: ${e.message}")
+            XposedBridge.log(e)
             return false
         }
         return true

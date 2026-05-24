@@ -564,4 +564,6 @@
     <string name="clear_obfuscate_cache">Clear Obfuscate Cache</string>
     <string name="view_changelog">View Changelog</string>
     <string name="release_channel_beta">Beta</string>
+    <string name="status_video_splitter">Status Video Splitter</string>
+    <string name="status_video_splitter_sum">Add option to split long videos into status-length segments</string>
 </resources>
