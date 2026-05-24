@@ -11,6 +11,7 @@ import com.wmods.wppenhacer.xposed.core.FeatureLoader;
 import com.wmods.wppenhacer.xposed.utils.ReflectionUtils;
 import com.wmods.wppenhacer.xposed.utils.Utils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Set;
@@ -164,10 +165,65 @@ public class ScopeHook {
     }
 
     private static String getPackageNameFromPackageSettings(Object packageSettings) {
-        String packageSettingsString = packageSettings.toString();
-        int startIndex = packageSettingsString.lastIndexOf(' ') + 1;
-        int endIndex = packageSettingsString.lastIndexOf('/');
-        return packageSettingsString.substring(startIndex, endIndex);
+        if (packageSettings == null) return "";
+        
+        // 1. Try getPackageName() method (Android 12/13/14+)
+        try {
+            Method getPackageNameMethod = ReflectionUtils.findMethodUsingFilterIfExists(
+                packageSettings.getClass(),
+                m -> "getPackageName".equals(m.getName()) && m.getParameterCount() == 0 && m.getReturnType() == String.class
+            );
+            if (getPackageNameMethod != null) {
+                getPackageNameMethod.setAccessible(true);
+                return (String) getPackageNameMethod.invoke(packageSettings);
+            }
+        } catch (Throwable ignored) {}
+
+        // 2. Try 'name' field (Android 11 PackageSetting)
+        try {
+            Field nameField = ReflectionUtils.findFieldUsingFilterIfExists(
+                packageSettings.getClass(),
+                f -> "name".equals(f.getName()) && f.getType() == String.class
+            );
+            if (nameField != null) {
+                nameField.setAccessible(true);
+                return (String) nameField.get(packageSettings);
+            }
+        } catch (Throwable ignored) {}
+
+        // 3. Try 'pkg' field -> getPackageName()
+        try {
+            Field pkgField = ReflectionUtils.findFieldUsingFilterIfExists(
+                packageSettings.getClass(),
+                f -> "pkg".equals(f.getName())
+            );
+            if (pkgField != null) {
+                pkgField.setAccessible(true);
+                Object pkg = pkgField.get(packageSettings);
+                if (pkg != null) {
+                    Method getPackageNameMethod = ReflectionUtils.findMethodUsingFilterIfExists(
+                        pkg.getClass(),
+                        m -> "getPackageName".equals(m.getName()) && m.getParameterCount() == 0 && m.getReturnType() == String.class
+                    );
+                    if (getPackageNameMethod != null) {
+                        getPackageNameMethod.setAccessible(true);
+                        return (String) getPackageNameMethod.invoke(pkg);
+                    }
+                }
+            }
+        } catch (Throwable ignored) {}
+
+        // 4. Fallback: Parse string representation
+        try {
+            String str = packageSettings.toString();
+            int spaceIdx = str.lastIndexOf(' ');
+            int slashIdx = str.lastIndexOf('/');
+            if (spaceIdx != -1 && slashIdx != -1 && slashIdx > spaceIdx + 1) {
+                return str.substring(spaceIdx + 1, slashIdx);
+            }
+        } catch (Throwable ignored) {}
+
+        return "";
     }
 
 }

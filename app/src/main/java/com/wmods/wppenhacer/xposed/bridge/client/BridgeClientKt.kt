@@ -81,7 +81,7 @@ class BridgeClientKt(private val context: Context) : BaseClient(), ServiceConnec
                             setClassName(BuildConfig.APPLICATION_ID, BridgeService::class.java.name)
                         }
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        val success = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             context.bindService(
                                 intent,
                                 Context.BIND_AUTO_CREATE,
@@ -95,7 +95,11 @@ class BridgeClientKt(private val context: Context) : BaseClient(), ServiceConnec
                             XposedHelpers.callMethod(
                                 context, "bindServiceAsUser", intent, this@BridgeClientKt,
                                 Context.BIND_AUTO_CREATE, handler, Process.myUserHandle()
-                            )
+                            ) as Boolean
+                        }
+                        if (!success) {
+                            XposedBridge.log("bindService/bindServiceAsUser returned false (Package visibility or background binding restriction)")
+                            continuation.resume(false)
                         }
                     } catch (e: Exception) {
                         XposedBridge.log("Bind failed: ${e.message}")
