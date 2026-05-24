@@ -1,10 +1,10 @@
 [ADDED]
-* Clickable notifications for deleted messages/statuses to open the associated chat or status viewer.
-* Changed the "Update Now" button to navigate directly to the GitHub releases page instead of Telegram.
-* Synchronized upstream caching logic to eliminate UI lag during list scrolling.
-* Migrated ConversationItemListener to Kotlin for better stability.
+* Status Video Splitter: Automatically splits long videos into status-length segments. (Toggle available in Media Settings).
+* Enhanced error diagnostics and logging for IPC bridge connections.
+
+[IMPROVED]
+* Compatibility improvements with WA 2.16.20.xx
 
 [FIXED]
-* Fixed crash in the share limit feature on modern Android versions.
-* Fixed contact name detection in call recordings (now supports special characters and non-ASCII names).
-* Fixed slow loading performance of the call recordings list by implementing audio duration caching.
+* Fixed "Bridge Failed" initialization errors by improving IPC connection stability and system hook robustness on Android 13/14+.
+* Fixed and stabilized package visibility bypass for WhatsApp processes across different Android versions.
