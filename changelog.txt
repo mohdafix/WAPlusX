@@ -1,2 +1,2 @@
-[FIXED]
-* Dynamic Versioning: Resolved the App not installed issue during updates by implementing dynamic version codes based on commit history. Users no longer need to uninstall the app to update.
+[TESTING]
+* Push another build to see if the fix working.
