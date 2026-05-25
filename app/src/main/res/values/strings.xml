@@ -570,4 +570,7 @@
     <string name="amoled_theme_sum">Use pure black backgrounds in dark mode</string>
     <string name="voice_note_keep_screen_on_title">Keep Screen On For Audio</string>
     <string name="voice_note_keep_screen_on_sum">Don\'t turn off screen when listening to voice messages/notes</string>
+    <string name="profile_picture_change_toast">Profile Picture Change Notifications</string>
+    <string name="profile_picture_change_toast_sum">Choose how to be notified when someone changes their profile picture</string>
+    <string name="profile_picture_has_been_updated">%s updated their profile picture</string>
 </resources>

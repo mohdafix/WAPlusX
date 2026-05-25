@@ -3350,5 +3350,26 @@ public class Unobfuscator {
             return null;
         });
     }
+
+    public static java.lang.reflect.Method loadNotifyUpdatePhotoMethod(ClassLoader loader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+            String[] signatures = {
+                    "handle_picture",
+                    "handle_avatar",
+                    "app/xmpp/recv/handle_notification",
+                    "notification/handle_avatar",
+                    "profile_picture_notification",
+                    "set_photo",
+                    "remove_photo",
+                    "update_photo"
+            };
+            for (String sig : signatures) {
+                var method = findFirstMethodUsingStrings(loader, StringMatchType.Contains, sig);
+                if (method != null)
+                    return method;
+            }
+            throw new RuntimeException("NotifyUpdatePhoto method not found");
+        });
+    }
 }
 

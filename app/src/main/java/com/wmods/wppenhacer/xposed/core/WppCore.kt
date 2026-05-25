@@ -790,6 +790,23 @@ object WppCore {
 
 
     @JvmStatic
+    fun getContactPhotoDrawable(jid: String?): Drawable? {
+        if (jid == null) return null
+        val file = getContactPhotoFile(jid) ?: return null
+        return Drawable.createFromPath(file.absolutePath)
+    }
+
+    @JvmStatic
+    fun getContactPhotoFile(jid: String): File? {
+        val datafolder = Utils.getApplication().cacheDir.parentFile
+        var file = File(datafolder, "cache/Profile Pictures/${stripJID(jid)}.jpg")
+        if (!file.exists()) {
+            file = File(datafolder, "files/Avatars/$jid.j")
+        }
+        return if (file.exists()) file else null
+    }
+
+    @JvmStatic
     fun getWaJidMapRepository(): Any? = mWaJidMapRepository
 
     @JvmStatic

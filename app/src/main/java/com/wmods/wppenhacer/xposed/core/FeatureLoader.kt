@@ -39,6 +39,7 @@ import com.wmods.wppenhacer.xposed.features.customization.SeparateGroup
 import com.wmods.wppenhacer.xposed.features.customization.ShowOnline
 import com.wmods.wppenhacer.xposed.utils.ResId
 import com.wmods.wppenhacer.xposed.features.general.AntiRevoke
+import com.wmods.wppenhacer.xposed.features.general.ProfilePictureChangeNotifier
 import com.wmods.wppenhacer.xposed.features.general.CallType
 import com.wmods.wppenhacer.xposed.features.general.ChatLimit
 import com.wmods.wppenhacer.xposed.features.general.DeleteStatus
@@ -437,6 +438,7 @@ class FeatureLoader {
                 MenuStatusListener::class.java,
                 ShowEditMessage::class.java,
                 AntiRevoke::class.java,
+                ProfilePictureChangeNotifier::class.java,
                 CustomToolbar::class.java,
                 CustomView::class.java,
                 SeenTick::class.java,

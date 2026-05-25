@@ -17,6 +17,14 @@
             app:summary="@string/toast_on_delete_sum"
             app:title="@string/toast_on_delete" />
 
+        <ListPreference
+            app:entries="@array/toastdeleted_entries"
+            app:entryValues="@array/toastdeleted_values"
+            app:iconSpaceReserved="false"
+            app:key="profile_picture_change_toast"
+            app:summary="@string/profile_picture_change_toast_sum"
+            app:title="@string/profile_picture_change_toast" />
+
         <rikka.material.preference.MaterialSwitchPreference
             app:key="toast_viewed_message"
             app:summary="@string/toast_on_viewed_message_sum"
