@@ -55,7 +55,8 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat
         recyclerView.addItemDecoration(new PreferenceCardDecoration(requireContext()));
         
         int padding = (int) (16 * getResources().getDisplayMetrics().density);
-        recyclerView.setPadding(padding, padding, padding, padding * 2);
+        int extraBottomPadding = (int) (80 * getResources().getDisplayMetrics().density);
+        recyclerView.setPadding(padding, padding, padding, padding + extraBottomPadding);
         recyclerView.setClipToPadding(false);
         
         return recyclerView;
