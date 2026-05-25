@@ -25,6 +25,15 @@ fun getGitHashCommit(): String {
 
 val gitHash: String = getGitHashCommit().uppercase(Locale.getDefault())
 
+fun getGitCommitCount(): Int {
+    return try {
+        val processBuilder = ProcessBuilder("git", "rev-list", "--count", "HEAD")
+        val process = processBuilder.start()
+        process.inputStream.bufferedReader().readText().trim().toInt()
+    } catch (e: Exception) {
+        154
+    }
+}
 android {
     namespace = "com.wmods.wppenhacer"
     compileSdk = 36
@@ -48,7 +57,7 @@ android {
         applicationId = "com.wmods.wppenhacer"
         minSdk = 28
         targetSdk = 34
-        versionCode = 154
+        versionCode = getGitCommitCount()
         versionName = "1.5.4-DEV ($gitHash)"
         multiDexEnabled = true
 
