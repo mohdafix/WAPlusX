@@ -207,7 +207,7 @@ class HideSeen(loader: ClassLoader, preferences: XSharedPreferences) :
                     isHide = true
                 } else if (hideSeen && typeKV?.value == "read") {
                     protocolTreeNodeWpp.removeAllKeyValuesByKey("sts")
-                    protocolTreeNodeWpp.removeAllKeyValuesByKey("type")
+                    typeKV.value = "inactive"
                     isHide = true
                 }
 
