@@ -1,2 +1,4 @@
 [FIXED]
 * Fixed an issue where clicking on a deleted message or status notification would not correctly open the respective chat or status tab.
+* Fixed automatic call recording capturing screen instead of audio by dynamically detecting video calls.
+* Enabled the red REC indicator text for automatic recording mode.

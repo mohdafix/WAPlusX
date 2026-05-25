@@ -52,6 +52,7 @@ public class CallRecording extends Feature {
 
     private final AtomicBoolean isRecording = new AtomicBoolean(false);
     private final AtomicBoolean isCallConnected = new AtomicBoolean(false);
+    private final AtomicBoolean isCurrentCallVideo = new AtomicBoolean(false);
     private final AtomicReference<MediaRecorder> mediaRecorderRef = new AtomicReference<>();
     private final AtomicReference<ParcelFileDescriptor> outputPfdRef = new AtomicReference<>();
     private final AtomicReference<FileOutputStream> outputStreamRef = new AtomicReference<>();
@@ -208,10 +209,7 @@ public class CallRecording extends Feature {
         if (activity == null || activity.isFinishing()) return;
 
         String mode = prefs.getString("call_recording_mode", "automatic");
-        if (!"manual".equals(mode)) {
-            removeFloatingButtons(activity);
-            return;
-        }
+        boolean isManual = "manual".equals(mode);
 
         try {
             activity.runOnUiThread(() -> {
@@ -223,51 +221,58 @@ public class CallRecording extends Feature {
                 if (headerView == null) return;
 
                 android.widget.ImageButton btnRecord = frameLayout.findViewWithTag("call_recording_button");
-                if (btnRecord == null) {
-                    btnRecord = new android.widget.ImageButton(activity);
-                    btnRecord.setTag("call_recording_button");
-                    btnRecord.setBackgroundColor(0);
-                    btnRecord.setPadding(0, 0, 0, 0);
-                    btnRecord.setScaleType(android.widget.ImageView.ScaleType.FIT_XY);
+                if (isManual) {
+                    if (btnRecord == null) {
+                        btnRecord = new android.widget.ImageButton(activity);
+                        btnRecord.setTag("call_recording_button");
+                        btnRecord.setBackgroundColor(0);
+                        btnRecord.setPadding(0, 0, 0, 0);
+                        btnRecord.setScaleType(android.widget.ImageView.ScaleType.FIT_XY);
 
-                    android.widget.FrameLayout.LayoutParams lp = new android.widget.FrameLayout.LayoutParams(
-                            Utils.dipToPixels(42.0f), Utils.dipToPixels(42.0f));
-                    lp.gravity = android.view.Gravity.TOP | android.view.Gravity.START;
-                    lp.leftMargin = Utils.dipToPixels(12.0f);
-                    frameLayout.addView(btnRecord, lp);
+                        android.widget.FrameLayout.LayoutParams lp = new android.widget.FrameLayout.LayoutParams(
+                                Utils.dipToPixels(42.0f), Utils.dipToPixels(42.0f));
+                        lp.gravity = android.view.Gravity.TOP | android.view.Gravity.START;
+                        lp.leftMargin = Utils.dipToPixels(12.0f);
+                        frameLayout.addView(btnRecord, lp);
 
-                    btnRecord.setOnClickListener(v -> {
-                        if (isRecording.get()) {
-                            stopRecording();
-                        } else {
-                            startRecording();
-                        }
-                        updateFloatingButtonsState();
-                    });
+                        btnRecord.setOnClickListener(v -> {
+                            if (isRecording.get()) {
+                                stopRecording();
+                            } else {
+                                startRecording();
+                            }
+                            updateFloatingButtonsState();
+                        });
+                    }
+                } else if (btnRecord != null) {
+                    frameLayout.removeView(btnRecord);
+                    btnRecord = null;
                 }
 
                 boolean videoOptionEnabled = prefs.getBoolean("call_recording_use_root", false) &&
                         prefs.getBoolean("call_recording_video_enabled", false);
                 
                 android.widget.ImageButton btnToggle = frameLayout.findViewWithTag("call_recording_mode_toggle");
-                if (btnToggle == null && videoOptionEnabled) {
-                    btnToggle = new android.widget.ImageButton(activity);
-                    btnToggle.setTag("call_recording_mode_toggle");
-                    btnToggle.setBackgroundColor(0);
-                    btnToggle.setPadding(0, 0, 0, 0);
-                    btnToggle.setScaleType(android.widget.ImageView.ScaleType.FIT_XY);
+                if (isManual && videoOptionEnabled) {
+                    if (btnToggle == null) {
+                        btnToggle = new android.widget.ImageButton(activity);
+                        btnToggle.setTag("call_recording_mode_toggle");
+                        btnToggle.setBackgroundColor(0);
+                        btnToggle.setPadding(0, 0, 0, 0);
+                        btnToggle.setScaleType(android.widget.ImageView.ScaleType.FIT_XY);
 
-                    android.widget.FrameLayout.LayoutParams lp2 = new android.widget.FrameLayout.LayoutParams(
-                            Utils.dipToPixels(32.0f), Utils.dipToPixels(32.0f));
-                    lp2.gravity = android.view.Gravity.TOP | android.view.Gravity.START;
-                    lp2.leftMargin = Utils.dipToPixels(60.0f);
-                    frameLayout.addView(btnToggle, lp2);
+                        android.widget.FrameLayout.LayoutParams lp2 = new android.widget.FrameLayout.LayoutParams(
+                                Utils.dipToPixels(32.0f), Utils.dipToPixels(32.0f));
+                        lp2.gravity = android.view.Gravity.TOP | android.view.Gravity.START;
+                        lp2.leftMargin = Utils.dipToPixels(60.0f);
+                        frameLayout.addView(btnToggle, lp2);
 
-                    btnToggle.setOnClickListener(v -> {
-                        isVideoRecordingPreferred.set(!isVideoRecordingPreferred.get());
-                        updateFloatingButtonsState();
-                    });
-                } else if (btnToggle != null && !videoOptionEnabled) {
+                        btnToggle.setOnClickListener(v -> {
+                            isVideoRecordingPreferred.set(!isVideoRecordingPreferred.get());
+                            updateFloatingButtonsState();
+                        });
+                    }
+                } else if (btnToggle != null) {
                     frameLayout.removeView(btnToggle);
                     btnToggle = null;
                 }
@@ -296,13 +301,15 @@ public class CallRecording extends Feature {
                 headerView.post(() -> {
                     int top = headerView.getTop() + headerView.getHeight() + Utils.dipToPixels(8.0f);
 
-                    android.view.ViewGroup.LayoutParams lp = finalBtnRecord.getLayoutParams();
-                    if (lp instanceof android.widget.FrameLayout.LayoutParams) {
-                        ((android.widget.FrameLayout.LayoutParams) lp).topMargin = top;
-                        finalBtnRecord.setLayoutParams(lp);
+                    if (finalBtnRecord != null) {
+                        android.view.ViewGroup.LayoutParams lp = finalBtnRecord.getLayoutParams();
+                        if (lp instanceof android.widget.FrameLayout.LayoutParams) {
+                            ((android.widget.FrameLayout.LayoutParams) lp).topMargin = top;
+                            finalBtnRecord.setLayoutParams(lp);
+                        }
                     }
 
-                    if (finalBtnToggle != null) {
+                    if (finalBtnToggle != null && finalBtnRecord != null) {
                         android.view.ViewGroup.LayoutParams lp2 = finalBtnToggle.getLayoutParams();
                         if (lp2 instanceof android.widget.FrameLayout.LayoutParams) {
                             ((android.widget.FrameLayout.LayoutParams) lp2).topMargin =
@@ -481,6 +488,22 @@ public class CallRecording extends Feature {
             Object callInfo = XposedHelpers.callMethod(callback, "getCallInfo");
             if (callInfo == null) return;
 
+            boolean isVideo = false;
+            try {
+                isVideo = (boolean) XposedHelpers.callMethod(callInfo, "isVideoCall");
+            } catch (Throwable t1) {
+                try {
+                    isVideo = XposedHelpers.getBooleanField(callInfo, "videoEnabled");
+                } catch (Throwable t2) {
+                    try {
+                        isVideo = XposedHelpers.getBooleanField(callInfo, "isVideoCall");
+                    } catch (Throwable t3) {
+                    }
+                }
+            }
+            isCurrentCallVideo.set(isVideo);
+            logDebug("WaEnhancer: isCurrentCallVideo detected as " + isVideo);
+
             Object peerJid = null;
             try {
                 peerJid = XposedHelpers.getObjectField(callInfo, "peerJid");
@@ -593,7 +616,7 @@ public class CallRecording extends Feature {
                 if ("manual".equals(mode)) {
                     shouldRecordVideo = isVideoRecordingPreferred.get();
                 } else {
-                    shouldRecordVideo = true;
+                    shouldRecordVideo = isCurrentCallVideo.get();
                 }
             }
 
