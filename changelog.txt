@@ -1,10 +1,6 @@
 [ADDED]
-* Status Video Splitter: Automatically splits long videos into status-length segments. (Toggle available in Media Settings).
-* Enhanced error diagnostics and logging for IPC bridge connections.
-
-[IMPROVED]
-* Compatibility improvements with WA 2.16.20.xx
+* AMOLED Theme Customization: Replaces dark backgrounds with pure black for battery saving and cleaner aesthetics in dark mode. (Toggle available in Customization Settings). requested by @doctorovv
+* Keep Screen On For Audio: Prevents the screen from turning off when listening to voice messages/notes. (Toggle available in Media Settings). requested by @baneador
 
 [FIXED]
-* Fixed "Bridge Failed" initialization errors by improving IPC connection stability and system hook robustness on Android 13/14+.
 * Fixed and stabilized package visibility bypass for WhatsApp processes across different Android versions.
