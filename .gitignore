@@ -15,3 +15,6 @@
 .cxx
 local.properties
 build_error.log
+
+# Debug keystore
+app/wae_debug.keystore
