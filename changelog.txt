@@ -1,6 +1,2 @@
-[ADDED]
-* AMOLED Theme Customization: Replaces dark backgrounds with pure black for battery saving and cleaner aesthetics in dark mode. (Toggle available in Customization Settings). requested by @doctorovv
-* Keep Screen On For Audio: Prevents the screen from turning off when listening to voice messages/notes. (Toggle available in Media Settings). requested by @baneador
-
 [FIXED]
-* Fixed and stabilized package visibility bypass for WhatsApp processes across different Android versions.
+* Dynamic Versioning: Resolved the App not installed issue during updates by implementing dynamic version codes based on commit history. Users no longer need to uninstall the app to update.
