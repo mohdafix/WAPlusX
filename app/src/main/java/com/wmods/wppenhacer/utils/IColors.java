@@ -87,4 +87,17 @@ public class IColors {
         // Alpha colors
         alphacolors.put("#ff15603e", "#8015603e");
     }
+
+    public static void loadAmoled() {
+        for (String key : new java.util.HashSet<>(backgroundColors.keySet())) {
+            String val = backgroundColors.get(key);
+            if (val != null) {
+                if (val.startsWith("#ff")) {
+                    backgroundColors.put(key, "#ff000000");
+                } else if (!val.startsWith("#")) {
+                    backgroundColors.put(key, "000000");
+                }
+            }
+        }
+    }
 }

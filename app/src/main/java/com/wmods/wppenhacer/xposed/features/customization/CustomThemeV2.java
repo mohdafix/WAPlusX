@@ -362,6 +362,8 @@ public class CustomThemeV2 extends Feature {
             textColors.clear();
             textColors.putAll(backgroundColors);
             backgroundColors.clear();
+        } else if (prefs.getBoolean("amoled_theme", false)) {
+            IColors.loadAmoled();
         }
 
         if (changeColorEnabled || Objects.equals(properties.getProperty("change_colors"), "true")) {
