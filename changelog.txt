@@ -1,2 +1,2 @@
 [FIXED]
-* Permanent Update Signature: Resolves the App not installed error during updates. Note: You must uninstall your current version ONE LAST TIME to install this update. All future updates will install seamlessly!
+* Fixed an issue where clicking on a deleted message or status notification would not correctly open the respective chat or status tab.

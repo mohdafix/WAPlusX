@@ -437,31 +437,16 @@ class AntiRevoke(loader: ClassLoader, preferences: XSharedPreferences) : Feature
         if (jidObj == null) return null
         try {
             val app = Utils.getApplication() ?: return null
-            val intent = android.content.Intent()
+            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
             
             val jidString = jidObj.userRawString ?: return null
             val rawJid = if (jidString.contains("@")) jidString else "$jidString@s.whatsapp.net"
             
             if (isStatus) {
-                val statusClass = Unobfuscator.getClassByName("StatusPlaybackActivity", classLoader)
-                if (statusClass != null) {
-                    intent.setClassName(app.packageName, statusClass.name)
-                    intent.putExtra("jid", rawJid)
-                } else {
-                    intent.setClassName(app.packageName, "com.whatsapp.HomeActivity")
-                }
+                intent.setClassName(app.packageName, "com.whatsapp.HomeActivity")
             } else {
                 intent.setClassName(app.packageName, "com.whatsapp.Conversation")
-                val waJid = WppCore.createUserJid(rawJid)
-                if (waJid != null) {
-                    try {
-                        intent.putExtra("jid", waJid as android.os.Parcelable)
-                    } catch (e: Exception) {
-                        intent.putExtra("jid", rawJid)
-                    }
-                } else {
-                    intent.putExtra("jid", rawJid)
-                }
+                intent.putExtra("jid", rawJid)
             }
 
             intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP or android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
