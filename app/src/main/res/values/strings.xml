@@ -568,4 +568,6 @@
     <string name="status_video_splitter_sum">Add option to split long videos into status-length segments</string>
     <string name="amoled_theme">AMOLED Theme</string>
     <string name="amoled_theme_sum">Use pure black backgrounds in dark mode</string>
+    <string name="voice_note_keep_screen_on_title">Keep Screen On For Audio</string>
+    <string name="voice_note_keep_screen_on_sum">Don\'t turn off screen when listening to voice messages/notes</string>
 </resources>

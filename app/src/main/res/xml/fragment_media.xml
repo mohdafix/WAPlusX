@@ -178,6 +178,11 @@
             app:summary="@string/disable_audio_sensor_sum"
             app:title="@string/disable_audio_sensor" />
 
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="voice_note_keep_screen_on"
+            app:summary="@string/voice_note_keep_screen_on_sum"
+            app:title="@string/voice_note_keep_screen_on_title" />
+
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/audio_type_buttons"
