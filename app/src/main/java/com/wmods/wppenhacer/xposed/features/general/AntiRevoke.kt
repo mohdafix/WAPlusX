@@ -443,7 +443,8 @@ class AntiRevoke(loader: ClassLoader, preferences: XSharedPreferences) : Feature
             val rawJid = if (jidString.contains("@")) jidString else "$jidString@s.whatsapp.net"
             
             if (isStatus) {
-                intent.setClassName(app.packageName, "com.whatsapp.HomeActivity")
+                intent.setClassName(app.packageName, "com.whatsapp.status.playback.StatusPlaybackActivity")
+                intent.putExtra("jid", rawJid)
             } else {
                 intent.setClassName(app.packageName, "com.whatsapp.Conversation")
                 intent.putExtra("jid", rawJid)
