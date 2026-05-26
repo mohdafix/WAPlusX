@@ -444,10 +444,16 @@ class AntiRevoke(loader: ClassLoader, preferences: XSharedPreferences) : Feature
             
             if (isStatus) {
                 intent.setClassName(app.packageName, "com.whatsapp.status.playback.StatusPlaybackActivity")
-                intent.putExtra("jid", rawJid)
             } else {
                 intent.setClassName(app.packageName, "com.whatsapp.Conversation")
-                intent.putExtra("jid", rawJid)
+            }
+            
+            intent.putExtra("jid", rawJid)
+            val jidObject = WppCore.createUserJid(rawJid)
+            if (jidObject != null) {
+                try {
+                    intent.putExtra("jid", jidObject as android.os.Parcelable)
+                } catch (ignored: Throwable) {}
             }
 
             intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP or android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
