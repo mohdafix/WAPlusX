@@ -35,7 +35,6 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        mPrefs.registerOnSharedPreferenceChangeListener(this);
         requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -74,6 +73,9 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat
     @Override
     public void onResume() {
         super.onResume();
+        if (mPrefs != null) {
+            mPrefs.registerOnSharedPreferenceChangeListener(this);
+        }
         setDisplayHomeAsUpEnabled(true);
     }
 
@@ -91,14 +93,14 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat
     @Override
     public void onPause() {
         super.onPause();
+        if (mPrefs != null) {
+            mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        }
         App.makePrefsWorldReadable(requireContext());
     }
 
     @Override
     public void onDestroy() {
-        if (mPrefs != null) {
-            mPrefs.unregisterOnSharedPreferenceChangeListener(this);
-        }
         super.onDestroy();
     }
 
