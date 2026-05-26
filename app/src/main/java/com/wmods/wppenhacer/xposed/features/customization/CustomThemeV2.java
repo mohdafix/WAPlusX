@@ -60,6 +60,8 @@ public class CustomThemeV2 extends Feature {
     private int cachedWallpaperAlpha;
     private int cachedWallpaperAlphaNav;
     private int cachedWallpaperAlphaToolbar;
+    
+    public static final Set<Integer> sProtectedBubbleTextColors = java.util.Collections.synchronizedSet(new HashSet<>());
 
     private int cachedPrimaryColor;
     private int cachedTextColor;
@@ -507,13 +509,7 @@ public class CustomThemeV2 extends Feature {
         return resultColor;
     }
 
-    private boolean checkNotApplyColor(int color) {
-        var activity = WppCore.getCurrentActivity();
-        if (activity != null && activity.getClass().getSimpleName().equals("Conversation")
-                && ReflectionUtils.isCalledFromStrings("getValue")
-                && !ReflectionUtils.isCalledFromStrings("android.view")) {
-            return color != 0xff12181c;
-        }
+    private static boolean checkNotApplyColor(int color) {
         return false;
     }
 
@@ -529,15 +525,21 @@ public class CustomThemeV2 extends Feature {
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
             var color = (int) param.args[0];
 
-            if (param.thisObject instanceof TextView textView) {
+            if (checkNotApplyColor(color)) return;
+
+            if (sProtectedBubbleTextColors.contains(color)) {
+                var activity = WppCore.getCurrentActivity();
+                if (activity != null && activity.getClass().getSimpleName().equals("Conversation")) {
+                    return;
+                }
+            }
+
+            if (param.thisObject instanceof TextView) {
+                TextView textView = (TextView) param.thisObject;
                 var id = Utils.getID("conversations_row_message_count", "id");
                 if (textView.getId() == id) {
                     return;
                 }
-            } else if (param.thisObject instanceof Paint) {
-                var currentActivity = WppCore.getCurrentActivity();
-                if (currentActivity == null || currentActivity.getClass().getSimpleName().equals("Conversation"))
-                    return;
             }
             param.args[0] = IColors.getFromIntColor(color, IColors.colors);
         }

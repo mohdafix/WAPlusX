@@ -43,9 +43,12 @@ class FStatusWpp(fstatus: Any?) {
                     mStatusStore = methodGetStatusByKey.declaringClass.declaredConstructors.first()
                         .newInstance()
                 }
-                return FStatusWpp(methodGetStatusByKey.invoke(mStatusStore, fStatusKey.thisObject))
+                val fstatusObj = methodGetStatusByKey.invoke(mStatusStore, fStatusKey.thisObject)
+                if (fstatusObj != null) {
+                    return FStatusWpp(fstatusObj)
+                }
             } catch (e: Exception) {
-                XposedBridge.log(e)
+                // Ignore invocation exceptions for missing statuses
             }
             return null
         }
@@ -70,9 +73,14 @@ class FStatusWpp(fstatus: Any?) {
 
     val fMessage: FMessageWpp? by lazy {
         try {
-            FMessageWpp(WppCore.getFMessageFromFStatus(fstatus))
+            val msgObj = WppCore.getFMessageFromFStatus(fstatus)
+            if (msgObj != null) {
+                FMessageWpp(msgObj)
+            } else {
+                null
+            }
         } catch (e: Exception) {
-            XposedBridge.log(e)
+            // Ignore unsupported statuses exceptions
             null
         }
     }

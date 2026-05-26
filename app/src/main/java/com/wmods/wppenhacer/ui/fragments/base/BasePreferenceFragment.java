@@ -110,7 +110,10 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat
         if (pref != null) {
             pref.setEnabled(enabled);
             if (pref instanceof MaterialSwitchPreference && !enabled) {
-                ((MaterialSwitchPreference) pref).setChecked(false);
+                MaterialSwitchPreference switchPref = (MaterialSwitchPreference) pref;
+                if (switchPref.isChecked()) {
+                    switchPref.setChecked(false);
+                }
             }
         }
     }

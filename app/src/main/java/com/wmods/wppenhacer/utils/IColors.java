@@ -56,12 +56,12 @@ public class IColors {
         primaryColors.put("00a884", "00a884");
         primaryColors.put("1da457", "1da457");
         primaryColors.put("21c063", "21c063");
-        primaryColors.put("d9fdd3", "d9fdd3");
         primaryColors.put("#ff00a884", "#ff00a884");
         primaryColors.put("#ff1da457", "#ff1da457");
         primaryColors.put("#ff21c063", "#ff21c063");
         primaryColors.put("#ff1daa61", "#ff1daa61");
         primaryColors.put("#ff25d366", "#ff25d366");
+        primaryColors.put("d9fdd3", "d9fdd3");
         primaryColors.put("#ffd9fdd3", "#ffd9fdd3");
         primaryColors.put("#ff1b864b", "#ff1b864b");
 
@@ -85,8 +85,7 @@ public class IColors {
         backgroundColors.put("#ff20272b", "#ff20272b");
 
         // Alpha colors
-        alphacolors.put("#ff15603e", "#8015603e");
-    }
+        alphacolors.put("#ff15603e", "#8015603e");    }
 
     public static void loadAmoled() {
         for (String key : new java.util.HashSet<>(backgroundColors.keySet())) {

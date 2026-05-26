@@ -180,6 +180,7 @@ public class BubbleColors extends Feature {
         }
 
         if (targetColor != 0) {
+            CustomThemeV2.sProtectedBubbleTextColors.add(targetColor);
             mIsInternalCall.set(true);
             try {
                 if (textView.getCurrentTextColor() != targetColor) {
