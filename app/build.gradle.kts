@@ -84,6 +84,13 @@ android {
             }
         }
 
+        signingConfigs.getByName("debug") {
+            storeFile = file("wae_debug.keystore")
+            storePassword = "android"
+            keyAlias = "wae_debug"
+            keyPassword = "android"
+        }
+
         ndk {
             abiFilters.add("armeabi-v7a")
             abiFilters.add("arm64-v8a")
@@ -304,3 +311,5 @@ afterEvaluate {
         }
     }
 }
+
+
