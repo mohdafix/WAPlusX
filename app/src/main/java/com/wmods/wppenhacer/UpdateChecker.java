@@ -1,7 +1,7 @@
 package com.wmods.wppenhacer;
 
 import android.app.Activity;
-import android.content.pm.PackageInfo;
+
 
 import com.wmods.wppenhacer.xposed.core.WppCore;
 import com.wmods.wppenhacer.xposed.core.components.AlertDialogWpp;
@@ -83,15 +83,8 @@ public class UpdateChecker implements Runnable {
             if (hash.isBlank()) {
                 return;
             }
-            PackageInfo packageInfo;
 
-            try {
-                packageInfo = mActivity.getPackageManager().getPackageInfo(BuildConfig.APPLICATION_ID, 0);
-            }catch (Exception e){
-                XposedBridge.log(e);
-                return;
-            }
-            boolean isNewVersion = !packageInfo.versionName.toLowerCase().contains(hash.toLowerCase().trim());
+            boolean isNewVersion = !BuildConfig.VERSION_NAME.toLowerCase().contains(hash.toLowerCase().trim());
             boolean isIgnored = Objects.equals(WppCore.getPrivString("ignored_version", ""), hash);
 
             if (isNewVersion && !isIgnored) {
