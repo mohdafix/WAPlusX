@@ -1,3 +1,11 @@
 [FIXED]
 * Fixed an issue where customization color settings and toggles would not update the UI immediately without restarting or changing tabs.
 * Fixed CI build scripts generating incorrect version codes (version 1), which prevented local builds from successfully upgrading over CI builds.
+* Made CustomThemeV2 apply globally to eliminate tab highlighter transition flashing.
+* Protected custom text colors applied by BubbleColors from aggressive re-mapping.
+* Gracefully handled null FStatusWpp instances.
+* Fixed UI state race conditions in preference fragment bindings.
+* Fixed NameNotFoundException spam in UpdateChecker on Android 11+ by utilizing compile-time version codes.
+* Enforced static debug keystore to prevent "App not installed" errors when updating via CI builds.
+
+⚠️ **Important Note:** You must uninstall your current app ONE LAST TIME to install this update. All future updates will install seamlessly without requiring uninstallation!
