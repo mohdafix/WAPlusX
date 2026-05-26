@@ -1,11 +1,3 @@
-[ADDED]
-* Added Profile Picture Change Notification feature with real-time stanza hooks and hash-verification fallback.
-* Added auto-hide scrolling behavior to the bottom navigation bar, dynamically revealing or hiding it based on user scroll directions.
-
-[IMPROVED]
-* Refined the bottom navigation bar layout to be a modern, truly floating rounded card that does not obstruct content.
-
 [FIXED]
-* Fixed an issue where clicking on a deleted message or status notification would not correctly open the respective chat or status tab.
-* Fixed automatic call recording capturing screen instead of audio by dynamically detecting video calls.
-* Enabled the red REC indicator text for automatic recording mode.
+* Fixed an issue where customization color settings and toggles would not update the UI immediately without restarting or changing tabs.
+* Fixed CI build scripts generating incorrect version codes (version 1), which prevented local builds from successfully upgrading over CI builds.
