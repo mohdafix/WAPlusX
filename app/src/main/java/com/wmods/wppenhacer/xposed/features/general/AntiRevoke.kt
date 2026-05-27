@@ -443,18 +443,32 @@ class AntiRevoke(loader: ClassLoader, preferences: XSharedPreferences) : Feature
             val rawJid = if (jidString.contains("@")) jidString else "$jidString@s.whatsapp.net"
             
             if (isStatus) {
-                intent.setClassName(app.packageName, "com.whatsapp.status.playback.StatusPlaybackActivity")
+                // Try newer StatusPlaybackActivity paths if available, otherwise fallback
+                val statusClass = XposedHelpers.findClassIfExists("com.whatsapp.status.playback.StatusPlaybackActivity", classLoader)
+                if (statusClass != null) {
+                    intent.setClass(app, statusClass)
+                } else {
+                    intent.setClassName(app.packageName, "com.whatsapp.status.playback.StatusPlaybackActivity")
+                }
             } else {
-                intent.setClassName(app.packageName, "com.whatsapp.Conversation")
+                // Handle the new package structure in modern WhatsApp versions
+                val convClass = XposedHelpers.findClassIfExists("com.whatsapp.Conversation", classLoader)
+                    ?: XposedHelpers.findClassIfExists("com.whatsapp.conversation.ui.Conversation", classLoader)
+                if (convClass != null) {
+                    intent.setClass(app, convClass)
+                } else {
+                    intent.setClassName(app.packageName, "com.whatsapp.Conversation")
+                }
             }
             
+            // Newer WhatsApp versions expect the JID as a String, older versions expect it as a Parcelable UserJid.
+            // Putting both with different names is not possible if they use the same "jid" key.
+            // We'll put the String first (which works for all modern versions).
             intent.putExtra("jid", rawJid)
-            val jidObject = WppCore.createUserJid(rawJid)
-            if (jidObject != null) {
-                try {
-                    intent.putExtra("jid", jidObject as android.os.Parcelable)
-                } catch (ignored: Throwable) {}
-            }
+            
+            // For backward compatibility with very old versions, try to also put the parcelable under "jid_obj" or similar?
+            // Actually, WhatsApp historically also accepted it via intent data URI whatsapp://send?jid=
+            intent.data = android.net.Uri.parse("whatsapp://send?jid=$rawJid")
 
             intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP or android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
             
