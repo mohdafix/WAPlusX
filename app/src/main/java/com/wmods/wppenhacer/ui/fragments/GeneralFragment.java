@@ -62,6 +62,13 @@ public class GeneralFragment extends BaseFragment {
                         .addToBackStack(null)
                         .commit();
                 return true;
+            } else if ("scheduled_messages".equals(preference.getKey())) {
+                getParentFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(R.id.frag_container, new ScheduledMessagesFragment())
+                        .addToBackStack(null)
+                        .commit();
+                return true;
             }
             return super.onPreferenceTreeClick(preference);
         }

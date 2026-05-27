@@ -1933,6 +1933,37 @@ public class Unobfuscator {
         });
     }
 
+    public static Method loadUserActionsTextMessageSending(ClassLoader loader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+            // Find the class containing "UserActionsTextMessageSending" string
+            var method = findFirstMethodUsingStrings(loader, StringMatchType.Contains,
+                    "UserActionsTextMessageSending");
+            if (method == null)
+                throw new Exception("UserActionsTextMessageSending method not found");
+            // From that class, find the method that: returns ArrayList, and has List + String + Long params
+            var declaringClass = method.getDeclaringClass();
+            var senderMethod = ReflectionUtils.findMethodUsingFilterIfExists(declaringClass, m ->
+                    ArrayList.class.isAssignableFrom(m.getReturnType()) &&
+                    ReflectionUtils.findIndexOfType(m.getParameterTypes(), List.class) != -1 &&
+                    ReflectionUtils.findIndexOfType(m.getParameterTypes(), String.class) != -1 &&
+                    !Modifier.isStatic(m.getModifiers())
+            );
+            if (senderMethod == null)
+                throw new Exception("UserActionsTextMessageSending sender method not found in " + declaringClass.getName());
+            return senderMethod;
+        });
+    }
+
+    public static Method loadSendMediaUserAction(ClassLoader loader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(loader, () -> {
+            var method = findFirstMethodUsingStrings(loader, StringMatchType.Contains,
+                    "/sendImage jids");
+            if (method == null)
+                throw new Exception("SendMediaUserAction method not found");
+            return method;
+        });
+    }
+
     public synchronized static Method loadOnPlaybackFinished(ClassLoader classLoader) throws Exception {
         return UnobfuscatorCache.getInstance().getMethod(classLoader, () -> {
             var method = findFirstMethodUsingStrings(classLoader, StringMatchType.Contains,

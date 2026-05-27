@@ -60,6 +60,10 @@ object WppCore {
     private var mWaJidMapRepository: Any? = null
     private var convertJidToLid: Method? = null
     private var actionUser: Class<*>? = null
+    private var textSenderMethod: Method? = null
+    private var mTextSenderInstance: Any? = null
+    private var sendMediaMethod: Method? = null
+    private var mSendMediaInstance: Any? = null
     private var cachedMessageStoreKey: Method? = null
     private var conversationJidField: Field? = null
     private var meManagerPhoneJidField: Field? = null
@@ -101,7 +105,7 @@ object WppCore {
             }
         })
 
-        // ActionUser
+        // ActionUser (used for reactions only)
         actionUser = Unobfuscator.loadActionUser(loader)
         XposedBridge.log("ActionUser: ${actionUser?.name}")
         XposedBridge.hookAllConstructors(actionUser, object : XC_MethodHook() {
@@ -110,6 +114,34 @@ object WppCore {
                 mActionUser = param.thisObject
             }
         })
+
+        // TextSender (used for sending text messages)
+        try {
+            textSenderMethod = Unobfuscator.loadUserActionsTextMessageSending(loader)
+            XposedBridge.log("TextSenderMethod: ${textSenderMethod?.name} in ${textSenderMethod?.declaringClass?.name}")
+            XposedBridge.hookAllConstructors(textSenderMethod?.declaringClass, object : XC_MethodHook() {
+                @Throws(Throwable::class)
+                override fun afterHookedMethod(param: MethodHookParam) {
+                    mTextSenderInstance = param.thisObject
+                }
+            })
+        } catch (e: Exception) {
+            XposedBridge.log("[WAE] TextSender init failed: ${e.message}")
+        }
+
+        // MediaSender (used for sending media messages)
+        try {
+            sendMediaMethod = Unobfuscator.loadSendMediaUserAction(loader)
+            XposedBridge.log("SendMediaMethod: ${sendMediaMethod?.name} in ${sendMediaMethod?.declaringClass?.name}")
+            XposedBridge.hookAllConstructors(sendMediaMethod?.declaringClass, object : XC_MethodHook() {
+                @Throws(Throwable::class)
+                override fun afterHookedMethod(param: MethodHookParam) {
+                    mSendMediaInstance = param.thisObject
+                }
+            })
+        } catch (e: Exception) {
+            XposedBridge.log("[WAE] MediaSender init failed: ${e.message}")
+        }
 
         // CachedMessageStore
         cachedMessageStoreKey = Unobfuscator.loadCachedMessageStoreKey(loader)
@@ -278,39 +310,204 @@ object WppCore {
     @JvmStatic
     fun sendMessage(number: String, message: String): Boolean {
         try {
-            val senderMethod = ReflectionUtils.findMethodUsingFilterIfExists(actionUser) { method ->
-                List::class.java.isAssignableFrom(method.returnType) &&
-                        ReflectionUtils.findIndexOfType(
-                            method.parameterTypes,
-                            String::class.java
-                        ) != -1
+            XposedBridge.log("[WAE] WppCore.sendMessage called: number=$number, message=$message")
+            
+            val senderMethod = textSenderMethod
+            if (senderMethod == null) {
+                XposedBridge.log("[WAE] WppCore.sendMessage: textSenderMethod is null (not initialized)")
+                return false
             }
-            if (senderMethod != null) {
-                val userJid = createUserJid("$number@s.whatsapp.net")
-                if (userJid == null) {
-                    Utils.showToast("UserJID not found", Toast.LENGTH_SHORT)
-                    return false
-                }
-                val newObject = arrayOfNulls<Any>(senderMethod.parameterCount)
-                for (i in newObject.indices) {
-                    val param = senderMethod.parameterTypes[i]
-                    newObject[i] = ReflectionUtils.getDefaultValue(param)
-                }
-                val index =
-                    ReflectionUtils.findIndexOfType(senderMethod.parameterTypes, String::class.java)
-                newObject[index] = message
-                val index2 =
-                    ReflectionUtils.findIndexOfType(senderMethod.parameterTypes, List::class.java)
-                newObject[index2] = Collections.singletonList(userJid)
-                senderMethod.invoke(getActionUser(), *newObject)
-                Utils.showToast("Message sent to $number", Toast.LENGTH_SHORT)
-                return true
+            
+            val targetJid = if (number.contains("@")) number else "$number@s.whatsapp.net"
+            XposedBridge.log("[WAE] WppCore.sendMessage creating UserJid for: $targetJid")
+            val phoneJidObj = createUserJid(targetJid)
+            if (phoneJidObj == null) {
+                XposedBridge.log("[WAE] WppCore.sendMessage: failed to create UserJID object for $targetJid")
+                Utils.showToast("UserJID not found", Toast.LENGTH_SHORT)
+                return false
             }
+            val userJid = getUserJidFromPhoneJid(phoneJidObj) ?: phoneJidObj
+            
+            // Get or create the text sender instance
+            val instance = getTextSenderInstance()
+            if (instance == null) {
+                XposedBridge.log("[WAE] WppCore.sendMessage: textSenderInstance is null")
+                return false
+            }
+            
+            val newObject = arrayOfNulls<Any>(senderMethod.parameterCount)
+            for (i in newObject.indices) {
+                val param = senderMethod.parameterTypes[i]
+                newObject[i] = ReflectionUtils.getDefaultValue(param)
+            }
+            val index =
+                ReflectionUtils.findIndexOfType(senderMethod.parameterTypes, String::class.java)
+            newObject[index] = message
+            val index2 =
+                ReflectionUtils.findIndexOfType(senderMethod.parameterTypes, List::class.java)
+            newObject[index2] = Collections.singletonList(userJid)
+            
+            XposedBridge.log("[WAE] WppCore.sendMessage invoking textSenderMethod: ${senderMethod.name} on ${instance.javaClass.name}")
+            senderMethod.invoke(instance, *newObject)
+            Utils.showToast("Message sent to $number", Toast.LENGTH_SHORT)
+            return true
         } catch (e: Exception) {
-            Utils.showToast("Error in sending message:${e.message}", Toast.LENGTH_SHORT)
+            XposedBridge.log("[WAE] WppCore.sendMessage exception: $e")
             XposedBridge.log(e)
+            Utils.showToast("Error in sending message:${e.message}", Toast.LENGTH_SHORT)
         }
         return false
+    }
+
+    @JvmStatic
+    fun getTextSenderInstance(): Any? {
+        try {
+            if (mTextSenderInstance == null) {
+                val method = textSenderMethod ?: return null
+                mTextSenderInstance = XposedHelpers.newInstance(method.declaringClass)
+            }
+        } catch (e: Exception) {
+            XposedBridge.log("[WAE] getTextSenderInstance exception: $e")
+            XposedBridge.log(e)
+        }
+        return mTextSenderInstance
+    }
+
+    @JvmStatic
+    fun sendMediaMessage(number: String, caption: String, filePath: String): Boolean {
+        try {
+            XposedBridge.log("[WAE] WppCore.sendMediaMessage called: number=$number, filePath=$filePath, caption=$caption")
+            
+            val senderMethod = sendMediaMethod
+            if (senderMethod == null) {
+                XposedBridge.log("[WAE] WppCore.sendMediaMessage: sendMediaMethod is null (not initialized)")
+                return false
+            }
+            
+            val targetJid = if (number.contains("@")) number else "$number@s.whatsapp.net"
+            XposedBridge.log("[WAE] WppCore.sendMediaMessage creating UserJid for: $targetJid")
+            val phoneJidObj = createUserJid(targetJid)
+            if (phoneJidObj == null) {
+                XposedBridge.log("[WAE] WppCore.sendMediaMessage: failed to create UserJID object for $targetJid")
+                Utils.showToast("UserJID not found", Toast.LENGTH_SHORT)
+                return false
+            }
+            val userJid = getUserJidFromPhoneJid(phoneJidObj) ?: phoneJidObj
+            
+            val origFile = File(filePath)
+            if (!origFile.exists()) {
+                XposedBridge.log("[WAE] WppCore.sendMediaMessage: media file does not exist at $filePath")
+                Utils.showToast("Media file not found", Toast.LENGTH_SHORT)
+                return false
+            }
+            
+            // Copy file to a world-readable location so WhatsApp's media pipeline can access it
+            val readableFile = copyToReadableLocation(origFile)
+            val file = readableFile ?: origFile
+            XposedBridge.log("[WAE] WppCore.sendMediaMessage: using file=${file.absolutePath}, readable=${file.canRead()}, size=${file.length()}")
+            
+            // Get or create the media sender instance
+            val instance = getSendMediaInstance()
+            if (instance == null) {
+                XposedBridge.log("[WAE] WppCore.sendMediaMessage: sendMediaInstance is null")
+                return false
+            }
+            
+            val newObject = arrayOfNulls<Any>(senderMethod.parameterCount)
+            for (i in newObject.indices) {
+                val param = senderMethod.parameterTypes[i]
+                newObject[i] = ReflectionUtils.getDefaultValue(param)
+            }
+            
+            val indexList = ReflectionUtils.findIndexOfType(senderMethod.parameterTypes, List::class.java)
+            if (indexList != -1) {
+                newObject[indexList] = Collections.singletonList(userJid)
+            }
+            
+            val indexString = ReflectionUtils.findIndexOfType(senderMethod.parameterTypes, String::class.java)
+            if (indexString != -1) {
+                newObject[indexString] = caption
+            }
+            
+            val indexFile = ReflectionUtils.findIndexOfType(senderMethod.parameterTypes, File::class.java)
+            if (indexFile != -1) {
+                newObject[indexFile] = file
+            }
+            
+            XposedBridge.log("[WAE] WppCore.sendMediaMessage invoking sendMediaMethod: ${senderMethod.name} on ${instance.javaClass.name}")
+            XposedBridge.log("[WAE] sendMediaMethod param count: ${senderMethod.parameterCount}")
+            for (i in senderMethod.parameterTypes.indices) {
+                val paramType = senderMethod.parameterTypes[i]
+                XposedBridge.log("[WAE] Parameter $i: type=${paramType.name}, value=${newObject[i]}")
+            }
+            
+            senderMethod.invoke(instance, *newObject)
+            Utils.showToast("Media sent to $number", Toast.LENGTH_SHORT)
+            return true
+        } catch (e: Exception) {
+            XposedBridge.log("[WAE] WppCore.sendMediaMessage exception: $e")
+            XposedBridge.log(e)
+            Utils.showToast("Error sending media: ${e.message}", Toast.LENGTH_SHORT)
+        }
+        return false
+    }
+
+    /**
+     * Copy a media file to a world-readable location so WhatsApp's internal media pipeline
+     * can access it. Mirrors the reference implementation wu3.p().
+     */
+    @JvmStatic
+    private fun copyToReadableLocation(source: File): File? {
+        try {
+            val picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+            val destDir = File(picturesDir, "WaEnhancer/scheduled_media")
+            if (!destDir.exists()) {
+                destDir.mkdirs()
+            }
+            val destFile = File(destDir, "scheduled_${System.currentTimeMillis()}_${source.name}")
+            
+            var pfd: android.os.ParcelFileDescriptor? = null
+            try {
+                pfd = getClientBridge()?.openFile(source.absolutePath, false)
+            } catch (ignored: Exception) {}
+            
+            val inputStream = if (pfd != null) {
+                java.io.FileInputStream(pfd.fileDescriptor)
+            } else {
+                source.inputStream()
+            }
+            
+            inputStream.use { input ->
+                destFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+            
+            try {
+                pfd?.close()
+            } catch (ignored: Exception) {}
+            
+            destFile.setReadable(true, false)
+            XposedBridge.log("[WAE] copyToReadableLocation: copied ${source.absolutePath} -> ${destFile.absolutePath}")
+            return destFile
+        } catch (e: Exception) {
+            XposedBridge.log("[WAE] copyToReadableLocation failed: ${source.absolutePath}: ${e.message}")
+            return null
+        }
+    }
+
+    @JvmStatic
+    fun getSendMediaInstance(): Any? {
+        try {
+            if (mSendMediaInstance == null) {
+                val method = sendMediaMethod ?: return null
+                mSendMediaInstance = XposedHelpers.newInstance(method.declaringClass)
+            }
+        } catch (e: Exception) {
+            XposedBridge.log("[WAE] getSendMediaInstance exception: $e")
+            XposedBridge.log(e)
+        }
+        return mSendMediaInstance
     }
 
     @JvmStatic

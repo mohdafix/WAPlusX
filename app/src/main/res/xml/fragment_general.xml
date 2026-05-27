@@ -44,6 +44,12 @@
 
         <Preference
             app:iconSpaceReserved="false"
+            app:key="scheduled_messages"
+            app:summary="@string/scheduled_messages_desc"
+            app:title="@string/scheduled_messages" />
+
+        <Preference
+            app:iconSpaceReserved="false"
             app:key="prop_overrides"
             app:summary="@string/prop_overrides_sum"
             app:title="@string/prop_overrides" />

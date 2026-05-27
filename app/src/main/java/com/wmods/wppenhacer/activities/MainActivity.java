@@ -113,6 +113,25 @@ public class MainActivity extends BaseActivity {
         handleIncomingIntent(getIntent());
         
         checkCrashLogs();
+
+        final android.view.View root = findViewById(android.R.id.content);
+        root.getViewTreeObserver().addOnGlobalLayoutListener(new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                android.graphics.Rect r = new android.graphics.Rect();
+                root.getWindowVisibleDisplayFrame(r);
+                int screenHeight = root.getRootView().getHeight();
+                int keypadHeight = screenHeight - r.bottom;
+                
+                if (keypadHeight > screenHeight * 0.15) { 
+                    // keyboard is opened
+                    binding.navContainer.setVisibility(android.view.View.GONE);
+                } else {
+                    // keyboard is closed
+                    binding.navContainer.setVisibility(android.view.View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void checkCrashLogs() {
