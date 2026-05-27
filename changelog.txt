@@ -1,6 +1,9 @@
 [ADDED]
-* Scheduled Messages: Schedule text and media messages to be sent automatically at a specified date and time.
+* Added scheduler message support for text and media
 
 [FIXED]
 * Fixed an issue where clicking the deleted status notification opened the main WhatsApp screen instead of the specific deleted status.
 * Fixed an issue where clicking the deleted message notification occasionally failed to open the respective chat in newer WhatsApp versions.
+* Fixed an issue where the global Text Color customization setting did not apply to chat bubble text.
+
+Who's celebrating today "Wishing you and your loved ones a joyful and blessed Eid al-Adha filled with love, peace, and prosperity"
