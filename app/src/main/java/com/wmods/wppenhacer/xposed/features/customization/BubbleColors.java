@@ -175,8 +175,15 @@ public class BubbleColors extends Feature {
         if (manualText != 0) {
             targetColor = manualText;
         } else {
-            int bColor = getBubbleColor(isRight);
-            targetColor = DesignUtils.getContrastColor(bColor);
+            boolean changeColor = prefs.getBoolean("changecolor", false);
+            int globalTextColor = prefs.getInt("text_color", 0);
+            
+            if (changeColor && globalTextColor != 0) {
+                targetColor = globalTextColor;
+            } else {
+                int bColor = getBubbleColor(isRight);
+                targetColor = DesignUtils.getContrastColor(bColor);
+            }
         }
 
         if (targetColor != 0) {
