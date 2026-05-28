@@ -132,6 +132,7 @@ internal class WhatsAppLiquidGlassComposeOverlay(context: Context) : AbstractCom
     private var selectedIndex by mutableIntStateOf(0)
     private var backdropBitmap by mutableStateOf<Bitmap?>(null)
     private var onTabSelected: (Int) -> Unit = {}
+    private var stateProvider by mutableStateOf<(() -> Int)?>(null)
     private val owner = LiquidGlassViewTreeOwner()
 
     init {
@@ -158,12 +159,14 @@ internal class WhatsAppLiquidGlassComposeOverlay(context: Context) : AbstractCom
         tabs: List<WhatsAppLiquidGlassTab>,
         selectedIndex: Int,
         backdropBitmap: Bitmap? = null,
-        onTabSelected: ((Int) -> Unit)? = null
+        onTabSelected: ((Int) -> Unit)? = null,
+        stateProvider: (() -> Int)? = null
     ) {
         if (tabs.isNotEmpty()) this.tabs = tabs
         this.selectedIndex = selectedIndex.coerceIn(0, max(0, this.tabs.size - 1))
         if (backdropBitmap != null) this.backdropBitmap = backdropBitmap
         if (onTabSelected != null) this.onTabSelected = onTabSelected
+        if (stateProvider != null) this.stateProvider = stateProvider
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
@@ -180,6 +183,20 @@ internal class WhatsAppLiquidGlassComposeOverlay(context: Context) : AbstractCom
     override fun Content() {
         val localTabs = tabs
         if (localTabs.isEmpty()) return
+        
+        val provider = stateProvider
+        if (provider != null) {
+            LaunchedEffect(provider) {
+                while (true) {
+                    val newIndex = provider()
+                    if (newIndex != selectedIndex) {
+                        selectedIndex = newIndex
+                    }
+                    kotlinx.coroutines.delay(100)
+                }
+            }
+        }
+
         WhatsAppLiquidGlassBottomOverlay(
             tabs = localTabs,
             selectedIndex = selectedIndex,

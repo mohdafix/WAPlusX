@@ -1,0 +1,837 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preWhatsappDebugBuild UP-TO-DATE
+> Task :app:mergeWhatsappDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:dataBindingMergeDependencyArtifactsWhatsappDebug UP-TO-DATE
+> Task :app:compileWhatsappDebugAidl
+> Task :app:generateWhatsappDebugMaterialThemeBuilderRes
+> Task :app:generateWhatsappDebugResValues UP-TO-DATE
+> Task :app:generateWhatsappDebugResources UP-TO-DATE
+> Task :app:mergeWhatsappDebugResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesWhatsappDebug UP-TO-DATE
+> Task :app:generateWhatsappDebugBuildConfig UP-TO-DATE
+> Task :app:generateWhatsappDebugMaterialThemeBuilderSource
+> Task :app:checkWhatsappDebugAarMetadata UP-TO-DATE
+> Task :app:processWhatsappDebugNavigationResources UP-TO-DATE
+> Task :app:compileWhatsappDebugNavigationResources UP-TO-DATE
+> Task :app:mapWhatsappDebugSourceSetPaths UP-TO-DATE
+> Task :app:createWhatsappDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksWhatsappDebug UP-TO-DATE
+> Task :app:processWhatsappDebugMainManifest UP-TO-DATE
+> Task :app:processWhatsappDebugManifest UP-TO-DATE
+> Task :app:processWhatsappDebugManifestForPackage UP-TO-DATE
+> Task :app:processWhatsappDebugResources UP-TO-DATE
+> Task :app:preBusinessDebugBuild UP-TO-DATE
+> Task :app:preBusinessReleaseBuild UP-TO-DATE
+> Task :app:preWhatsappReleaseBuild UP-TO-DATE
+> Task :app:javaPreCompileWhatsappDebug UP-TO-DATE
+> Task :app:mergeWhatsappDebugShaders UP-TO-DATE
+> Task :app:compileWhatsappDebugShaders NO-SOURCE
+> Task :app:generateWhatsappDebugAssets UP-TO-DATE
+> Task :app:mergeWhatsappDebugAssets UP-TO-DATE
+> Task :app:compressWhatsappDebugAssets UP-TO-DATE
+> Task :app:checkWhatsappDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarWhatsappDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexWhatsappDebug UP-TO-DATE
+> Task :app:mergeLibDexWhatsappDebug UP-TO-DATE
+> Task :app:configureCMakeDebug[arm64-v8a]
+> Task :app:compileBusinessDebugAidl
+> Task :app:compileBusinessReleaseAidl
+> Task :app:buildCMakeDebug[arm64-v8a]
+> Task :app:compileWhatsappReleaseAidl
+> Task :app:configureCMakeDebug[armeabi-v7a]
+
+> Task :app:fixAidlGeneratedJava
+fixAidlGeneratedJava: patched C:\Project\WAE\app\build\generated\aidl_source_output_dir\businessDebug\out\com\wmods\wppenhacer\xposed\bridge\WaeIIFace.java
+fixAidlGeneratedJava: patched C:\Project\WAE\app\build\generated\aidl_source_output_dir\businessRelease\out\com\wmods\wppenhacer\xposed\bridge\WaeIIFace.java
+fixAidlGeneratedJava: patched C:\Project\WAE\app\build\generated\aidl_source_output_dir\whatsappDebug\out\com\wmods\wppenhacer\xposed\bridge\WaeIIFace.java
+fixAidlGeneratedJava: patched C:\Project\WAE\app\build\generated\aidl_source_output_dir\whatsappRelease\out\com\wmods\wppenhacer\xposed\bridge\WaeIIFace.java
+fixAidlGeneratedJava: patched 4 file(s).
+
+> Task :app:buildCMakeDebug[armeabi-v7a]
+> Task :app:mergeWhatsappDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeWhatsappDebugNativeLibs UP-TO-DATE
+> Task :app:stripWhatsappDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningWhatsappDebug UP-TO-DATE
+> Task :app:writeWhatsappDebugAppMetadata UP-TO-DATE
+> Task :app:writeWhatsappDebugSigningConfigVersions UP-TO-DATE
+> Task :app:kspWhatsappDebugKotlin
+
+> Task :app:compileWhatsappDebugKotlin
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:14:8 'class Allocation : BaseObj' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:15:8 'class Element : BaseObj' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:16:8 'class RenderScript : Any' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:17:8 'class ScriptIntrinsicBlur : ScriptIntrinsic' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:398:19 'var view: View?' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:623:18 'class RenderScript : Any' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:623:31 'static fun create(p0: Context!): RenderScript!' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:624:20 'class ScriptIntrinsicBlur : ScriptIntrinsic' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:624:40 'static fun create(p0: RenderScript!, p1: Element!): ScriptIntrinsicBlur!' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:624:51 'class Element : BaseObj' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:624:59 'static fun U8_4(p0: RenderScript!): Element!' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:625:26 'class Allocation : BaseObj' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:625:37 'static fun createFromBitmap(p0: RenderScript!, p1: Bitmap!): Allocation!' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:626:27 'class Allocation : BaseObj' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:626:38 'static fun createFromBitmap(p0: RenderScript!, p1: Bitmap!): Allocation!' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:627:14 'fun setRadius(p0: Float): Unit' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:628:14 'fun setInput(p0: Allocation!): Unit' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:629:14 'fun forEach(p0: Allocation!): Unit' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:630:21 'fun copyTo(p0: Bitmap!): Unit' is deprecated. Deprecated in Java.
+w: file:///C:/Project/WAE/app/src/main/java/com/wmods/wppenhacer/xposed/utils/Utils.kt:631:12 'fun destroy(): Unit' is deprecated. Deprecated in Java.
+
+> Task :app:compileWhatsappDebugJavaWithJavac
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:94: error: cannot find symbol
+                    this.q.l(view2);
+                        ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:100: error: cannot find symbol
+                    return this.a.m(view2);
+                               ^
+  symbol: variable a
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:117: error: cannot find symbol
+            if (strG == null || Utils.isNullOrEmpty(strG)) {
+                                ^
+  symbol:   variable Utils
+  location: class ScheduledMessagesAdapter.c
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:123: error: cannot find symbol
+            if (strN == null || Utils.isNullOrEmpty(strN)) {
+                                ^
+  symbol:   variable Utils
+  location: class ScheduledMessagesAdapter.c
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:136: error: cannot find symbol
+                    this.a.i(ScheduledMessageVar, compoundButton, z);
+                        ^
+  symbol: variable a
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:142: error: cannot find symbol
+                    this.q.j(ScheduledMessageVar, view);
+                        ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:148: error: cannot find symbol
+                    this.q.k(ScheduledMessageVar, view);
+                        ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:154: error: cannot find symbol
+                chip.setTextColor(ContextCompat.getColor(chip, R.color.md_theme_light_primary));
+                                  ^
+  symbol:   variable ContextCompat
+  location: class ScheduledMessagesAdapter.c
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:156: error: cannot find symbol
+                chip2.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(chip2, R.color.md_theme_light_primaryContainer)));
+                                                                    ^
+  symbol:   variable ContextCompat
+  location: class ScheduledMessagesAdapter.c
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:162: error: cannot find symbol
+                chip3.setTextColor(ContextCompat.getColor(chip3, R.color.md_theme_light_tertiary));
+                                   ^
+  symbol:   variable ContextCompat
+  location: class ScheduledMessagesAdapter.c
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:164: error: cannot find symbol
+                chip4.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(chip4, R.color.md_theme_light_tertiaryContainer)));
+                                                                                                         ^
+  symbol:   variable md_theme_light_tertiaryContainer
+  location: class color
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:164: error: cannot find symbol
+                chip4.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(chip4, R.color.md_theme_light_tertiaryContainer)));
+                                                                    ^
+  symbol:   variable ContextCompat
+  location: class ScheduledMessagesAdapter.c
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:169: error: cannot find symbol
+            chip5.setTextColor(ContextCompat.getColor(chip5, R.color.md_theme_light_error));
+                               ^
+  symbol:   variable ContextCompat
+  location: class ScheduledMessagesAdapter.c
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:171: error: cannot find symbol
+            chip6.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(chip6, R.color.md_theme_light_errorContainer)));
+                                                                                                     ^
+  symbol:   variable md_theme_light_errorContainer
+  location: class color
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:171: error: cannot find symbol
+            chip6.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(chip6, R.color.md_theme_light_errorContainer)));
+                                                                ^
+  symbol:   variable ContextCompat
+  location: class ScheduledMessagesAdapter.c
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:230: error: cannot find symbol
+        c0092eB.c(this);
+               ^
+  symbol:   method c(ScheduledMessagesAdapter)
+  location: variable c0092eB of type DiffResult
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:86: error: cannot find symbol
+                        this.q.b(booleanExtra);
+                            ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:117: error: cannot find symbol
+        Toast.makeText(getContext(), R.string.enable_notifications, 0).show();
+                                             ^
+  symbol:   variable enable_notifications
+  location: class string
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:185: error: cannot find symbol
+        this.B.fabAddmptyState.setVisibility(zIsEmpty ? 0 : 8);
+              ^
+  symbol:   variable fabAddmptyState
+  location: variable B of type FragmentScheduledMessagesBinding
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:218: error: cannot find symbol
+            this.f127X.a("android.permission.POST_NOTIFICATIONS");
+                      ^
+  symbol:   method a(String)
+  location: variable f127X of type ActivityResultLauncher<String>
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:223: error: cannot find symbol
+        new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> F(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                                                                                                                                            ^
+  symbol:   variable enable_notifications
+  location: class string
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:223: error: cannot find symbol
+        new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> F(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                                                                                ^
+  symbol:   variable notification_permission_message
+  location: class string
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:223: error: cannot find symbol
+        new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> F(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                          ^
+  symbol:   variable notification_permission_required
+  location: class string
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:227: error: cannot find symbol
+        new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> G(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                                                                                                                                            ^
+  symbol:   variable enable_notifications
+  location: class string
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:227: error: cannot find symbol
+        new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> G(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                                                                                ^
+  symbol:   variable notification_permission_message
+  location: class string
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:227: error: cannot find symbol
+        new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> G(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                          ^
+  symbol:   variable notification_permission_required
+  location: class string
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:285: error: cannot find symbol
+        this.f127X = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new y6() { // from class: X.vi2
+                                                                                                    ^
+  symbol:   class y6
+  location: class ScheduledMessagesFragment
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:286: error: method does not override or implement a method from a supertype
+            @Override // X.y6
+            ^
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:288: error: cannot find symbol
+                this.a.A((Boolean) obj);
+                    ^
+  symbol: variable a
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:317: error: cannot find symbol
+        requireActivity().getOnBackPressedDispatcher().d(getViewLifecycleOwner(), new b(true));
+                                                      ^
+  symbol:   method d(LifecycleOwner,ScheduledMessagesFragment.b)
+  location: class OnBackPressedDispatcher
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:326: error: cannot find symbol
+                this.q.C(view2);
+                    ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:332: error: cannot find symbol
+                this.q.D(view2);
+                    ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:343: error: cannot find symbol
+                    this.q.E();
+                        ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:79: error: cannot find symbol
+            if (ScheduleEditorFragment.this.getParentFragmentManager().u0() > 0) {
+                                                                      ^
+  symbol:   method u0()
+  location: class FragmentManager
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:80: error: cannot find symbol
+                ScheduleEditorFragment.this.getParentFragmentManager().e1();
+                                                                      ^
+  symbol:   method e1()
+  location: class FragmentManager
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:95: error: cannot find symbol
+        this.Z.a("image/*");
+              ^
+  symbol:   method a(String)
+  location: variable Z of type ActivityResultLauncher<String>
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:120: error: cannot find symbol
+        final ArrayList<String> arrayListC = Utils.c(requireContext());
+                                                  ^
+  symbol:   method c(Context)
+  location: class Utils
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:131: error: cannot find symbol
+            charSequenceArr[i] = Utils.d(requireContext(), arrayListC.get(i));
+                                      ^
+  symbol:   method d(Context,String)
+  location: class Utils
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:136: error: cannot find symbol
+                this.q.toggleWhatsappNormal(arrayListC, arrayList, dialogInterface, i2);
+                    ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:133: error: cannot find symbol
+        new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.select_whatsapp_app).F(charSequenceArr, new DialogInterface.OnClickListener() { // from class: X.di2
+                                                                          ^
+  symbol:   variable select_whatsapp_app
+  location: class string
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:143: error: cannot find symbol
+            startActivityForResult(Utils.b(requireContext(), str, "scheduled_message_picker", arrayList), 16721173);
+                                        ^
+  symbol:   method b(Context,String,String,ArrayList<String>)
+  location: class Utils
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:182: error: cannot find symbol
+        qw0Var.C.setError(null);
+              ^
+  symbol:   variable C
+  location: variable qw0Var of type FragmentScheduleEditorBinding
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:227: error: cannot find symbol
+        Log.e("ScheduleEditorFragment", "Failed to copy image", e);
+                                                                ^
+  symbol:   variable e
+  location: class ScheduleEditorFragment
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:261: error: cannot find symbol
+        a0(qw0Var.w, qw0Var.y);
+                 ^
+  symbol:   variable w
+  location: variable qw0Var of type FragmentScheduleEditorBinding
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:261: error: cannot find symbol
+        a0(qw0Var.w, qw0Var.y);
+                           ^
+  symbol:   variable y
+  location: variable qw0Var of type FragmentScheduleEditorBinding
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:268: error: cannot find symbol
+                this.a.K(timePicker, i, i2);
+                    ^
+  symbol: variable a
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:278: error: cannot find symbol
+        a0(qw0Var.w, qw0Var.y);
+                 ^
+  symbol:   variable w
+  location: variable qw0Var of type FragmentScheduleEditorBinding
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:278: error: cannot find symbol
+        a0(qw0Var.w, qw0Var.y);
+                           ^
+  symbol:   variable y
+  location: variable qw0Var of type FragmentScheduleEditorBinding
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:285: error: cannot find symbol
+                this.a.M(datePicker, i, i2, i3);
+                    ^
+  symbol: variable a
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:359: error: cannot find symbol
+        y(this.x.setPositiveButton());
+                ^
+  symbol:   method setPositiveButton()
+  location: variable x of type ScheduledMessage
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:492: error: cannot find symbol
+        getParentFragmentManager().e1();
+                                  ^
+  symbol:   method e1()
+  location: class FragmentManager
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:497: error: cannot find symbol
+        if (activity instanceof tc) {
+                                ^
+  symbol:   class tc
+  location: class ScheduleEditorFragment
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:500: error: cannot find symbol
+                tcVar.getSupportActionBar().r(true);
+                                           ^
+  symbol:   method r(boolean)
+  location: class ActionBar
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:501: error: cannot find symbol
+                tcVar.getSupportActionBar().t(R.string.schedule_message_menu);
+                                           ^
+  symbol:   method t(int)
+  location: class ActionBar
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:510: error: cannot find symbol
+                this.q.N(view);
+                    ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:516: error: cannot find symbol
+                this.q.L(view);
+                    ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:522: error: cannot find symbol
+        this.q.groupRepeat.setOnCheckedStateChangeListener(new ChipGroup.e() { // from class: X.uh2
+                                                                        ^
+  symbol:   class e
+  location: class ChipGroup
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:523: error: method does not override or implement a method from a supertype
+            @Override // com.google.android.material.chip.ChipGroup.e
+            ^
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:525: error: cannot find symbol
+                this.a.O(chipGroup, list);
+                    ^
+  symbol: variable a
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:533: error: cannot find symbol
+            this.q.toggleWhatsappType.setPositiveButton(new MaterialButtonToggleGroup.b() { // from class: X.ci2
+                                                                                     ^
+  symbol:   class b
+  location: class MaterialButtonToggleGroup
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:534: error: method does not override or implement a method from a supertype
+                @Override // com.google.android.material.button.MaterialButtonToggleGroup.b
+                ^
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:536: error: cannot find symbol
+                    this.a.P(materialButtonToggleGroup, i, z);
+                        ^
+  symbol: variable a
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:552: error: cannot find symbol
+            qw0Var.D.setError(null);
+                  ^
+  symbol:   variable D
+  location: variable qw0Var of type FragmentScheduleEditorBinding
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:584: error: cannot find symbol
+            this.q.toggleWhatsappType.r(R.id.toggle_whatsapp_business);
+                                     ^
+  symbol:   method r(int)
+  location: variable toggleWhatsappType of type MaterialButtonToggleGroup
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:586: error: cannot find symbol
+            this.q.toggleWhatsappType.r(R.id.toggle_whatsapp_normal);
+                                     ^
+  symbol:   method r(int)
+  location: variable toggleWhatsappType of type MaterialButtonToggleGroup
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:605: error: cannot find symbol
+                    this.y.add(((x00) it.next()).d());
+                                 ^
+  symbol:   class x00
+  location: class ScheduleEditorFragment
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:641: error: cannot find symbol
+        this.Z = registerForActivityResult(new ActivityResultContracts.GetContent(), new y6() { // from class: X.th2
+                                                                                         ^
+  symbol:   class y6
+  location: class ScheduleEditorFragment
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:642: error: method does not override or implement a method from a supertype
+            @Override // X.y6
+            ^
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:644: error: cannot find symbol
+                this.a.D((Uri) obj);
+                    ^
+  symbol: variable a
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:667: error: cannot find symbol
+        requireActivity().getOnBackPressedDispatcher().d(getViewLifecycleOwner(), new a(true));
+                                                      ^
+  symbol:   method d(LifecycleOwner,ScheduleEditorFragment.a)
+  location: class OnBackPressedDispatcher
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:671: error: cannot find symbol
+                this.q.inputMessage(view2);
+                    ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:677: error: cannot find symbol
+                this.q.inputTime(view2);
+                    ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:683: error: cannot find symbol
+                this.q.scrollContent(view2);
+                    ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:689: error: cannot find symbol
+                this.q.textImageLabel(view2);
+                    ^
+  symbol: variable q
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:695: error: cannot find symbol
+                this.a.I(view2, z);
+                    ^
+  symbol: variable a
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:707: error: cannot find symbol
+        a0(qw0Var.w, qw0Var.y);
+                 ^
+  symbol:   variable w
+  location: variable qw0Var of type FragmentScheduleEditorBinding
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:707: error: cannot find symbol
+        a0(qw0Var.w, qw0Var.y);
+                           ^
+  symbol:   variable y
+  location: variable qw0Var of type FragmentScheduleEditorBinding
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\utils\ScheduledMessageHelper.java:20: error: cannot find symbol
+        ScheduledMessage ScheduledMessageVarX = ScheduledMessageDatabase.v(context).x(j);
+        ^
+  symbol:   class ScheduledMessage
+  location: class ScheduledMessageHelper
+C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\utils\ScheduledMessageHelper.java:20: error: cannot find symbol
+        ScheduledMessage ScheduledMessageVarX = ScheduledMessageDatabase.v(context).x(j);
+                                                ^
+  symbol:   variable ScheduledMessageDatabase
+  location: class ScheduledMessageHelper
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+79 errors
+
+> Task :app:compileWhatsappDebugJavaWithJavac FAILED
+
+[Incubating] Problems report is available at: file:///C:/Project/WAE/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileWhatsappDebugJavaWithJavac'.
+> Compilation failed; see the compiler output below.
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:94: error: cannot find symbol
+                      this.q.l(view2);
+                          ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:100: error: cannot find symbol
+                      return this.a.m(view2);
+                                 ^
+    symbol: variable a
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:117: error: cannot find symbol
+              if (strG == null || Utils.isNullOrEmpty(strG)) {
+                                  ^
+    symbol:   variable Utils
+    location: class ScheduledMessagesAdapter.c
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:123: error: cannot find symbol
+              if (strN == null || Utils.isNullOrEmpty(strN)) {
+                                  ^
+    symbol:   variable Utils
+    location: class ScheduledMessagesAdapter.c
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:136: error: cannot find symbol
+                      this.a.i(ScheduledMessageVar, compoundButton, z);
+                          ^
+    symbol: variable a
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:142: error: cannot find symbol
+                      this.q.j(ScheduledMessageVar, view);
+                          ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:148: error: cannot find symbol
+                      this.q.k(ScheduledMessageVar, view);
+                          ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:154: error: cannot find symbol
+                  chip.setTextColor(ContextCompat.getColor(chip, R.color.md_theme_light_primary));
+                                    ^
+    symbol:   variable ContextCompat
+    location: class ScheduledMessagesAdapter.c
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:156: error: cannot find symbol
+                  chip2.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(chip2, R.color.md_theme_light_primaryContainer)));
+                                                                      ^
+    symbol:   variable ContextCompat
+    location: class ScheduledMessagesAdapter.c
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:162: error: cannot find symbol
+                  chip3.setTextColor(ContextCompat.getColor(chip3, R.color.md_theme_light_tertiary));
+                                     ^
+    symbol:   variable ContextCompat
+    location: class ScheduledMessagesAdapter.c
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:164: error: cannot find symbol
+                  chip4.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(chip4, R.color.md_theme_light_tertiaryContainer)));
+                                                                                                           ^
+    symbol:   variable md_theme_light_tertiaryContainer
+    location: class color
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:164: error: cannot find symbol
+                  chip4.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(chip4, R.color.md_theme_light_tertiaryContainer)));
+                                                                      ^
+    symbol:   variable ContextCompat
+    location: class ScheduledMessagesAdapter.c
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:169: error: cannot find symbol
+              chip5.setTextColor(ContextCompat.getColor(chip5, R.color.md_theme_light_error));
+                                 ^
+    symbol:   variable ContextCompat
+    location: class ScheduledMessagesAdapter.c
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:171: error: cannot find symbol
+              chip6.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(chip6, R.color.md_theme_light_errorContainer)));
+                                                                                                       ^
+    symbol:   variable md_theme_light_errorContainer
+    location: class color
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:171: error: cannot find symbol
+              chip6.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(chip6, R.color.md_theme_light_errorContainer)));
+                                                                  ^
+    symbol:   variable ContextCompat
+    location: class ScheduledMessagesAdapter.c
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\adapters\ScheduledMessagesAdapter.java:230: error: cannot find symbol
+          c0092eB.c(this);
+                 ^
+    symbol:   method c(ScheduledMessagesAdapter)
+    location: variable c0092eB of type DiffResult
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:86: error: cannot find symbol
+                          this.q.b(booleanExtra);
+                              ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:117: error: cannot find symbol
+          Toast.makeText(getContext(), R.string.enable_notifications, 0).show();
+                                               ^
+    symbol:   variable enable_notifications
+    location: class string
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:185: error: cannot find symbol
+          this.B.fabAddmptyState.setVisibility(zIsEmpty ? 0 : 8);
+                ^
+    symbol:   variable fabAddmptyState
+    location: variable B of type FragmentScheduledMessagesBinding
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:218: error: cannot find symbol
+              this.f127X.a("android.permission.POST_NOTIFICATIONS");
+                        ^
+    symbol:   method a(String)
+    location: variable f127X of type ActivityResultLauncher<String>
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:223: error: cannot find symbol
+          new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> F(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                                                                                                                                              ^
+    symbol:   variable enable_notifications
+    location: class string
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:223: error: cannot find symbol
+          new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> F(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                                                                                  ^
+    symbol:   variable notification_permission_message
+    location: class string
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:223: error: cannot find symbol
+          new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> F(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                            ^
+    symbol:   variable notification_permission_required
+    location: class string
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:227: error: cannot find symbol
+          new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> G(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                                                                                                                                              ^
+    symbol:   variable enable_notifications
+    location: class string
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:227: error: cannot find symbol
+          new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> G(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                                                                                  ^
+    symbol:   variable notification_permission_message
+    location: class string
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:227: error: cannot find symbol
+          new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.notification_permission_required).setMessage(R.string.notification_permission_message).setPositiveButton(R.string.enable_notifications, (dialogInterface, i) -> G(dialogInterface, i)).setNegativeButton(R.string.cancel, null).show();
+                                                                            ^
+    symbol:   variable notification_permission_required
+    location: class string
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:285: error: cannot find symbol
+          this.f127X = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new y6() { // from class: X.vi2
+                                                                                                      ^
+    symbol:   class y6
+    location: class ScheduledMessagesFragment
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:286: error: method does not override or implement a method from a supertype
+              @Override // X.y6
+              ^
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:288: error: cannot find symbol
+                  this.a.A((Boolean) obj);
+                      ^
+    symbol: variable a
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:317: error: cannot find symbol
+          requireActivity().getOnBackPressedDispatcher().d(getViewLifecycleOwner(), new b(true));
+                                                        ^
+    symbol:   method d(LifecycleOwner,ScheduledMessagesFragment.b)
+    location: class OnBackPressedDispatcher
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:326: error: cannot find symbol
+                  this.q.C(view2);
+                      ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:332: error: cannot find symbol
+                  this.q.D(view2);
+                      ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduledMessagesFragment.java:343: error: cannot find symbol
+                      this.q.E();
+                          ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:79: error: cannot find symbol
+              if (ScheduleEditorFragment.this.getParentFragmentManager().u0() > 0) {
+                                                                        ^
+    symbol:   method u0()
+    location: class FragmentManager
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:80: error: cannot find symbol
+                  ScheduleEditorFragment.this.getParentFragmentManager().e1();
+                                                                        ^
+    symbol:   method e1()
+    location: class FragmentManager
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:95: error: cannot find symbol
+          this.Z.a("image/*");
+                ^
+    symbol:   method a(String)
+    location: variable Z of type ActivityResultLauncher<String>
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:120: error: cannot find symbol
+          final ArrayList<String> arrayListC = Utils.c(requireContext());
+                                                    ^
+    symbol:   method c(Context)
+    location: class Utils
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:131: error: cannot find symbol
+              charSequenceArr[i] = Utils.d(requireContext(), arrayListC.get(i));
+                                        ^
+    symbol:   method d(Context,String)
+    location: class Utils
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:136: error: cannot find symbol
+                  this.q.toggleWhatsappNormal(arrayListC, arrayList, dialogInterface, i2);
+                      ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:133: error: cannot find symbol
+          new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.select_whatsapp_app).F(charSequenceArr, new DialogInterface.OnClickListener() { // from class: X.di2
+                                                                            ^
+    symbol:   variable select_whatsapp_app
+    location: class string
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:143: error: cannot find symbol
+              startActivityForResult(Utils.b(requireContext(), str, "scheduled_message_picker", arrayList), 16721173);
+                                          ^
+    symbol:   method b(Context,String,String,ArrayList<String>)
+    location: class Utils
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:182: error: cannot find symbol
+          qw0Var.C.setError(null);
+                ^
+    symbol:   variable C
+    location: variable qw0Var of type FragmentScheduleEditorBinding
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:227: error: cannot find symbol
+          Log.e("ScheduleEditorFragment", "Failed to copy image", e);
+                                                                  ^
+    symbol:   variable e
+    location: class ScheduleEditorFragment
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:261: error: cannot find symbol
+          a0(qw0Var.w, qw0Var.y);
+                   ^
+    symbol:   variable w
+    location: variable qw0Var of type FragmentScheduleEditorBinding
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:261: error: cannot find symbol
+          a0(qw0Var.w, qw0Var.y);
+                             ^
+    symbol:   variable y
+    location: variable qw0Var of type FragmentScheduleEditorBinding
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:268: error: cannot find symbol
+                  this.a.K(timePicker, i, i2);
+                      ^
+    symbol: variable a
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:278: error: cannot find symbol
+          a0(qw0Var.w, qw0Var.y);
+                   ^
+    symbol:   variable w
+    location: variable qw0Var of type FragmentScheduleEditorBinding
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:278: error: cannot find symbol
+          a0(qw0Var.w, qw0Var.y);
+                             ^
+    symbol:   variable y
+    location: variable qw0Var of type FragmentScheduleEditorBinding
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:285: error: cannot find symbol
+                  this.a.M(datePicker, i, i2, i3);
+                      ^
+    symbol: variable a
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:359: error: cannot find symbol
+          y(this.x.setPositiveButton());
+                  ^
+    symbol:   method setPositiveButton()
+    location: variable x of type ScheduledMessage
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:492: error: cannot find symbol
+          getParentFragmentManager().e1();
+                                    ^
+    symbol:   method e1()
+    location: class FragmentManager
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:497: error: cannot find symbol
+          if (activity instanceof tc) {
+                                  ^
+    symbol:   class tc
+    location: class ScheduleEditorFragment
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:500: error: cannot find symbol
+                  tcVar.getSupportActionBar().r(true);
+                                             ^
+    symbol:   method r(boolean)
+    location: class ActionBar
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:501: error: cannot find symbol
+                  tcVar.getSupportActionBar().t(R.string.schedule_message_menu);
+                                             ^
+    symbol:   method t(int)
+    location: class ActionBar
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:510: error: cannot find symbol
+                  this.q.N(view);
+                      ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:516: error: cannot find symbol
+                  this.q.L(view);
+                      ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:522: error: cannot find symbol
+          this.q.groupRepeat.setOnCheckedStateChangeListener(new ChipGroup.e() { // from class: X.uh2
+                                                                          ^
+    symbol:   class e
+    location: class ChipGroup
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:523: error: method does not override or implement a method from a supertype
+              @Override // com.google.android.material.chip.ChipGroup.e
+              ^
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:525: error: cannot find symbol
+                  this.a.O(chipGroup, list);
+                      ^
+    symbol: variable a
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:533: error: cannot find symbol
+              this.q.toggleWhatsappType.setPositiveButton(new MaterialButtonToggleGroup.b() { // from class: X.ci2
+                                                                                       ^
+    symbol:   class b
+    location: class MaterialButtonToggleGroup
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:534: error: method does not override or implement a method from a supertype
+                  @Override // com.google.android.material.button.MaterialButtonToggleGroup.b
+                  ^
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:536: error: cannot find symbol
+                      this.a.P(materialButtonToggleGroup, i, z);
+                          ^
+    symbol: variable a
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:552: error: cannot find symbol
+              qw0Var.D.setError(null);
+                    ^
+    symbol:   variable D
+    location: variable qw0Var of type FragmentScheduleEditorBinding
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:584: error: cannot find symbol
+              this.q.toggleWhatsappType.r(R.id.toggle_whatsapp_business);
+                                       ^
+    symbol:   method r(int)
+    location: variable toggleWhatsappType of type MaterialButtonToggleGroup
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:586: error: cannot find symbol
+              this.q.toggleWhatsappType.r(R.id.toggle_whatsapp_normal);
+                                       ^
+    symbol:   method r(int)
+    location: variable toggleWhatsappType of type MaterialButtonToggleGroup
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:605: error: cannot find symbol
+                      this.y.add(((x00) it.next()).d());
+                                   ^
+    symbol:   class x00
+    location: class ScheduleEditorFragment
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:641: error: cannot find symbol
+          this.Z = registerForActivityResult(new ActivityResultContracts.GetContent(), new y6() { // from class: X.th2
+                                                                                           ^
+    symbol:   class y6
+    location: class ScheduleEditorFragment
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:642: error: method does not override or implement a method from a supertype
+              @Override // X.y6
+              ^
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:644: error: cannot find symbol
+                  this.a.D((Uri) obj);
+                      ^
+    symbol: variable a
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:667: error: cannot find symbol
+          requireActivity().getOnBackPressedDispatcher().d(getViewLifecycleOwner(), new a(true));
+                                                        ^
+    symbol:   method d(LifecycleOwner,ScheduleEditorFragment.a)
+    location: class OnBackPressedDispatcher
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:671: error: cannot find symbol
+                  this.q.inputMessage(view2);
+                      ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:677: error: cannot find symbol
+                  this.q.inputTime(view2);
+                      ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:683: error: cannot find symbol
+                  this.q.scrollContent(view2);
+                      ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:689: error: cannot find symbol
+                  this.q.textImageLabel(view2);
+                      ^
+    symbol: variable q
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:695: error: cannot find symbol
+                  this.a.I(view2, z);
+                      ^
+    symbol: variable a
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:707: error: cannot find symbol
+          a0(qw0Var.w, qw0Var.y);
+                   ^
+    symbol:   variable w
+    location: variable qw0Var of type FragmentScheduleEditorBinding
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\ui\fragments\ScheduleEditorFragment.java:707: error: cannot find symbol
+          a0(qw0Var.w, qw0Var.y);
+                             ^
+    symbol:   variable y
+    location: variable qw0Var of type FragmentScheduleEditorBinding
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\utils\ScheduledMessageHelper.java:20: error: cannot find symbol
+          ScheduledMessage ScheduledMessageVarX = ScheduledMessageDatabase.v(context).x(j);
+          ^
+    symbol:   class ScheduledMessage
+    location: class ScheduledMessageHelper
+  C:\Project\WAE\app\src\main\java\com\wmods\wppenhacer\utils\ScheduledMessageHelper.java:20: error: cannot find symbol
+          ScheduledMessage ScheduledMessageVarX = ScheduledMessageDatabase.v(context).x(j);
+                                                  ^
+    symbol:   variable ScheduledMessageDatabase
+    location: class ScheduledMessageHelper
+  Note: Some input files use or override a deprecated API.
+  Note: Recompile with -Xlint:deprecation for details.
+  Note: Some input files use unchecked or unsafe operations.
+  Note: Recompile with -Xlint:unchecked for details.
+  79 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights.
+
+BUILD FAILED in 8s
+44 actionable tasks: 14 executed, 30 up-to-date

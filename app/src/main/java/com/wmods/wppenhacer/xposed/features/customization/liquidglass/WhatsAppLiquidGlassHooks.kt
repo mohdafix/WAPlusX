@@ -832,7 +832,11 @@ class WhatsAppLiquidGlassHooks(
         val root = nav.rootView as? ViewGroup ?: return false
         val existing = overlayBars[nav]
         if (existing != null) {
-            existing.update(tabs, selected, null)
+            if (existing.parent !== root) {
+                (existing.parent as? ViewGroup)?.removeView(existing)
+                root.addView(existing, overlayLayoutParams(height))
+            }
+            existing.update(tabs, selected, null, null) { selectedIndex(nav) }
             updateOverlayLayout(existing, height)
             existing.bringToFront()
             existing.invalidate()
@@ -842,12 +846,12 @@ class WhatsAppLiquidGlassHooks(
 
         val overlay = WhatsAppLiquidGlassComposeOverlay(nav.context)
         overlay.installViewTreeOwners(root)
-        overlay.update(tabs, selected, null) { index ->
+        overlay.update(tabs, selected, null, { index ->
             selectNavigationItem(nav, index)
             dragStates.getOrPut(nav) { DragState() }.dragIndex = index.toFloat()
             overlay.update(cachedLiquidTabs(nav), index, null)
             scheduleBackdropCapture(nav, root, overlay, height, force = true)
-        }
+        }, { selectedIndex(nav) })
         overlay.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         root.addView(overlay, overlayLayoutParams(height))
         overlay.bringToFront()

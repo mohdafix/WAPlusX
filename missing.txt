@@ -1,0 +1,59 @@
+show_message_device_source: Show Message Device Source
+show_message_device_source_sum: Shows whether a message was sent from the primary device or a linked device
+admin_emoji_title: Group Admin Indicator Text/Emoji
+admin_emoji_sum: Text/Emoji to display for group admins indicators (e.g., 👑, 🛡️, ⭐)
+soundboard_title: Soundboard
+soundboard_summary: Send sounds from MyInstants in conversation
+soundboard_search_hint: Search sounds...
+soundboard_dialog_title: MyInstants Soundboard
+soundboard_sent: Sound sent!
+soundboard_play_error: Error playing sound
+advanced: Advanced
+unlock_premium: Unlock Premium
+unlock_premium_sum: Unlocks hidden beta features within the WhatsApp APK.
+native_igstatus: Native IGStatus
+native_igstatus_sum: Enable WhatsApp native Instagram-style status bar (ID 25327)
+prop_type_boolean: Boolean
+prop_type_integer: Integer
+voice_changer_enabled: Voice Changer
+voice_changer_enabled_sum: Apply voice effects to voice notes before sending
+voice_changer_effect: Voice Effect
+voice_changer_effect_sum: Select the voice effect to apply
+voice_changer_title: Voice Changer
+voice_changer_select_effect: Select Voice Effect
+voice_changer_effect_changed: Voice effect: %s
+voice_changer: Voice Changer
+voice_effect_disabled: Disabled
+voice_effect_baby: Baby
+voice_effect_teenager: Teenager
+voice_effect_deep: Deep
+voice_effect_robot: Robot
+voice_effect_drunk: Drunk
+voice_effect_fast: Fast
+voice_effect_slow_motion: Slow Motion
+voice_effect_underwater: Underwater
+voice_effect_fun: Fun
+voice_effect_optimus: Optimus
+voice_effect_minion: Minion
+voice_effect_bane: Bane
+voice_effect_female: Female
+voice_effect_male: Male
+voice_effect_s: Voice effect: %s
+voice_note_effect_s: Voice Note: %s effect
+voice_prefix: Voice: %s
+hide_forward_ask: Hide the forwarding label?
+separate_group: Separate Groups
+update: Update
+release_channel_title: Update Channel
+release_channel_stable: Stable
+clear_obfuscate_cache: Clear Obfuscate Cache
+view_changelog: View Changelog
+release_channel_beta: Beta
+status_video_splitter: Status Video Splitter
+status_video_splitter_sum: Add option to split long videos into status-length segments
+amoled_theme: AMOLED Theme
+amoled_theme_sum: Use pure black backgrounds in dark mode
+voice_note_keep_screen_on_title: Keep Screen On For Audio
+voice_note_keep_screen_on_sum: Don\'t turn off screen when listening to voice messages/notes
+profile_picture_change_toast: Profile Picture Change Notifications
+profile_picture_change_toast_sum: Choose how to be notified when someone changes their profile picture
