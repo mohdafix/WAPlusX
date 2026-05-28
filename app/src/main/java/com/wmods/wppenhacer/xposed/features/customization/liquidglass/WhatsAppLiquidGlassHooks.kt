@@ -498,10 +498,9 @@ class WhatsAppLiquidGlassHooks(
         barDrawables.remove(nav)
         nav.background = ColorDrawable(Color.TRANSPARENT)
         nav.setBackgroundColor(Color.TRANSPARENT)
-        nav.background = ColorDrawable(Color.TRANSPARENT)
-        nav.elevation = max(nav.elevation, dp(8f).toFloat())
+        nav.elevation = 0f
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            nav.translationZ = max(nav.translationZ, dp(2f).toFloat())
+            nav.translationZ = 0f
             nav.clipToOutline = false
         }
         styleNavSurroundings(nav)
@@ -526,16 +525,20 @@ class WhatsAppLiquidGlassHooks(
         }
     }
 
-    private fun scheduleNavStyleAfterLayout(nav: View, reason: String) {
+    private fun scheduleNavStyleAfterLayout(nav: View, reason: String, attempt: Int = 0) {
+        if (attempt > 10) return
         synchronized(pendingNavStylePosts) {
             if (!pendingNavStylePosts.add(nav)) return
         }
-        nav.post {
+        
+        nav.postDelayed({
             synchronized(pendingNavStylePosts) { pendingNavStylePosts.remove(nav) }
             if (featureState.liquidClass && nav.isAttachedToWindowCompat() && nav.width > 0 && nav.height > 0) {
-                styleBottomNavigation(nav, "post-layout-$reason")
+                styleBottomNavigation(nav, "post-layout-$reason-$attempt")
+            } else if (featureState.liquidClass) {
+                scheduleNavStyleAfterLayout(nav, reason, attempt + 1)
             }
-        }
+        }, if (attempt == 0) 50L else 150L)
     }
 
     private fun handleNavDragEvent(
