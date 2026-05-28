@@ -81,6 +81,11 @@
             app:showSeekBarValue="true"
             app:title="@string/navigation_transparency" />
 
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="liquid_glass_enabled"
+            app:summary="Enables a liquid glass overlay for WhatsApp Bottom Navigation."
+            app:title="Liquid Glass Navigation" />
+
         <Preference
             app:key="bottom_navigation_settings"
             app:summary="@string/bottom_navigation_settings_sum"

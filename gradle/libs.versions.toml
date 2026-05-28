@@ -15,6 +15,10 @@ roomRuntime = "2.8.4"
 nav = "2.9.6"
 kotlin = "2.2.21"
 markwon = "4.6.2"
+compose-compiler = "2.2.21"
+compose-bom = "2025.09.00"
+android-liquid-glass = "1.0.1"
+kotlinx-coroutines-android = "1.10.2"
 
 [libraries]
 androidx-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "documentfile" }
@@ -45,8 +49,16 @@ rikkax-widget-borderview = { module = "dev.rikka.rikkax.widget:borderview", vers
 material = { module = "com.google.android.material:material", version = "1.13.0" }
 markwon-core = { module = "io.noties.markwon:core", version.ref = "markwon" }
 
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+foundation = { module = "androidx.compose.foundation:foundation" }
+ui = { module = "androidx.compose.ui:ui" }
+foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
+android-liquid-glass = { module = "io.github.kyant0:backdrop", version.ref = "android-liquid-glass" }
+coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-android" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 materialthemebuilder = { id = "dev.rikka.tools.materialthemebuilder", version = "1.5.1" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kspPlugin = { id = "com.google.devtools.ksp", version = "2.3.0" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "compose-compiler" }

@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.materialthemebuilder)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.kspPlugin)
+    alias(libs.plugins.compose.compiler)
 }
 
 fun getGitHashCommit(): String {
@@ -147,6 +148,7 @@ android {
         buildConfig = true
         aidl = true
         resValues = true
+        compose = true
     }
 
 
@@ -266,6 +268,13 @@ dependencies {
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
     implementation(libs.markwon.core)
+
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.foundation)
+    implementation(libs.ui)
+    implementation(libs.foundation.layout)
+    implementation(libs.android.liquid.glass)
+    implementation(libs.coroutines)
 }
 
 
