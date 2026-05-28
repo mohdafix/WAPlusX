@@ -13,7 +13,7 @@ class LiquidGlassFeature(
     override fun doHook() {
         if (!prefs.getBoolean("liquid_glass_enabled", false)) return
         val context = FeatureLoader.mApp as? Context ?: return
-        WhatsAppLiquidGlassHooks(context, classLoader).init()
+        WhatsAppLiquidGlassHooks(context, classLoader, prefs).init()
     }
 
     override fun getPluginName(): String {
