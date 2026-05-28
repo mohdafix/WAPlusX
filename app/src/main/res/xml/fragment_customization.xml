@@ -81,6 +81,31 @@
             app:showSeekBarValue="true"
             app:title="@string/navigation_transparency" />
 
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="liquid_glass_enabled"
+            app:summary="Enables a liquid glass overlay for WhatsApp Bottom Navigation."
+            app:title="Liquid Glass Navigation" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="hide_ui_elements"
+            app:summary="Enables the dynamic UI adblocker (hides captured elements)."
+            app:title="Enable UI Adblocker" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:dependency="hide_ui_elements"
+            app:key="capture_ui_elements"
+            app:summary="Shows a floating picker in WhatsApp to select and hide UI elements."
+            app:title="Capture UI Elements" />
+
+        <Preference
+            app:key="manage_ui_adblocker"
+            app:summary="View and remove elements currently hidden by the UI Adblocker."
+            app:title="Manage Blocked Elements" >
+            <intent
+                android:targetPackage="com.wmods.wppenhacer"
+                android:targetClass="com.wmods.wppenhacer.activities.UiAdblockerManageActivity" />
+        </Preference>
+
         <Preference
             app:key="bottom_navigation_settings"
             app:summary="@string/bottom_navigation_settings_sum"

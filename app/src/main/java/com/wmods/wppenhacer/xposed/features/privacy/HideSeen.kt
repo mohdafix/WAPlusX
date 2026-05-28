@@ -37,6 +37,7 @@ class HideSeen(loader: ClassLoader, preferences: XSharedPreferences) :
     private var hideOnceSeen = false
     private var hideReadGroup = false
     private var hideStatusView = false
+    private var forceHideReceipt = false
 
     override fun doHook() {
         loadPreferences()
@@ -54,6 +55,7 @@ class HideSeen(loader: ClassLoader, preferences: XSharedPreferences) :
         hideReadGroup = prefs.getBoolean("hideread_group", false)
         hideStatusView = prefs.getBoolean("hidestatusview", false)
         hideReceipt = prefs.getBoolean("hidereceipt", false)
+        forceHideReceipt = prefs.getBoolean("hide_delivered_forced", false)
 
     }
 
@@ -142,6 +144,23 @@ class HideSeen(loader: ClassLoader, preferences: XSharedPreferences) :
     }
 
     private fun hookReceiptMethod() {
+        if (forceHideReceipt) {
+            val readReceiptMethod = Unobfuscator.loadReadReceiptMethod(classLoader)
+            XposedBridge.hookMethod(readReceiptMethod, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: MethodHookParam) {
+                    val fMessageWpp = FMessageWpp(param.args[0])
+                    if (checkPrivacyAndHideReceipt(fMessageWpp.key)) {
+                        param.result = null
+                        MessageHistoryStore.getInstance().insertHideSeenMessage(
+                            fMessageWpp.key.remoteJid.phoneRawString,
+                            fMessageWpp.key.messageID,
+                            MessageHistoryStore.ReceiptType.READ,
+                            false
+                        )
+                    }
+                }
+            })
+        }
 
         val receiptMethod = Unobfuscator.loadReceiptMethod(classLoader)
         val receiptMainCallerMethod = Unobfuscator.loadReceiptMainCallerMethod(classLoader);

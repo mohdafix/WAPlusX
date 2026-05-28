@@ -126,6 +126,11 @@
             android:parentActivityName=".activities.MainActivity" />
 
         <activity
+            android:name=".activities.UiAdblockerManageActivity"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".activities.MainActivity" />
+
+        <activity
             android:name=".activities.ForceStartActivity"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -207,6 +212,15 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="com.wmods.wppenhacer.MESSAGE_SENT" />
                 <action android:name="com.wmods.wppenhacer.SCHEDULE_MESSAGE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".receivers.UiAdblockerReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.wmods.wppenhacer.UI_ELEMENT_CAPTURED" />
             </intent-filter>
         </receiver>
 

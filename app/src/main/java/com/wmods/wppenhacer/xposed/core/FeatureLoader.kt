@@ -501,7 +501,9 @@ class FeatureLoader {
                 com.wmods.wppenhacer.xposed.features.customization.BubbleColors::class.java,
                 com.wmods.wppenhacer.xposed.features.others.SettingsInjector::class.java,
                 com.wmods.wppenhacer.xposed.features.status.StatusVideoSplitter::class.java,
-                com.wmods.wppenhacer.xposed.features.media.VoiceNoteKeepScreenOn::class.java
+                com.wmods.wppenhacer.xposed.features.media.VoiceNoteKeepScreenOn::class.java,
+                com.wmods.wppenhacer.xposed.features.customization.liquidglass.LiquidGlassFeature::class.java,
+                com.wmods.wppenhacer.xposed.features.customization.uiadblocker.UiAdblockerFeature::class.java
             )
 
             XposedBridge.log("Loading Plugins")

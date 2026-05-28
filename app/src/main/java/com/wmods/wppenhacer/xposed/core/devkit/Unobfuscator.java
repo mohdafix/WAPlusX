@@ -259,6 +259,15 @@ public class Unobfuscator {
 
     }
 
+    public static Method loadReadReceiptMethod(ClassLoader classLoader) throws Exception {
+        return UnobfuscatorCache.getInstance().getMethod(classLoader, () -> {
+            Method method = findFirstMethodUsingStrings(classLoader, StringMatchType.Contains, "ReadReceipts/sendReceiptForIncomingMessage");
+            if (method == null)
+                throw new Exception("ReadReceipt method not found");
+            return method;
+        });
+    }
+
     public static Class<?> loadReceiptMessageInfoClass(ClassLoader classLoader) throws Exception {
         return UnobfuscatorCache.getInstance().getClass(classLoader, ()-> {
             var methodData = dexkit.findMethod(FindMethod.create().matcher(MethodMatcher.create().addUsingString("ReadReceiptUtils/buildReadReceiptHandler malformed"))).single();
