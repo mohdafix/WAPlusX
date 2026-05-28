@@ -1,12 +1,8 @@
 [ADDED]
-* Added translation for new features.
+* Added dynamic UI Adblocker (long-press to visually capture and hide unwanted elements, manage in WAE settings).
+* Added Liquid Glass floating bottom navigation bar overlay (with support for modern, deeply nested Jetpack Compose view hierarchies).
+* Added Hide Delivered (forced) feature.
+* Improved Liquid Glass navigation bar stability on cold starts and removed native shadows to ensure a perfect floating effect.
 
-[IMPROVED]
-* Re-implemented "Deleted For Me" message recovery with a robust database backend
-* Upgraded the "Deleted Messages" UI with premium BottomSheet menus
-* Revamped Search UI with smart prioritization and recent history
-
-
-
-
-
+[CREDITS]
+* Special thanks to the Purrfect project for the original implementation of the dynamic UI Adblocker and Liquid Glass features.
