@@ -87,6 +87,11 @@
             app:title="@string/hidereceipt" />
 
         <rikka.material.preference.MaterialSwitchPreference
+            app:key="hide_delivered_forced"
+            app:summary="@string/hide_delivered_forced_sum"
+            app:title="@string/hide_delivered_forced" />
+
+        <rikka.material.preference.MaterialSwitchPreference
             app:key="ghostmode_t"
             app:summary="@string/ghostmode_sum"
             app:title="@string/ghostmode" />
