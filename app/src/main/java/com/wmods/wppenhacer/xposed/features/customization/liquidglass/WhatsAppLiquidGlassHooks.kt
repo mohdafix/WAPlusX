@@ -45,9 +45,12 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+import android.content.SharedPreferences
+
 class WhatsAppLiquidGlassHooks(
     private val androidContext: Context,
-    @Suppress("unused") private val appClassLoader: ClassLoader = androidContext.classLoader
+    @Suppress("unused") private val appClassLoader: ClassLoader = androidContext.classLoader,
+    private val prefs: SharedPreferences
 ) {
     companion object {
         private const val TAG = "LiquidGlassHooks"
@@ -131,7 +134,7 @@ class WhatsAppLiquidGlassHooks(
     private val transparentTint = ColorStateList.valueOf(Color.TRANSPARENT)
     private val featureState = object {
         val liquidClass: Boolean
-            get() = com.wmods.wppenhacer.xposed.utils.XPrefManager.getPref()?.getBoolean("liquid_glass_enabled", false) == true
+            get() = prefs.getBoolean("liquid_glass_enabled", false)
     }
 
     fun init() {
@@ -377,11 +380,14 @@ class WhatsAppLiquidGlassHooks(
         val actualRoot = root.rootView ?: root
         val signals = mutableListOf<View>()
         collectBottomNavigationSignals(actualRoot, signals, 0)
+        log("LiquidGlass scan: found ${signals.size} signals")
         val host = signals
             .asSequence()
             .mapNotNull { findBottomNavigationHostFromSignal(it) }
             .distinct()
             .maxByOrNull { bottomNavigationScore(it) }
+            
+        log("LiquidGlass scan: host is ${host?.javaClass?.name}")
 
         if (host != null) {
             val previous = styledNavByRoot[actualRoot]
@@ -395,7 +401,7 @@ class WhatsAppLiquidGlassHooks(
     }
 
     private fun collectBottomNavigationSignals(view: View, out: MutableList<View>, depth: Int) {
-        if (depth > 14 || view.visibility != View.VISIBLE) return
+        if (depth > 30 || view.visibility != View.VISIBLE) return
         if (hasDirectBottomNavigationSignal(view)) {
             out += view
             if (isStrictBottomNavigationHost(view)) return
@@ -426,7 +432,7 @@ class WhatsAppLiquidGlassHooks(
     }
 
     private fun findStrictBottomNavigationDescendant(view: View, depth: Int = 0): View? {
-        if (depth > 4) return null
+        if (depth > 8) return null
         if (isStrictBottomNavigationHost(view)) return view
         val group = view as? ViewGroup ?: return null
         for (index in 0 until group.childCount) {
