@@ -38,8 +38,21 @@ public class FeatureCatalog {
             return new ArrayList<>();
         }
 
+        String lowerQuery = query.toLowerCase().trim();
+
         return getAllFeatures(context).stream()
                 .filter(feature -> feature.matches(query))
+                .sorted((f1, f2) -> {
+                    boolean f1TitleMatch = f1.getTitle() != null && f1.getTitle().toLowerCase().contains(lowerQuery);
+                    boolean f2TitleMatch = f2.getTitle() != null && f2.getTitle().toLowerCase().contains(lowerQuery);
+                    
+                    if (f1TitleMatch && !f2TitleMatch) {
+                        return -1;
+                    } else if (!f1TitleMatch && f2TitleMatch) {
+                        return 1;
+                    }
+                    return 0;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -728,6 +741,22 @@ public class FeatureCatalog {
 
         // Continue in next part...
         addMediaFeatures(context, catalog);
+        catalog.add(new SearchableFeature("text_color",
+                context.getString(R.string.text_color),
+                null,
+                SearchableFeature.Category.CUSTOMIZATION,
+                SearchableFeature.FragmentType.CUSTOMIZATION,
+                null,
+                Arrays.asList("text", "color", "bubble", "font")));
+                
+        catalog.add(new SearchableFeature("scheduled_messages",
+                context.getString(R.string.scheduled_messages),
+                context.getString(R.string.scheduled_messages_desc),
+                SearchableFeature.Category.ADVANCED,
+                SearchableFeature.FragmentType.GENERAL,
+                null,
+                Arrays.asList("scheduled", "messages", "auto", "send", "time")));
+
         addCustomizationFeatures(context, catalog);
         addHomeActions(context, catalog);
 

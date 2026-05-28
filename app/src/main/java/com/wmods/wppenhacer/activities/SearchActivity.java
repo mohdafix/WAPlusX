@@ -49,8 +49,8 @@ public class SearchActivity extends BaseActivity implements SearchAdapter.OnFeat
         // Setup search input
         setupSearchInput();
 
-        // Show all features by default (grouped by category)
-        loadAllFeatures();
+        // Show recent features by default
+        loadRecentHistory();
 
         // Focus on search input
         binding.searchInput.requestFocus();
@@ -73,17 +73,10 @@ public class SearchActivity extends BaseActivity implements SearchAdapter.OnFeat
         });
     }
 
-    private void loadAllFeatures() {
-        List<SearchableFeature> allFeatures = FeatureCatalog.getAllFeatures(this);
-        adapter.setFeatures(allFeatures);
-        adapter.setSearchQuery("");
-        updateEmptyState(false, "");
-    }
-
     private void performSearch(String query) {
         if (query.trim().isEmpty()) {
-            // Show all features when search is empty
-            loadAllFeatures();
+            // Show recent history when search is empty
+            loadRecentHistory();
             return;
         }
 
@@ -113,8 +106,13 @@ public class SearchActivity extends BaseActivity implements SearchAdapter.OnFeat
         }
     }
 
+    private static final String PREF_NAME = "SearchHistory";
+    private static final String KEY_HISTORY = "recent_features";
+    private static final int MAX_HISTORY = 3;
+
     @Override
     public void onFeatureClick(SearchableFeature feature) {
+        saveToRecent(feature);
         if (feature.getFragmentType() == SearchableFeature.FragmentType.ACTIVITY) {
             if ("deleted_messages_activity".equals(feature.getKey())) {
                 startActivity(new Intent(this, DeletedMessagesActivity.class));
@@ -130,6 +128,60 @@ public class SearchActivity extends BaseActivity implements SearchAdapter.OnFeat
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         finish();
+    }
+
+    private void saveToRecent(SearchableFeature feature) {
+        android.content.SharedPreferences prefs = getSharedPreferences(PREF_NAME, android.content.Context.MODE_PRIVATE);
+        String historyStr = prefs.getString(KEY_HISTORY, "");
+        List<String> history = new ArrayList<>(java.util.Arrays.asList(historyStr.split(",")));
+        history.remove(""); // Remove empty strings
+        
+        // Remove if it already exists to put it at the top
+        history.remove(feature.getKey());
+        
+        // Add to the top
+        history.add(0, feature.getKey());
+        
+        // Keep only up to MAX_HISTORY
+        if (history.size() > MAX_HISTORY) {
+            history = history.subList(0, MAX_HISTORY);
+        }
+        
+        prefs.edit().putString(KEY_HISTORY, String.join(",", history)).apply();
+    }
+
+    private void loadRecentHistory() {
+        android.content.SharedPreferences prefs = getSharedPreferences(PREF_NAME, android.content.Context.MODE_PRIVATE);
+        String historyStr = prefs.getString(KEY_HISTORY, "");
+        
+        if (historyStr.isEmpty()) {
+            updateEmptyState(true, "No recent searches. Try searching above.");
+            adapter.setFeatures(new ArrayList<>());
+            return;
+        }
+
+        List<String> historyKeys = java.util.Arrays.asList(historyStr.split(","));
+        List<SearchableFeature> allFeatures = FeatureCatalog.getAllFeatures(this);
+        List<SearchableFeature> recentFeatures = new ArrayList<>();
+        
+        for (String key : historyKeys) {
+            if (key.isEmpty()) continue;
+            for (SearchableFeature feature : allFeatures) {
+                if (feature.getKey().equals(key)) {
+                    recentFeatures.add(feature);
+                    break;
+                }
+            }
+        }
+        
+        if (recentFeatures.isEmpty()) {
+            updateEmptyState(true, "No recent searches. Try searching above.");
+        } else {
+            updateEmptyState(false, "");
+        }
+        
+        adapter.setFeatures(recentFeatures);
+        adapter.setSearchQuery("");
     }
 
     @Override
