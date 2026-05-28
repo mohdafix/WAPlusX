@@ -437,13 +437,15 @@ class AntiRevoke(loader: ClassLoader, preferences: XSharedPreferences) : Feature
         if (jidObj == null) return null
         try {
             val app = Utils.getApplication() ?: return null
-            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
+            
+            // DO NOT use ACTION_VIEW here. WhatsApp's internal activities will crash or misbehave 
+            // if ACTION_VIEW is set without a data URI. We use an explicit intent instead.
+            val intent = android.content.Intent()
             
             val jidString = jidObj.userRawString ?: return null
             val rawJid = if (jidString.contains("@")) jidString else "$jidString@s.whatsapp.net"
             
             if (isStatus) {
-                // Try newer StatusPlaybackActivity paths if available, otherwise fallback
                 val statusClass = XposedHelpers.findClassIfExists("com.whatsapp.status.playback.StatusPlaybackActivity", classLoader)
                 if (statusClass != null) {
                     intent.setClass(app, statusClass)
@@ -451,24 +453,21 @@ class AntiRevoke(loader: ClassLoader, preferences: XSharedPreferences) : Feature
                     intent.setClassName(app.packageName, "com.whatsapp.status.playback.StatusPlaybackActivity")
                 }
             } else {
-                // Handle the new package structure in modern WhatsApp versions
-                val convClass = XposedHelpers.findClassIfExists("com.whatsapp.Conversation", classLoader)
-                    ?: XposedHelpers.findClassIfExists("com.whatsapp.conversation.ui.Conversation", classLoader)
+                val convClass = XposedHelpers.findClassIfExists("com.whatsapp.conversation.ui.Conversation", classLoader)
+                    ?: XposedHelpers.findClassIfExists("com.whatsapp.Conversation", classLoader)
                 if (convClass != null) {
                     intent.setClass(app, convClass)
                 } else {
                     intent.setClassName(app.packageName, "com.whatsapp.Conversation")
                 }
+                
+                // Required extras for newer WhatsApp versions to properly initialize Conversation activity
+                intent.putExtra("start_t", android.os.SystemClock.uptimeMillis())
+                intent.putExtra("mat_entry_point", 64)
             }
             
-            // Newer WhatsApp versions expect the JID as a String, older versions expect it as a Parcelable UserJid.
-            // Putting both with different names is not possible if they use the same "jid" key.
-            // We'll put the String first (which works for all modern versions).
+            // Newer WhatsApp versions strictly require the JID to be passed as a String.
             intent.putExtra("jid", rawJid)
-            
-            // For backward compatibility with very old versions, try to also put the parcelable under "jid_obj" or similar?
-            // Actually, WhatsApp historically also accepted it via intent data URI whatsapp://send?jid=
-            intent.data = android.net.Uri.parse("whatsapp://send?jid=$rawJid")
 
             intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP or android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
             
