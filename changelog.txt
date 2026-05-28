@@ -1,9 +1,12 @@
 [ADDED]
-* Added scheduler message support for text and media
+* Added translation for new features.
 
-[FIXED]
-* Fixed an issue where clicking the deleted status notification opened the main WhatsApp screen instead of the specific deleted status.
-* Fixed an issue where clicking the deleted message notification occasionally failed to open the respective chat in newer WhatsApp versions.
-* Fixed an issue where the global Text Color customization setting did not apply to chat bubble text.
+[IMPROVED]
+* Re-implemented "Deleted For Me" message recovery with a robust database backend
+* Upgraded the "Deleted Messages" UI with premium BottomSheet menus
+* Revamped Search UI with smart prioritization and recent history
 
-Who's celebrating today "Wishing you and your loved ones a joyful and blessed Eid al-Adha filled with love, peace, and prosperity"
+
+
+
+
