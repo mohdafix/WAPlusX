@@ -1,6 +1,8 @@
-[ADDED]
-* Improved Liquid Glass navigation bar stability on cold starts and removed native shadows to ensure a perfect floating effect.
-* Expanded "Additional call information" to display comprehensive geographic and network telemetry (Country, Region, City, Timezone, ISP, Coordinates).
-- Fixed crash in Contact Picker due to missing argument in profile picture loader invocation.
-- Restored Contact Picker navigation logic to properly redirect from settings.
-- Added extensive WamCall / CallInfo telemetry dumping to identify obfuscated call peer IP address for overlay display.
+[IMPROVEMENT]
+* Better stability and visuals for the Liquid Glass bottom navigation.
+* Group chat support in the Scheduled Messages contact picker.
+
+[FIX]
+* Fixed Contact Picker crashes and navigation issues.
+* Fixed missing profile pictures in the custom Contact Picker.
+* Fixed a bug where returning from the picker opened WhatsApp Settings.
