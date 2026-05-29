@@ -240,7 +240,7 @@ private fun WhatsAppLiquidGlassBottomOverlay(
     backdropBitmap: Bitmap?,
     onTabSelected: (Int) -> Unit
 ) {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+    Box(Modifier.fillMaxSize().clearAndSetSemantics {}, contentAlignment = Alignment.BottomCenter) {
         val backdrop = rememberLayerBackdrop()
         if (backdropBitmap != null) {
             Image(

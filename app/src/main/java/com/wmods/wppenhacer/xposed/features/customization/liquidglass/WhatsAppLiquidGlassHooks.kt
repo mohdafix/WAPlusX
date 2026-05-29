@@ -838,6 +838,8 @@ class WhatsAppLiquidGlassHooks(
             }
             existing.update(tabs, selected, null, null) { selectedIndex(nav) }
             updateOverlayLayout(existing, height)
+            existing.visibility = View.VISIBLE
+            existing.alpha = 1f
             existing.bringToFront()
             existing.invalidate()
             scheduleBackdropCapture(nav, root, existing, height, force = false)
@@ -852,7 +854,7 @@ class WhatsAppLiquidGlassHooks(
             overlay.update(cachedLiquidTabs(nav), index, null)
             scheduleBackdropCapture(nav, root, overlay, height, force = true)
         }, { selectedIndex(nav) })
-        overlay.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        overlay.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
         root.addView(overlay, overlayLayoutParams(height))
         overlay.bringToFront()
         overlayBars[nav] = overlay
