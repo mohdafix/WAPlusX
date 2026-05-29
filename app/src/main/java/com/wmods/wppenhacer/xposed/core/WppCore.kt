@@ -985,6 +985,12 @@ object WppCore {
         }
     }
 
+    @JvmStatic
+    fun getWaDatabase(): SQLiteDatabase? {
+        loadWADatabase()
+        return mWaDatabase
+    }
+
 
     @JvmStatic
     fun getContactPhotoDrawable(jid: String?): Drawable? {

@@ -387,7 +387,7 @@ public class Others extends Feature {
                     if (userJid.isNull()) return;
                     CompletableFuture.runAsync(() -> {
                         try {
-                            showCallInformation(param.args[0], userJid);
+                            showCallInformation(param.args[0], userJid, callinfo);
                         } catch (Exception e) {
                             logDebug(e);
                         }
@@ -397,8 +397,60 @@ public class Others extends Feature {
         });
     }
 
-    private void showCallInformation(Object wamCall, FMessageWpp.UserJid userJid) throws Exception {
+    private void showCallInformation(Object wamCall, FMessageWpp.UserJid userJid, Object callInfo) throws Exception {
         if (userJid.isGroup()) return;
+        
+        try {
+            if (wamCall != null) {
+                StringBuilder dump = new StringBuilder("WamCall dump (Filtered for 'ip' and 'peer'):\n");
+                dump.append("Class: ").append(wamCall.getClass().getName()).append("\n");
+                
+                for (Field f : wamCall.getClass().getDeclaredFields()) {
+                    try {
+                        f.setAccessible(true);
+                        Object val = f.get(wamCall);
+                        if (val != null && val instanceof String) {
+                            dump.append("Field: ").append(f.getName()).append(" (").append(f.getType().getSimpleName()).append(") = ").append(val).append("\n");
+                        }
+                    } catch (Throwable t) {
+                    }
+                }
+                
+                Class<?> superClass = wamCall.getClass().getSuperclass();
+                if (superClass != null && superClass != Object.class) {
+                    for (Field f : superClass.getDeclaredFields()) {
+                        try {
+                            f.setAccessible(true);
+                            Object val = f.get(wamCall);
+                            String fName = f.getName().toLowerCase();
+                            if (fName.contains("ip") || fName.contains("peer")) {
+                                dump.append("Super-Field: ").append(f.getName()).append(" (").append(f.getType().getSimpleName()).append(") = ").append(val).append("\n");
+                            }
+                        } catch (Throwable t) {
+                        }
+                    }
+                }
+                
+                if (callInfo != null) {
+                    dump.append("CallInfo Class: ").append(callInfo.getClass().getName()).append("\n");
+                    for (Field f : callInfo.getClass().getDeclaredFields()) {
+                        try {
+                            f.setAccessible(true);
+                            Object val = f.get(callInfo);
+                            if (val != null && val instanceof String) {
+                                dump.append("CallInfo Field: ").append(f.getName()).append(" (").append(f.getType().getSimpleName()).append(") = ").append(val).append("\n");
+                            }
+                        } catch (Throwable t) {
+                        }
+                    }
+                }
+                
+                XposedBridge.log(dump.toString());
+            }
+        } catch (Throwable t) {
+            XposedBridge.log("Failed to dump WamCall/CallInfo: " + t.getMessage());
+        }
+        
         var sb = new StringBuilder();
         var contact = WppCore.getContactName(userJid);
         var number = userJid.getPhoneNumber();

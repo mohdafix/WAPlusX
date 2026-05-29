@@ -83,13 +83,13 @@ public class ScheduleEditorFragment extends Fragment {
 
     private void R() {
         try {
-            Intent intent = new Intent(requireContext(), com.wmods.wppenhacer.activities.ContactPickerActivity.class);
-            ArrayList<com.wmods.wppenhacer.preference.ContactData> selectedList = new ArrayList<>();
+            ArrayList<String> selectedJids = new ArrayList<>();
             for (ScheduledContact sc : this.y) {
-                selectedList.add(new com.wmods.wppenhacer.preference.ContactData(sc.a(), sc.b()));
+                selectedJids.add(sc.b());
             }
-            intent.putExtra("selected_contacts", selectedList);
-            startActivityForResult(intent, 16721173);
+            String targetPkg = this.C == 1 ? "com.whatsapp.w4b" : "com.whatsapp";
+            Intent intent = com.wmods.wppenhacer.utils.WhatsAppContactPickerLauncher.createPickerIntent(requireContext(), targetPkg, "schedule_message_contacts", selectedJids);
+            startActivityForResult(intent, 16721174);
         } catch (Exception e) {
             Toast.makeText(getContext(), "Failed to open picker: " + e.getMessage(), 0).show();
         }
@@ -499,14 +499,16 @@ public class ScheduleEditorFragment extends Fragment {
 
     @Override // androidx.fragment.app.e
     public void onActivityResult(int i, int i2, Intent intent) {
-        if (i == 16721173 && i2 == -1 && intent != null) {
-            ArrayList<com.wmods.wppenhacer.preference.ContactData> selectedContacts = (ArrayList<com.wmods.wppenhacer.preference.ContactData>) intent.getSerializableExtra("selected_contacts");
-            if (selectedContacts != null) {
-                this.y.clear();
-                for (com.wmods.wppenhacer.preference.ContactData data : selectedContacts) {
-                    this.y.add(new ScheduledContact(data.getName(), data.getJid()));
+        if (i == 16721174 && i2 == -1 && intent != null) {
+            if (intent.hasExtra("picker_contacts")) {
+                ArrayList<com.wmods.wppenhacer.model.ContactPickerResult> selectedContacts = (ArrayList<com.wmods.wppenhacer.model.ContactPickerResult>) intent.getSerializableExtra("picker_contacts");
+                if (selectedContacts != null) {
+                    this.y.clear();
+                    for (com.wmods.wppenhacer.model.ContactPickerResult data : selectedContacts) {
+                        this.y.add(new ScheduledContact(data.fullName(), data.jid()));
+                    }
+                    Z();
                 }
-                Z();
             }
         }
     }

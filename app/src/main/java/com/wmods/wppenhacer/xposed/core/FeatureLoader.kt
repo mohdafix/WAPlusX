@@ -64,6 +64,7 @@ import com.wmods.wppenhacer.xposed.features.media.MediaPreview
 import com.wmods.wppenhacer.xposed.features.media.MediaQuality
 import com.wmods.wppenhacer.xposed.features.media.StatusDownload
 import com.wmods.wppenhacer.xposed.features.others.ActivityController
+import com.wmods.wppenhacer.xposed.features.general.AboutContactPicker
 import com.wmods.wppenhacer.xposed.features.others.AudioTranscript
 import com.wmods.wppenhacer.xposed.features.others.BackupRestore
 import com.wmods.wppenhacer.xposed.features.others.Channels
@@ -445,6 +446,7 @@ class FeatureLoader {
                 BubbleColors::class.java,
                 CallPrivacy::class.java,
                 ActivityController::class.java,
+                AboutContactPicker::class.java,
                 CustomThemeV2::class.java,
                 ChatLimit::class.java,
                 SeparateGroup::class.java,

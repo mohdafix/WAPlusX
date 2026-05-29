@@ -42,72 +42,56 @@ public class ActivityController extends Feature {
     @Override
     public void doHook() throws Throwable {
 
-        var clazz = Unobfuscator.findFirstClassUsingName(classLoader, StringMatchType.EndsWith,".SettingsNotifications");
         Class<?> statusDistribution = Unobfuscator.loadStatusDistributionClass(classLoader);
 
         XposedHelpers.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (clazz != param.thisObject.getClass()) return;
                 var activity = (Activity) param.thisObject;
                 var intent = activity.getIntent();
-                if (intent.getBooleanExtra("contact_mode", false)) {
-                    contactController(intent, activity, statusDistribution);
-                } else if (intent.getBooleanExtra("download_mode", false)) {
-                    downloadController(activity, intent);
+                if (intent == null) return;
+                
+                if (intent.getBooleanExtra("download_mode", false)) {
+                    if (activity.getClass().getName().endsWith("SettingsNotifications")) {
+                        downloadController(activity, intent);
+                    }
+                } else if (intent.getBooleanExtra("contact_mode", false)) {
+                    if (activity.getClass().getName().endsWith("SettingsNotifications")) {
+                        try {
+                            contactController(intent, activity);
+                        } catch (Exception e) {
+                            de.robv.android.xposed.XposedBridge.log(e);
+                        }
+                    }
                 }
             }
         });
-
-        XposedHelpers.findAndHookMethod("com.whatsapp.status.audienceselector.StatusTemporalRecipientsActivity", classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                var activity = (Activity) param.thisObject;
-                var intent = activity.getIntent();
-                if (intent.getBooleanExtra("contact_mode", false)) {
-                    var toolbar = XposedHelpers.callMethod(activity, "getSupportActionBar");
-                    var methods = ReflectionUtils.findAllMethodsUsingFilter(toolbar.getClass(), method -> method.getParameterCount() == 1 && method.getParameterTypes()[0] == CharSequence.class);
-                    ReflectionUtils.callMethod(methods[1], toolbar, activity.getString(R.string.select_contacts));
-                }
-            }
-        });
-
 
         XposedHelpers.findAndHookMethod(Activity.class, "onActivityResult", int.class, int.class, Intent.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if (clazz != param.thisObject.getClass()) return;
                 var activity = (Activity) param.thisObject;
+                if (!activity.getClass().getName().endsWith("SettingsNotifications")) return;
                 var id = (int) param.args[0];
                 Intent intent = (Intent) param.args[2];
-                if (id == ContactPickerPreference.REQUEST_CONTACT_PICKER && intent != null) {
-                    processResultContact(intent, activity);
-                } else if (id == REQUEST_FOLDER && (int) param.args[1] == Activity.RESULT_OK) {
+                if (id == REQUEST_FOLDER && (int) param.args[1] == Activity.RESULT_OK) {
                     var uriStr = processDownloadResult(activity, intent);
                     Intent intent2 = new Intent();
                     intent2.putExtra("path", uriStr);
                     intent2.putExtra("key", Key);
                     activity.setResult(Activity.RESULT_OK, intent2);
+                    activity.finish();
+                } else if (id == ContactPickerPreference.REQUEST_CONTACT_PICKER) {
+                    if (intent != null) {
+                        processResultContact(intent, activity);
+                    } else {
+                        activity.setResult(Activity.RESULT_CANCELED);
+                    }
+                    activity.finish();
                 }
-                activity.finish();
             }
         });
 
-    }
-
-    private static void processResultContact(Intent intent, Activity activity) {
-        var instance = intent.getExtras().get("status_distribution");
-        var listContactsField = ReflectionUtils.findFieldUsingFilter(instance.getClass(), field -> field.getType() == List.class);
-        var listContacts = (List) ReflectionUtils.getObjectField(listContactsField, instance);
-        var contacts = new ArrayList<String>();
-        for (Object contactUserJid : listContacts) {
-            var rawContacts = new FMessageWpp.UserJid(contactUserJid).getPhoneRawString();
-            contacts.add(rawContacts);
-        }
-        Intent intent2 = new Intent();
-        intent2.putStringArrayListExtra("contacts", contacts);
-        intent2.putExtra("key", Key);
-        activity.setResult(Activity.RESULT_OK, intent2);
     }
 
     private void downloadController(Activity activity, Intent intent2) {
@@ -117,34 +101,29 @@ public class ActivityController extends Feature {
         activity.startActivityForResult(intent, REQUEST_FOLDER);
     }
 
-    private static void contactController(Intent intent, Activity activity, Class<?> statusDistribution) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    private static void contactController(Intent intent, Activity activity) throws Exception {
         Key = intent.getStringExtra("key");
         var contacts = intent.getStringArrayListExtra("contacts");
-        var intent2 = new Intent();
-        intent2.setClassName(activity.getPackageName(), "com.whatsapp.status.audienceselector.StatusTemporalRecipientsActivity");
-        intent2.putExtra("contact_mode", true);
-        intent2.putExtra("is_black_list", false);
-        List<Object> listContacts = new ArrayList<>();
-        if (contacts != null) {
-            for (String contact : contacts) {
-                try {
-                    Object jid = WppCore.createUserJid(contact);
-                    listContacts.add(jid);
-                } catch (Exception ignored) {
-                }
-            }
+        var pickerIntent = com.wmods.wppenhacer.utils.WhatsAppContactPickerLauncher.createAboutPickerIntent(activity, activity.getPackageName(), Key == null ? "" : Key, contacts);
+        if ("schedule_message_contacts".equals(Key)) {
+            pickerIntent.putExtra("show_groups", true);
         }
-        Constructor constructor = ReflectionUtils.findConstructorUsingFilter(statusDistribution, constructor1 -> constructor1.getParameterCount() > 5);
-        Object[] params = ReflectionUtils.initArray(constructor.getParameterTypes());
-        var lists = ReflectionUtils.findClassesOfType(constructor.getParameterTypes(), List.class);
-        for (int i = 0; i < lists.size(); i++) {
-            params[lists.get(i).first] = new ArrayList<>();
-        }
-        params[lists.get(0).first] = listContacts;
-        Parcelable instance = (Parcelable) constructor.newInstance(params);
-        intent2.putExtra("status_distribution", instance);
-        activity.startActivityForResult(intent2, ContactPickerPreference.REQUEST_CONTACT_PICKER);
+        activity.startActivityForResult(pickerIntent, ContactPickerPreference.REQUEST_CONTACT_PICKER);
     }
+
+    private static void processResultContact(Intent intent, Activity activity) {
+        if (!intent.hasExtra("key") && Key != null) {
+            intent.putExtra("key", Key);
+        }
+        if (!intent.hasExtra("contacts")) {
+            intent.putStringArrayListExtra("contacts", new ArrayList<>());
+        }
+        if (!intent.hasExtra("picker_contacts")) {
+            intent.putExtra("picker_contacts", new ArrayList<com.wmods.wppenhacer.model.ContactPickerResult>());
+        }
+        activity.setResult(Activity.RESULT_OK, intent);
+    }
+
 
 
     @NonNull

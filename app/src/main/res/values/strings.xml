@@ -636,4 +636,11 @@
     <string name="notification_permission_required">Notification Permission</string>
     <string name="notification_permission_message">Wa Enhancer requires notification permissions to ensure that scheduled messages are sent successfully in the background.</string>
     <string name="enable_notifications">Enable Notifications</string>
+    <!-- Contact Picker Strings -->
+    <string name="picker_loading_contacts">Loading contacts…</string>
+    <string name="mode_all">All</string>
+    <string name="picker_contacts">Contacts</string>
+    <string name="picker_no_results">No contacts found</string>
+    <string name="picker_group">Group</string>
+    <string name="picker_contact">Contact</string>
 </resources>

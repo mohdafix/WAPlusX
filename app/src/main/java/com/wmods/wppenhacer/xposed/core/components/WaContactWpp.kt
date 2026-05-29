@@ -5,6 +5,7 @@ import com.wmods.wppenhacer.xposed.utils.ReflectionUtils
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import org.luckypray.dexkit.query.enums.StringMatchType
+import java.io.File
 import java.io.InputStream
 import java.lang.reflect.Field
 import java.lang.reflect.Method
@@ -167,12 +168,12 @@ class WaContactWpp(instance: Any?) {
         }
     }
 
-    fun getProfilePhoto(fullImage: Boolean): InputStream? {
+    fun getProfilePhoto(fullImage: Boolean): File? {
         return try {
             val instance = mInstanceGetProfilePhoto
             val method = getProfilePhoto
             if (instance != null && method != null) {
-                method.invoke(instance, mInstance, fullImage) as? InputStream
+                method.invoke(instance, mInstance) as? File
             } else null
         } catch (e: Exception) {
             XposedBridge.log(e)
@@ -180,7 +181,7 @@ class WaContactWpp(instance: Any?) {
         }
     }
 
-    fun getProfilePhoto(): InputStream? {
+    fun getProfilePhoto(): File? {
         return getProfilePhoto(false)
     }
 

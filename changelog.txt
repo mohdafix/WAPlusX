@@ -1,3 +1,6 @@
 [ADDED]
 * Improved Liquid Glass navigation bar stability on cold starts and removed native shadows to ensure a perfect floating effect.
 * Expanded "Additional call information" to display comprehensive geographic and network telemetry (Country, Region, City, Timezone, ISP, Coordinates).
+- Fixed crash in Contact Picker due to missing argument in profile picture loader invocation.
+- Restored Contact Picker navigation logic to properly redirect from settings.
+- Added extensive WamCall / CallInfo telemetry dumping to identify obfuscated call peer IP address for overlay display.

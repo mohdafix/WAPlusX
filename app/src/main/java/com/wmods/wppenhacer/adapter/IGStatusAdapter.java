@@ -187,7 +187,11 @@ public class IGStatusAdapter extends ArrayAdapter {
                 var waContact = WaContactWpp.getWaContactFromJid(this.userJid);
                 var contactName = waContact.getDisplayName();
                 igStatusContactName.setText(contactName);
-                var profile = Drawable.createFromStream(waContact.getProfilePhoto(), null);
+                var file = waContact.getProfilePhoto();
+                Drawable profile = null;
+                if (file != null && file.exists()) {
+                    profile = Drawable.createFromPath(file.getAbsolutePath());
+                }
                 if (profile == null)
                     profile = Utils.getApplication().getDrawable(R.drawable.user_foreground);
                 igStatusContactPhoto.setImageDrawable(profile);
