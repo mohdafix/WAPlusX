@@ -412,9 +412,35 @@ public class Others extends Feature {
             var request = new okhttp3.Request.Builder().url(url).build();
             var content = client.newCall(request).execute().body().string();
             var json = new JSONObject(content);
-            var country = json.getString("country");
-            var city = json.getString("city");
-            sb.append(String.format(Utils.getApplication().getString(R.string.country_s), country)).append("\n").append(String.format(Utils.getApplication().getString(R.string.city_s), city)).append("\n").append(String.format(Utils.getApplication().getString(R.string.ip_s), ip)).append("\n");
+            
+            sb.append(String.format(Utils.getApplication().getString(R.string.ip_s), ip)).append("\n");
+            
+            if ("success".equalsIgnoreCase(json.optString("status"))) {
+                var country = json.optString("country");
+                var countryCode = json.optString("countryCode");
+                var regionName = json.optString("regionName");
+                var region = json.optString("region");
+                var city = json.optString("city");
+                var zip = json.optString("zip");
+                var timezone = json.optString("timezone");
+                var isp = json.optString("isp");
+                var org = json.optString("org");
+                var asStr = json.optString("as");
+                var lat = json.optString("lat");
+                var lon = json.optString("lon");
+                
+                if (!TextUtils.isEmpty(country)) sb.append(String.format(Utils.getApplication().getString(R.string.country_s), country)).append("\n");
+                if (!TextUtils.isEmpty(countryCode)) sb.append(String.format(Utils.getApplication().getString(R.string.country_code_s), countryCode)).append("\n");
+                if (!TextUtils.isEmpty(regionName)) sb.append(String.format(Utils.getApplication().getString(R.string.region_name_s), regionName)).append("\n");
+                if (!TextUtils.isEmpty(region)) sb.append(String.format(Utils.getApplication().getString(R.string.region_s), region)).append("\n");
+                if (!TextUtils.isEmpty(city)) sb.append(String.format(Utils.getApplication().getString(R.string.city_s), city)).append("\n");
+                if (!TextUtils.isEmpty(zip)) sb.append(String.format(Utils.getApplication().getString(R.string.zip_s), zip)).append("\n");
+                if (!TextUtils.isEmpty(timezone)) sb.append(String.format(Utils.getApplication().getString(R.string.timezone_s), timezone)).append("\n");
+                if (!TextUtils.isEmpty(isp)) sb.append(String.format(Utils.getApplication().getString(R.string.isp_s), isp)).append("\n");
+                if (!TextUtils.isEmpty(org)) sb.append(String.format(Utils.getApplication().getString(R.string.org_s), org)).append("\n");
+                if (!TextUtils.isEmpty(asStr)) sb.append(String.format(Utils.getApplication().getString(R.string.as_s), asStr)).append("\n");
+                if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(lon)) sb.append(String.format(Utils.getApplication().getString(R.string.lat_lon_s), lat, lon)).append("\n");
+            }
         }
         var platform = (String) XposedHelpers.getObjectField(wamCall, "callPeerPlatform");
         if (platform != null)

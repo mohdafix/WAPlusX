@@ -111,7 +111,7 @@ for fpath in all_files:
                 id_val = int(i)
                 try:
                     result = cd0_b(id_val)
-                    if "hide" in result.lower() or "receipt" in result.lower():
+                    if "call_info" in result.lower():
                         print(f"FOUND {result} in {fpath} with ID {id_val}")
                 except Exception as e:
                     pass
