@@ -405,7 +405,13 @@ public class Others extends Feature {
         if (!TextUtils.isEmpty(contact))
             sb.append(String.format(Utils.getApplication().getString(R.string.contact_s), contact)).append("\n");
         sb.append(String.format(Utils.getApplication().getString(R.string.phone_number_s), number)).append("\n");
-        var ip = (String) XposedHelpers.getObjectField(wamCall, "callPeerIpStr");
+        
+        String ip = null;
+        try { ip = (String) XposedHelpers.getObjectField(wamCall, "peerIp"); } catch (Throwable ignored) {}
+        if (ip == null) {
+            try { ip = (String) XposedHelpers.getObjectField(wamCall, "callPeerIpStr"); } catch (Throwable ignored) {}
+        }
+        
         if (ip != null) {
             sb.append(String.format(Utils.getApplication().getString(R.string.ip_s), ip)).append("\n");
             try {
@@ -441,16 +447,27 @@ public class Others extends Feature {
                     if (!TextUtils.isEmpty(asStr)) sb.append(String.format(Utils.getApplication().getString(R.string.as_s), asStr)).append("\n");
                     if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(lon)) sb.append(String.format(Utils.getApplication().getString(R.string.lat_lon_s), lat, lon)).append("\n");
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 sb.append("IP Lookup Error: ").append(e.getMessage()).append("\n");
             }
         }
-        var platform = (String) XposedHelpers.getObjectField(wamCall, "callPeerPlatform");
+        
+        String platform = null;
+        try { platform = (String) XposedHelpers.getObjectField(wamCall, "peerPlatform"); } catch (Throwable ignored) {}
+        if (platform == null) {
+            try { platform = (String) XposedHelpers.getObjectField(wamCall, "callPeerPlatform"); } catch (Throwable ignored) {}
+        }
         if (platform != null)
             sb.append(String.format(Utils.getApplication().getString(R.string.platform_s), platform)).append("\n");
-        var wppVersion = (String) XposedHelpers.getObjectField(wamCall, "callPeerAppVersion");
+            
+        String wppVersion = null;
+        try { wppVersion = (String) XposedHelpers.getObjectField(wamCall, "peerAppVersion"); } catch (Throwable ignored) {}
+        if (wppVersion == null) {
+            try { wppVersion = (String) XposedHelpers.getObjectField(wamCall, "callPeerAppVersion"); } catch (Throwable ignored) {}
+        }
         if (wppVersion != null)
             sb.append(String.format(Utils.getApplication().getString(R.string.wpp_version_s), wppVersion)).append("\n");
+            
         Utils.showNotification(Utils.getApplication().getString(R.string.call_information), sb.toString());
     }
 

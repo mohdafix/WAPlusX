@@ -1,9 +1,3 @@
 [ADDED]
-* Added dynamic UI Adblocker (long-press to visually capture and hide unwanted elements, manage in WAE settings).
-* Added Liquid Glass floating bottom navigation bar overlay (with support for modern, deeply nested Jetpack Compose view hierarchies).
-* Added Hide Delivered (forced) feature.
 * Improved Liquid Glass navigation bar stability on cold starts and removed native shadows to ensure a perfect floating effect.
 * Expanded "Additional call information" to display comprehensive geographic and network telemetry (Country, Region, City, Timezone, ISP, Coordinates).
-
-[CREDITS]
-* Special thanks to the Purrfect project for the original implementation of the dynamic UI Adblocker and Liquid Glass features.
