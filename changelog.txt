@@ -1,8 +1,3 @@
-[IMPROVEMENT]
-* Better stability and visuals for the Liquid Glass bottom navigation.
-* Group chat support in the Scheduled Messages contact picker.
-
-[FIX]
-* Fixed Contact Picker crashes and navigation issues.
-* Fixed missing profile pictures in the custom Contact Picker.
-* Fixed a bug where returning from the picker opened WhatsApp Settings.
+[FEATURE]
+* Added "Ultimate Media Quality" to bypass WhatsApp compression entirely (supports up to 1GB file size and 10K resolution).
+* Added "Message Bomber" functionality to rapidly send messages using the `.bomb [count] [message]` command in any chat.
