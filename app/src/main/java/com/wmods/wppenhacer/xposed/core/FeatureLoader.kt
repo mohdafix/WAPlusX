@@ -463,6 +463,7 @@ class FeatureLoader {
                 MediaQuality::class.java,
                 NewChat::class.java,
                 Others::class.java,
+                com.wmods.wppenhacer.xposed.features.general.MessageBomber::class.java,
                 PinnedLimit::class.java,
                 CustomTime::class.java,
                 ShareLimit::class.java,

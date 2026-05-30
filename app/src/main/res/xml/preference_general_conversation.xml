@@ -167,6 +167,11 @@
             app:summary="@string/voice_changer_effect_sum"
             app:title="@string/voice_changer_effect" />
 
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="message_bomber"
+            app:summary="@string/message_bomber_sum"
+            app:title="@string/message_bomber" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

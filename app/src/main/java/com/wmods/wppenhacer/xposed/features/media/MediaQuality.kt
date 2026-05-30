@@ -39,8 +39,8 @@ class MediaQuality(loader: ClassLoader, preferences: XSharedPreferences) :
     override fun doHook() {
         val videoQuality = prefs.getBoolean("videoquality", false)
         val imageQuality = prefs.getBoolean("imagequality", false)
-        val maxSize = kotlin.math.max(prefs.getFloat("video_limit_size", 60f).toInt(), 90)
-        val realResolution = prefs.getBoolean("video_real_resolution", false)
+        val maxSize = kotlin.math.max(prefs.getFloat("video_limit_size", 1024f).toInt(), 1024)
+        val realResolution = prefs.getBoolean("video_real_resolution", true)
 
         // Disable manual calculation ProcessMediaQuality
         Others.propsBoolean[14447] = false
@@ -62,7 +62,7 @@ class MediaQuality(loader: ClassLoader, preferences: XSharedPreferences) :
                     val fieldvideoLimitMb = processVideoQualityFields["videoLimitMb"]
 
                     fieldvideoLimitMb?.setInt(processVideoQuality, maxSize)
-                    fieldvideoMaxEdge?.setInt(processVideoQuality, 3840)
+                    fieldvideoMaxEdge?.setInt(processVideoQuality, 7680) // 8K support
                     if (fieldvideoMaxBitrate != null) {
                         val bitrateBps = 24000 * 1000
                         fieldvideoMaxBitrate.setInt(processVideoQuality, bitrateBps)
@@ -202,9 +202,9 @@ class MediaQuality(loader: ClassLoader, preferences: XSharedPreferences) :
                     val fieldimageMaxQuality = fieldsProcessImageQuality["quality"]
                     val fieldimageMaxEdge = fieldsProcessImageQuality["maxEdge"]
 
-                    fieldimageMaxSize?.setInt(processImageQuality, 50 * 1024)
+                    fieldimageMaxSize?.setInt(processImageQuality, 1024 * 1024) // 1GB limit for images to avoid compression
                     fieldimageMaxQuality?.setInt(processImageQuality, 100)
-                    fieldimageMaxEdge?.setInt(processImageQuality, 6000)
+                    fieldimageMaxEdge?.setInt(processImageQuality, 10000)
                 }
             })
 
